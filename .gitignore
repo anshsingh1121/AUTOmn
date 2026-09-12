@@ -1,0 +1,35 @@
+# Output and archive (generated at runtime)
+output/
+archive/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Never commit corporate data or credentials
+*.credentials
+*.secret
+*.token
+corporate_config.json
+
+# Test output artifacts
+test_output/

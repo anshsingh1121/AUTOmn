@@ -1,0 +1,149 @@
+{
+    "mode": "development",
+    "dry_run": true,
+
+    "paths": {
+        "master_tracker": "test_data/master_test.xlsx",
+        "servicenow_input": "test_data/servicenow_test.xlsx",
+        "ic_lookup": "test_data/ic_lookup_test.xlsx",
+        "output_directory": "output",
+        "archive_directory": "archive"
+    },
+
+    "sheets": {
+        "master_sheet": "FCB",
+        "servicenow_sheet": "Sheet1",
+        "ic_lookup_sheet": "IC Lookup"
+    },
+
+    "tables": {
+        "master_table": null,
+        "servicenow_table": null,
+        "ic_lookup_table": null
+    },
+
+    "field_mapping": {
+        "Number": {
+            "source_column": "Number",
+            "target_column": "Number",
+            "is_key": true,
+            "overwrite_if_blank": false
+        },
+        "Short description": {
+            "source_column": "Short Description",
+            "target_column": "Short description",
+            "overwrite_if_blank": false
+        },
+        "Primary CI/Application": {
+            "source_column": "Configuration Item",
+            "target_column": "Primary CI/Application",
+            "overwrite_if_blank": false
+        },
+        "Priority": {
+            "source_column": "Priority",
+            "target_column": "Priority",
+            "overwrite_if_blank": false
+        },
+        "State": {
+            "source_column": "State",
+            "target_column": "State",
+            "overwrite_if_blank": false
+        },
+        "Resolved": {
+            "source_column": "Actual Incident Resolve",
+            "target_column": "Resolved",
+            "overwrite_if_blank": false
+        },
+        "Assignee": {
+            "source_column": "Assigned To",
+            "target_column": "Assignee",
+            "overwrite_if_blank": false
+        },
+        "Assignment group": {
+            "source_column": "Assignment Group",
+            "target_column": "Assignment group",
+            "overwrite_if_blank": false
+        },
+        "Caused by Change": {
+            "source_column": "Caused by Change",
+            "target_column": "Caused by Change",
+            "overwrite_if_blank": false
+        }
+    },
+
+    "unmapped_fields": {
+        "Created": {
+            "note": "Source column not confirmed. Preserve existing values. Requires corporate validation.",
+            "source_column": null,
+            "target_column": "Created",
+            "overwrite_if_blank": false
+        },
+        "Vendor Caused?": {
+            "note": "Transformation from ServiceNow 'Vendor' field not defined. Requires corporate validation.",
+            "source_column": null,
+            "target_column": "Vendor Caused?",
+            "overwrite_if_blank": false
+        }
+    },
+
+    "business_rules": {
+        "ic_rule": {
+            "ic_source_column": "IC",
+            "proposed_by_column": "Proposed By",
+            "priority_column": "Priority",
+            "priority_3_class": 3,
+            "target_column": "IC"
+        },
+        "region_rule": {
+            "ic_column": "IC",
+            "lookup_ic_column": "IC",
+            "lookup_region_column": "Region",
+            "target_column": "Region",
+            "case_sensitive": false
+        },
+        "bank_rule": {
+            "source_column": "Assignment group",
+            "target_column": "Bank",
+            "svb_keyword": "SVB",
+            "svb_value": "SVB",
+            "default_value": "",
+            "case_sensitive": false
+        },
+        "priority_normalization": {
+            "extract_numeric": true,
+            "separator": " - ",
+            "patterns": [
+                {"input": "1 - Critical", "class": 1},
+                {"input": "2 - High", "class": 2},
+                {"input": "3 - Moderate", "class": 3},
+                {"input": "4 - Low", "class": 4}
+            ]
+        }
+    },
+
+    "formula_columns": {
+        "note": "Columns containing Excel formulas that must be preserved. Actual list requires corporate validation.",
+        "known_formulas": ["Resolution Time"],
+        "preserve_all_detected": true
+    },
+
+    "validation": {
+        "required_servicenow_columns": [
+            "Number", "Short Description", "Configuration Item",
+            "Priority", "State", "IC", "Proposed By",
+            "Assignment Group", "Assigned To", "Caused by Change",
+            "Actual Incident Resolve"
+        ],
+        "required_master_columns": [
+            "Number", "Short description", "Primary CI/Application",
+            "Priority", "State", "Resolved", "Created", "IC",
+            "Assignee", "Assignment group", "Caused by Change",
+            "Region", "Bank"
+        ],
+        "required_ic_lookup_columns": [
+            "IC", "Region"
+        ],
+        "block_on_duplicate_numbers": true,
+        "block_on_blank_numbers": true
+    }
+}

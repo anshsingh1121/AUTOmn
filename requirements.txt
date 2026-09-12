@@ -1,0 +1,7 @@
+# FCB Monthly Incident Tracker Automation
+# Python 3.9+
+
+openpyxl>=3.1.0
+pandas>=2.0.0
+pytest>=7.0.0
+jsonschema>=4.0.0
