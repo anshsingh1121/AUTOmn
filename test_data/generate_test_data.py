@@ -24,12 +24,11 @@ def create_master_test_data():
     ws = wb.active
     ws.title = "FCB"
 
-    # Headers — matching the documented Master Tracker schema
+    # Headers
     headers = [
-        "Number", "Short description", "Primary CI/Application",
-        "Priority", "State", "Resolved", "Created", "IC",
-        "Assignee", "Assignment group", "Caused by Change",
-        "Vendor Caused?", "Region", "Bank", "Resolution Time"
+        "Number", "Short Description", "Configuration Item", "Priority", "State",
+        "Resolved", "Created", "IC", "Assignee", "Assignment group",
+        "Caused by Change", "Vendor Caused?", "Region", "Bank", "Resolution Time"
     ]
     for col, header in enumerate(headers, 1):
         ws.cell(row=1, column=col, value=header)
@@ -131,13 +130,12 @@ def create_servicenow_test_data():
     """Create synthetic ServiceNow export test data."""
     wb = Workbook()
     ws = wb.active
-    ws.title = "Sheet1"
-
+    # Headers - typical ServiceNow export
     headers = [
-        "Number", "Short Description", "Configuration Item",
-        "Priority", "State", "IC", "Proposed By",
+        "Number", "Short Description", "Configuration item",
+        "Priority", "State", "IC", "Proposed by",
         "Assignment Group", "Assigned To", "Caused by Change",
-        "Actual Incident Start", "Actual Incident Resolve", "Vendor"
+        "Actual Incident Resolve", "Actual Incident Start", "Vendor"
     ]
     for col, header in enumerate(headers, 1):
         ws.cell(row=1, column=col, value=header)

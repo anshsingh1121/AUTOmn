@@ -1,7 +1,6 @@
 {
     "mode": "development",
     "dry_run": true,
-
     "paths": {
         "master_tracker": "test_data/master_test.xlsx",
         "servicenow_input": "test_data/servicenow_test.xlsx",
@@ -9,19 +8,16 @@
         "output_directory": "output",
         "archive_directory": "archive"
     },
-
     "sheets": {
         "master_sheet": "FCB",
         "servicenow_sheet": "Sheet1",
         "ic_lookup_sheet": "IC Lookup"
     },
-
     "tables": {
         "master_table": null,
         "servicenow_table": null,
         "ic_lookup_table": null
     },
-
     "field_mapping": {
         "Number": {
             "source_column": "Number",
@@ -31,12 +27,12 @@
         },
         "Short description": {
             "source_column": "Short Description",
-            "target_column": "Short description",
+            "target_column": "Short Description",
             "overwrite_if_blank": false
         },
         "Primary CI/Application": {
-            "source_column": "Configuration Item",
-            "target_column": "Primary CI/Application",
+            "source_column": "Configuration item",
+            "target_column": "Configuration Item",
             "overwrite_if_blank": false
         },
         "Priority": {
@@ -70,7 +66,6 @@
             "overwrite_if_blank": false
         }
     },
-
     "unmapped_fields": {
         "Created": {
             "note": "Source column not confirmed. Preserve existing values. Requires corporate validation.",
@@ -85,11 +80,10 @@
             "overwrite_if_blank": false
         }
     },
-
     "business_rules": {
         "ic_rule": {
             "ic_source_column": "IC",
-            "proposed_by_column": "Proposed By",
+            "proposed_by_column": "Proposed by",
             "priority_column": "Priority",
             "priority_3_class": 3,
             "target_column": "IC"
@@ -113,35 +107,64 @@
             "extract_numeric": true,
             "separator": " - ",
             "patterns": [
-                {"input": "1 - Critical", "class": 1},
-                {"input": "2 - High", "class": 2},
-                {"input": "3 - Moderate", "class": 3},
-                {"input": "4 - Low", "class": 4}
+                {
+                    "input": "1 - Critical",
+                    "class": 1
+                },
+                {
+                    "input": "2 - High",
+                    "class": 2
+                },
+                {
+                    "input": "3 - Moderate",
+                    "class": 3
+                },
+                {
+                    "input": "4 - Low",
+                    "class": 4
+                }
             ]
         }
     },
-
     "formula_columns": {
         "note": "Columns containing Excel formulas that must be preserved. Actual list requires corporate validation.",
-        "known_formulas": ["Resolution Time"],
+        "known_formulas": [
+            "Resolution Time"
+        ],
         "preserve_all_detected": true
     },
-
     "validation": {
         "required_servicenow_columns": [
-            "Number", "Short Description", "Configuration Item",
-            "Priority", "State", "IC", "Proposed By",
-            "Assignment Group", "Assigned To", "Caused by Change",
+            "Number",
+            "Short Description",
+            "Configuration item",
+            "Priority",
+            "State",
+            "IC",
+            "Proposed by",
+            "Assignment Group",
+            "Assigned To",
+            "Caused by Change",
             "Actual Incident Resolve"
         ],
         "required_master_columns": [
-            "Number", "Short description", "Primary CI/Application",
-            "Priority", "State", "Resolved", "Created", "IC",
-            "Assignee", "Assignment group", "Caused by Change",
-            "Region", "Bank"
+            "Number",
+            "Short Description",
+            "Configuration Item",
+            "Priority",
+            "State",
+            "Resolved",
+            "Created",
+            "IC",
+            "Assignee",
+            "Assignment group",
+            "Caused by Change",
+            "Region",
+            "Bank"
         ],
         "required_ic_lookup_columns": [
-            "IC", "Region"
+            "IC",
+            "Region"
         ],
         "block_on_duplicate_numbers": true,
         "block_on_blank_numbers": true

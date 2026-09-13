@@ -87,7 +87,14 @@ def load_servicenow(config) -> pd.DataFrame:
     """
     path = config.servicenow_input_path
     sheet = config.servicenow_sheet
-    return load_excel_to_dataframe(path, sheet)
+    df = load_excel_to_dataframe(path, sheet)
+
+    # AUTO-CLEAN: Remove empty rows or Excel pivot summary rows (e.g. "Grand Total") at the bottom
+    if "Number" in df.columns:
+        df = df.dropna(subset=["Number"])
+        df = df[df["Number"].astype(str).str.startswith("INC")]
+
+    return df
 
 
 def load_ic_lookup(config) -> pd.DataFrame:
