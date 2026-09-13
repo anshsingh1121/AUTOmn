@@ -130,6 +130,7 @@ def create_servicenow_test_data():
     """Create synthetic ServiceNow export test data."""
     wb = Workbook()
     ws = wb.active
+    ws.title = "Sheet1"
     # Headers - typical ServiceNow export
     headers = [
         "Number", "Short Description", "Configuration item",

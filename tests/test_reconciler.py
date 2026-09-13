@@ -58,7 +58,7 @@ class TestReconcile:
         for r in result.historical_records:
             if r["Number"] == "INC0010003":
                 assert r["State"] == "Resolved"
-                assert r["Short description"] == "Historical resolved incident"
+                assert r["Short Description"] == "Historical resolved incident"
 
     def test_all_master_numbers_in_output(self, sample_master_df, sample_servicenow_df, ic_lookup, config):
         """TEST 19: All historical master Numbers present in output."""
