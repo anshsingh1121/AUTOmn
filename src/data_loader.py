@@ -80,14 +80,25 @@ def load_master_tracker(config) -> Tuple[pd.DataFrame, Any]:
 
 def load_servicenow(config) -> pd.DataFrame:
     """
-    Load the ServiceNow monthly export.
-
-    Returns:
-        pandas DataFrame.
+    Load the ServiceNow export into a DataFrame. Supports both .xlsx and .csv.
     """
     path = config.servicenow_input_path
     sheet = config.servicenow_sheet
-    df = load_excel_to_dataframe(path, sheet)
+    
+    if not os.path.isfile(path):
+        raise DataLoadError(f"File not found: {path}")
+
+    try:
+        if str(path).lower().endswith('.csv'):
+            # Some ServiceNow CSVs have strange encodings, trying standard first
+            try:
+                df = pd.read_csv(path, encoding='utf-8')
+            except UnicodeDecodeError:
+                df = pd.read_csv(path, encoding='cp1252')
+        else:
+            df = load_excel_to_dataframe(path, sheet)
+    except Exception as e:
+        raise DataLoadError(f"Error reading ServiceNow file: {e}")
 
     # AUTO-CLEAN: Remove empty rows or Excel pivot summary rows (e.g. "Grand Total") at the bottom
     if "Number" in df.columns:
