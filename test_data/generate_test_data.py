@@ -26,7 +26,7 @@ def create_master_test_data():
 
     # Headers
     headers = [
-        "Number", "Short Description", "Configuration Item", "Priority", "State",
+        "Number", "Short description", "Primary CI/Application", "Priority", "State",
         "Resolved", "Created", "IC", "Assignee", "Assignment group",
         "Caused by Change", "Vendor Caused?", "Region", "Bank", "Resolution Time"
     ]

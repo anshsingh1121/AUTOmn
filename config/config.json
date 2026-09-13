@@ -27,12 +27,12 @@
         },
         "Short description": {
             "source_column": "Short Description",
-            "target_column": "Short Description",
+            "target_column": "Short description",
             "overwrite_if_blank": false
         },
         "Primary CI/Application": {
             "source_column": "Configuration item",
-            "target_column": "Configuration Item",
+            "target_column": "Primary CI/Application",
             "overwrite_if_blank": false
         },
         "Priority": {
@@ -149,8 +149,8 @@
         ],
         "required_master_columns": [
             "Number",
-            "Short Description",
-            "Configuration Item",
+            "Short description",
+            "Primary CI/Application",
             "Priority",
             "State",
             "Resolved",
