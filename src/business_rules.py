@@ -48,27 +48,15 @@ def determine_ic(
 ) -> Optional[str]:
     """
     Apply the IC determination business rule.
-
-    Args:
-        servicenow_ic: IC value from ServiceNow.
-        priority: Priority value from ServiceNow.
-        proposed_by: Proposed By value from ServiceNow.
-        priority_config: Optional priority normalization config.
-
-    Returns:
-        Determined IC value (string or None).
+    If IC is populated, use it.
+    If IC is blank, fallback to Proposed By.
     """
-    # Rule 1: If ServiceNow IC contains a value, use it
-    ic_val = normalize_whitespace(servicenow_ic)
-    if ic_val is not None:
-        return ic_val
+    if not is_blank(servicenow_ic):
+        return str(servicenow_ic).strip()
 
-    # Rule 2: If IC is blank AND Priority = 3, use Proposed By
-    if is_priority_3(priority, priority_config):
-        pb_val = normalize_whitespace(proposed_by)
-        return pb_val  # May be None if Proposed By is also blank
+    if not is_blank(proposed_by):
+        return str(proposed_by).strip()
 
-    # Rule 3: If IC is blank AND Priority != 3, IC is blank
     return None
 
 

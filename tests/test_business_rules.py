@@ -49,22 +49,22 @@ class TestDetermineIC:
         assert result == "Sam Parker"
 
     def test_ic_blank_priority_not_3_blank(self):
-        """TEST 6: IC blank + Priority != 3 -> IC blank."""
+        """TEST 6: IC blank + Priority != 3 -> Proposed By fallback."""
         result = determine_ic(
             servicenow_ic="",
             priority="2 - High",
             proposed_by="Sam Parker"
         )
-        assert result is None
+        assert result == "Sam Parker"
 
     def test_ic_blank_priority_1_blank(self):
-        """TEST 6 variant: IC blank + Priority 1 -> IC blank."""
+        """TEST 6 variant: IC blank + Priority 1 -> Proposed By fallback."""
         result = determine_ic(
             servicenow_ic=None,
             priority="1 - Critical",
             proposed_by="Wendy Thomas"
         )
-        assert result is None
+        assert result == "Wendy Thomas"
 
     def test_ic_whitespace_only_treated_as_blank(self):
         """IC with only whitespace treated as blank."""
