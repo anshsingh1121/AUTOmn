@@ -11,7 +11,11 @@
     "sheets": {
         "master_sheet": "FCB",
         "servicenow_sheet": "Sheet1",
-        "ic_lookup_sheet": "IC Lookup"
+        "ic_lookup_sheet": "IC Lookup",
+        "target_sheets": [
+            "Consolidated",
+            "FCB"
+        ]
     },
     "tables": {
         "master_table": null,

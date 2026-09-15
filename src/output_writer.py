@@ -65,7 +65,7 @@ def write_output_workbook(
     output_df: pd.DataFrame,
     output_path: str,
     source_workbook_path: Optional[str] = None,
-    sheet_name: str = "FCB",
+    target_sheets: Optional[List[str]] = None,
     formula_columns: Optional[Dict[str, str]] = None
 ) -> str:
     """
@@ -74,55 +74,70 @@ def write_output_workbook(
     Strategy:
         1. If a source workbook exists, copy it as the base (preserving
            other sheets, pivots, formulas in non-target sheets).
-        2. Clear the target sheet data rows (preserve header).
-        3. Write updated data.
-        4. Re-apply known formula patterns for formula columns.
+        2. Iterate over target sheets (e.g., Consolidated, FCB).
+        3. Clear the target sheet data rows (preserve header).
+        4. Write updated data mapped to existing headers.
+        5. Refresh Pivot Tables.
 
     Args:
         output_df: The reconciled output DataFrame.
         output_path: Path to write the output file.
-        source_workbook_path: Path to the original workbook (for structure preservation).
-        sheet_name: Name of the target sheet.
+        source_workbook_path: Path to the original workbook.
+        target_sheets: List of sheet names to update.
         formula_columns: Dict of column_name -> formula_template for formula columns.
-                        Formula templates use structured references like '=[@Resolved]-[@Created]'.
 
     Returns:
         Path to the written output file.
     """
+    target_sheets = target_sheets or ["FCB"]
+
     if source_workbook_path and os.path.isfile(source_workbook_path):
         # Copy source workbook to preserve other sheets, pivots, formatting
         shutil.copy2(source_workbook_path, output_path)
         wb = load_workbook(output_path)
 
-        if sheet_name not in wb.sheetnames:
-            raise OutputWriteError(
-                f"Sheet '{sheet_name}' not found in workbook. "
-                f"Available sheets: {wb.sheetnames}"
-            )
+        for sheet_name in target_sheets:
+            if sheet_name not in wb.sheetnames:
+                print(f"Warning: Sheet '{sheet_name}' not found in workbook, skipping.")
+                continue
 
-        ws = wb[sheet_name]
+            ws = wb[sheet_name]
 
-        # Detect existing formula patterns before clearing
-        detected_formulas = _detect_formula_patterns(ws)
+            # Detect existing formula patterns before clearing
+            detected_formulas = _detect_formula_patterns(ws)
 
-        # Merge with explicitly configured formulas
-        if formula_columns:
-            detected_formulas.update(formula_columns)
+            # Merge with explicitly configured formulas
+            if formula_columns:
+                detected_formulas.update(formula_columns)
 
-        # Clear data rows (preserve header in row 1)
-        _clear_data_rows(ws)
+            # Clear data rows (preserve header in row 1)
+            _clear_data_rows(ws)
 
-        # Write data rows
-        _write_dataframe_to_sheet(ws, output_df, detected_formulas)
+            # Write data rows
+            _write_dataframe_to_sheet(ws, output_df, detected_formulas)
+
+        # Refresh all pivot tables in the workbook
+        for sheet in wb.worksheets:
+            try:
+                for pivot in sheet._pivots:
+                    if pivot.cacheDefinition:
+                        pivot.cacheDefinition.refreshOnLoad = True
+            except Exception:
+                pass
 
     else:
         # Create new workbook
         wb = Workbook()
-        ws = wb.active
-        ws.title = sheet_name
+        
+        for i, sheet_name in enumerate(target_sheets):
+            if i == 0:
+                ws = wb.active
+                ws.title = sheet_name
+            else:
+                ws = wb.create_sheet(sheet_name)
 
-        detected_formulas = formula_columns or {}
-        _write_dataframe_to_sheet(ws, output_df, detected_formulas, write_header=True)
+            detected_formulas = formula_columns or {}
+            _write_dataframe_to_sheet(ws, output_df, detected_formulas, write_header=True)
 
     # Save
     try:
@@ -179,31 +194,36 @@ def _write_dataframe_to_sheet(
     write_header: bool = False
 ):
     """
-    Write DataFrame data to worksheet rows.
-
-    Args:
-        ws: Target worksheet.
-        df: DataFrame to write.
-        formula_columns: Dict of column_name -> formula_template.
-        write_header: If True, write column names in row 1.
+    Write DataFrame data to worksheet rows, mapping to the sheet's existing headers.
     """
-    columns = list(df.columns)
+    df_columns = set(df.columns)
 
     if write_header:
-        for col_idx, col_name in enumerate(columns, 1):
+        columns_to_write = list(df.columns)
+        for col_idx, col_name in enumerate(columns_to_write, 1):
             ws.cell(row=1, column=col_idx, value=col_name)
+        header_map = {col_idx: col_name for col_idx, col_name in enumerate(columns_to_write, 1)}
+    else:
+        # Read existing headers from row 1
+        header_map = {}
+        for col_idx in range(1, ws.max_column + 1):
+            cell_val = ws.cell(row=1, column=col_idx).value
+            if cell_val is not None:
+                header_map[col_idx] = str(cell_val)
 
     start_row = 2  # Data starts in row 2 (after header)
 
     for row_offset, (_, row_data) in enumerate(df.iterrows()):
         row_num = start_row + row_offset
-        for col_idx, col_name in enumerate(columns, 1):
+        for col_idx, col_name in header_map.items():
+            # If the sheet's column doesn't exist in our DataFrame, skip writing to it
+            if col_name not in df_columns:
+                continue
+                
             if col_name in formula_columns:
-                # Write formula instead of static value
                 ws.cell(row=row_num, column=col_idx, value=formula_columns[col_name])
             else:
                 value = row_data[col_name]
-                # Convert pandas NaN/NaT to None for openpyxl
                 if pd.isna(value):
                     ws.cell(row=row_num, column=col_idx, value=None)
                 else:

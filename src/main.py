@@ -258,7 +258,7 @@ def run_pipeline(config: Config) -> int:
             output_df=output_df,
             output_path=output_path,
             source_workbook_path=config.master_tracker_path,
-            sheet_name=config.master_sheet,
+            target_sheets=config.target_sheets,
             formula_columns=None  # Auto-detected from source workbook
         )
         print(f"  Output written: {os.path.basename(output_path)}")

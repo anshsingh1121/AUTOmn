@@ -69,6 +69,10 @@ class Config:
         return self._data["sheets"]["master_sheet"]
 
     @property
+    def target_sheets(self) -> list:
+        return self._data["sheets"].get("target_sheets", [self.master_sheet])
+
+    @property
     def servicenow_sheet(self) -> str:
         return self._data["sheets"]["servicenow_sheet"]
 

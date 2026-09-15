@@ -270,7 +270,7 @@ class TestIntegrationOutputWrite:
                 output_df=output_df,
                 output_path=output_path,
                 source_workbook_path=integration_config.master_tracker_path,
-                sheet_name=integration_config.master_sheet,
+                target_sheets=integration_config.target_sheets,
             )
             assert os.path.isfile(output_path)
 
