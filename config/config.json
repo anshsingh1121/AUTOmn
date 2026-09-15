@@ -64,15 +64,14 @@
             "source_column": "Caused by Change",
             "target_column": "Caused by Change",
             "overwrite_if_blank": false
+        },
+        "Created": {
+            "source_column": "Actual Incident Start",
+            "target_column": "Created",
+            "overwrite_if_blank": false
         }
     },
     "unmapped_fields": {
-        "Created": {
-            "note": "Source column not confirmed. Preserve existing values. Requires corporate validation.",
-            "source_column": null,
-            "target_column": "Created",
-            "overwrite_if_blank": false
-        },
         "Vendor Caused?": {
             "note": "Transformation from ServiceNow 'Vendor' field not defined. Requires corporate validation.",
             "source_column": null,
@@ -129,7 +128,8 @@
     "formula_columns": {
         "note": "Columns containing Excel formulas that must be preserved. Actual list requires corporate validation.",
         "known_formulas": [
-            "Resolution Time"
+            "Resolution Time",
+            "Duration"
         ],
         "preserve_all_detected": true
     },
@@ -145,7 +145,8 @@
             "Assignment Group",
             "Assigned To",
             "Caused by Change",
-            "Actual Incident Resolve"
+            "Actual Incident Resolve",
+            "Actual Incident Start"
         ],
         "required_master_columns": [
             "Number",
