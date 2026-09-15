@@ -9,7 +9,7 @@
         "archive_directory": "archive"
     },
     "sheets": {
-        "master_sheet": "FCB",
+        "master_sheet": "Consolidated",
         "servicenow_sheet": "Sheet1",
         "ic_lookup_sheet": "IC Lookup",
         "target_sheets": [
