@@ -72,23 +72,25 @@ def save_audit_log(
     filename: Optional[str] = None
 ) -> str:
     """
-    Save the audit record to a JSON file.
+    Save the audit record to a JSON file inside a Year/Month folder structure.
 
     Args:
         audit_record: The audit record dict.
-        output_dir: Directory to save the audit log.
+        output_dir: Base directory to save the audit log.
         filename: Optional filename. Defaults to audit_YYYYMMDD_HHMMSS.json.
 
     Returns:
         Path to the saved audit log.
     """
-    os.makedirs(output_dir, exist_ok=True)
+    now = datetime.now()
+    nested_dir = os.path.join(output_dir, now.strftime("%Y"), now.strftime("%m_%B"))
+    os.makedirs(nested_dir, exist_ok=True)
 
     if filename is None:
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = now.strftime("%Y%m%d_%H%M%S")
         filename = f"audit_{timestamp}.json"
 
-    path = os.path.join(output_dir, filename)
+    path = os.path.join(nested_dir, filename)
 
     with open(path, "w", encoding="utf-8") as f:
         json.dump(audit_record, f, indent=2, default=str)

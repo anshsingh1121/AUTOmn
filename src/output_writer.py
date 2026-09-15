@@ -21,28 +21,31 @@ class OutputWriteError(Exception):
 
 def create_output_path(output_dir: str, prefix: str = "Master_Updated") -> str:
     """
-    Create a timestamped output file path.
+    Create a timestamped output file path inside a Year/Month folder structure.
 
     Args:
-        output_dir: Output directory.
+        output_dir: Base output directory.
         prefix: Filename prefix.
 
     Returns:
         Full path to the output file.
     """
-    os.makedirs(output_dir, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    now = datetime.now()
+    nested_dir = os.path.join(output_dir, now.strftime("%Y"), now.strftime("%m_%B"))
+    os.makedirs(nested_dir, exist_ok=True)
+    
+    timestamp = now.strftime("%Y%m%d_%H%M%S")
     filename = f"{prefix}_{timestamp}.xlsx"
-    return os.path.join(output_dir, filename)
+    return os.path.join(nested_dir, filename)
 
 
 def create_archive_copy(source_path: str, archive_dir: str) -> Optional[str]:
     """
-    Create an archive copy of a file before modification.
+    Create an archive copy of a file inside a Year/Month folder structure before modification.
 
     Args:
         source_path: Path to the original file.
-        archive_dir: Archive directory.
+        archive_dir: Base archive directory.
 
     Returns:
         Path to the archive copy, or None if source doesn't exist.
@@ -50,12 +53,15 @@ def create_archive_copy(source_path: str, archive_dir: str) -> Optional[str]:
     if not os.path.isfile(source_path):
         return None
 
-    os.makedirs(archive_dir, exist_ok=True)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    now = datetime.now()
+    nested_dir = os.path.join(archive_dir, now.strftime("%Y"), now.strftime("%m_%B"))
+    os.makedirs(nested_dir, exist_ok=True)
+    
+    timestamp = now.strftime("%Y%m%d_%H%M%S")
     basename = os.path.splitext(os.path.basename(source_path))[0]
     ext = os.path.splitext(source_path)[1]
     archive_name = f"{basename}_before_{timestamp}{ext}"
-    archive_path = os.path.join(archive_dir, archive_name)
+    archive_path = os.path.join(nested_dir, archive_name)
 
     shutil.copy2(source_path, archive_path)
     return archive_path

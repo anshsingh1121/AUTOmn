@@ -285,11 +285,9 @@ def run_pipeline(config: Config) -> int:
     print()
 
     # Write Excel reconciliation report
-    report_path = create_output_path(
-        config.output_directory, prefix="Reconciliation_Report"
-    )
+    report_path = create_output_path(config.output_directory, prefix="Reconciliation_Report")
     write_reconciliation_report_excel(report, report_path)
-    print(f"  Reconciliation report: {os.path.basename(report_path)}")
+    print(f"  Report generated: {os.path.basename(report_path)}")
 
     # Write audit log
     audit_record = create_audit_record(
