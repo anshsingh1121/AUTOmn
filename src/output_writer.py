@@ -128,35 +128,6 @@ def write_output_workbook(
             # Write data rows
             _write_dataframe_to_sheet(ws, output_df, detected_formulas)
 
-            # Expand any Excel Tables (ListObjects) on this sheet to encompass the new data
-            from openpyxl.utils import get_column_letter
-            for tbl in ws.tables.values():
-                max_col_letter = get_column_letter(ws.max_column)
-                tbl.ref = f"A1:{max_col_letter}{ws.max_row}"
-
-        # Refresh all pivot tables in the workbook and expand data ranges
-        from openpyxl.utils import get_column_letter
-        for sheet in wb.worksheets:
-            try:
-                for pivot in getattr(sheet, "_pivots", []):
-                    # In some openpyxl versions, cacheDefinition is accessed differently
-                    if hasattr(pivot, "cacheDefinition") and pivot.cacheDefinition:
-                        pivot.cacheDefinition.refreshOnLoad = True
-                        cache_source = pivot.cacheDefinition.cacheSource
-                        
-                        if cache_source and hasattr(cache_source, "worksheetSource") and cache_source.worksheetSource:
-                            ws_source = cache_source.worksheetSource
-                            source_sheet_name = ws_source.sheet or sheet.title
-                                
-                            if source_sheet_name in target_sheets and source_sheet_name in wb.sheetnames:
-                                src_ws = wb[source_sheet_name]
-                                max_col_letter = get_column_letter(src_ws.max_column)
-                                ws_source.ref = f"A1:{max_col_letter}{src_ws.max_row}"
-                    elif hasattr(pivot, "cache") and pivot.cache:
-                        pivot.cache.refreshOnLoad = True
-            except Exception as e:
-                pass # Fail silently for openpyxl XML modification, rely on win32com
-
     else:
         # Create new workbook
         wb = Workbook()
@@ -345,6 +316,35 @@ def _hard_refresh_pivots_com(file_path: str):
         
         try:
             wb = excel.Workbooks.Open(abs_path)
+            
+            # Step 1: Expand ListObjects (Excel Tables) dynamically
+            for ws in wb.Worksheets:
+                try:
+                    last_row = ws.Cells(ws.Rows.Count, "A").End(-4162).Row  # xlUp
+                    last_col = ws.Cells(1, ws.Columns.Count).End(-4159).Column  # xlToLeft
+                    
+                    if last_row > 1 and last_col > 0:
+                        for obj in ws.ListObjects:
+                            new_range = ws.Range(ws.Cells(1, 1), ws.Cells(last_row, last_col))
+                            obj.Resize(new_range)
+                except Exception:
+                    pass
+            
+            # Step 2: Expand PivotCaches manually if they don't use a ListObject
+            for pc in wb.PivotCaches():
+                try:
+                    src = pc.SourceData
+                    if isinstance(src, str) and "!" in src:
+                        sheet_name = src.split("!")[0].replace("'", "")
+                        ws = wb.Worksheets(sheet_name)
+                        last_row = ws.Cells(ws.Rows.Count, "A").End(-4162).Row
+                        last_col = ws.Cells(1, ws.Columns.Count).End(-4159).Column
+                        if last_row > 1 and last_col > 0:
+                            new_src = f"'{sheet_name}'!R1C1:R{last_row}C{last_col}"
+                            pc.SourceData = new_src
+                except Exception:
+                    pass
+            
             wb.RefreshAll()
             excel.CalculateUntilAsyncQueriesDone()
             wb.Save()
