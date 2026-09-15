@@ -323,4 +323,20 @@ def apply_all_business_rules(
     )
     record[bank_config.get("target_column", "Bank")] = bank_value
 
+    # Duration Calculation using Actual Incident Start and Actual Incident Resolve
+    try:
+        start_val = servicenow_record.get("Actual Incident Start")
+        resolve_val = servicenow_record.get("Actual Incident Resolve")
+        if start_val and resolve_val and pd.notna(start_val) and pd.notna(resolve_val):
+            start_dt = pd.to_datetime(start_val)
+            resolve_dt = pd.to_datetime(resolve_val)
+            duration_td = resolve_dt - start_dt
+            # Calculate total days (float) for native Excel duration formatting
+            # 1.0 in Excel = 1 Day. So difference in seconds / 86400 allows native formatting.
+            record["Duration"] = duration_td.total_seconds() / 86400.0
+        else:
+            record["Duration"] = ""
+    except Exception:
+        record["Duration"] = ""
+
     return record
