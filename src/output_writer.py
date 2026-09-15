@@ -122,14 +122,33 @@ def write_output_workbook(
             # Write data rows
             _write_dataframe_to_sheet(ws, output_df, detected_formulas)
 
-        # Refresh all pivot tables in the workbook
+        # Refresh all pivot tables in the workbook and expand data ranges
+        from openpyxl.utils import get_column_letter
         for sheet in wb.worksheets:
             try:
                 for pivot in sheet._pivots:
                     if pivot.cacheDefinition:
                         pivot.cacheDefinition.refreshOnLoad = True
-            except Exception:
-                pass
+                        
+                        # Dynamically expand the pivot table's source range
+                        cache_source = pivot.cacheDefinition.cacheSource
+                        if cache_source and cache_source.worksheetSource:
+                            ws_source = cache_source.worksheetSource
+                            # Check if the pivot reads from a sheet we just updated
+                            source_sheet_name = ws_source.sheet
+                            
+                            # If no explicit sheet name is defined in the cache, it usually defaults to the active sheet
+                            if not source_sheet_name:
+                                source_sheet_name = sheet.title
+                                
+                            if source_sheet_name in target_sheets and source_sheet_name in wb.sheetnames:
+                                src_ws = wb[source_sheet_name]
+                                max_col_letter = get_column_letter(src_ws.max_column)
+                                max_row = src_ws.max_row
+                                # Update range, e.g., "A1:Z250"
+                                ws_source.ref = f"A1:{max_col_letter}{max_row}"
+            except Exception as e:
+                print(f"Warning: Could not update pivot table cache in '{sheet.title}': {e}")
 
     else:
         # Create new workbook
