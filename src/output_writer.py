@@ -112,15 +112,27 @@ def write_output_workbook(
             # Detect existing formula patterns before clearing
             detected_formulas = _detect_formula_patterns(ws)
 
+            # Force remove Duration from detected formulas so our Python calculation is used
+            if "Duration" in detected_formulas:
+                del detected_formulas["Duration"]
+
             # Merge with explicitly configured formulas
             if formula_columns:
-                detected_formulas.update(formula_columns)
+                for k, v in formula_columns.items():
+                    if k != "Duration":
+                        detected_formulas[k] = v
 
             # Clear data rows (preserve header in row 1)
             _clear_data_rows(ws)
 
             # Write data rows
             _write_dataframe_to_sheet(ws, output_df, detected_formulas)
+
+            # Expand any Excel Tables (ListObjects) on this sheet to encompass the new data
+            from openpyxl.utils import get_column_letter
+            for tbl in ws.tables.values():
+                max_col_letter = get_column_letter(ws.max_column)
+                tbl.ref = f"A1:{max_col_letter}{ws.max_row}"
 
         # Refresh all pivot tables in the workbook and expand data ranges
         from openpyxl.utils import get_column_letter
