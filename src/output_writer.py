@@ -182,6 +182,9 @@ def write_output_workbook(
     except Exception as e:
         raise OutputWriteError(f"Cannot save output workbook: {e}")
 
+    # Use win32com to perform a hard physical refresh of all pivot tables, bypassing Protected View issues
+    _hard_refresh_pivots_com(output_path)
+
     return output_path
 
 
@@ -328,3 +331,33 @@ def write_reconciliation_report_excel(
 
     wb.save(output_path)
     return output_path
+
+def _hard_refresh_pivots_com(file_path: str):
+    """
+    Uses native Windows COM (pywin32) to invisibly open Excel, force a complete RefreshAll, 
+    and save the file. This guarantees Pivot Tables update and bypasses Protected View bugs.
+    """
+    try:
+        import win32com.client
+        import os
+        
+        abs_path = os.path.abspath(file_path)
+        
+        # Initialize COM
+        excel = win32com.client.DispatchEx("Excel.Application")
+        excel.DisplayAlerts = False
+        excel.Visible = False
+        
+        try:
+            wb = excel.Workbooks.Open(abs_path)
+            wb.RefreshAll()
+            excel.CalculateUntilAsyncQueriesDone()
+            wb.Save()
+            wb.Close(True)
+        finally:
+            excel.Quit()
+            del excel
+    except ImportError:
+        print("Notice: win32com not installed. Pivot tables will require manual refresh.")
+    except Exception as e:
+        print(f"Notice: Background Pivot refresh encountered an error: {e}")
