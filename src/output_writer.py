@@ -138,29 +138,24 @@ def write_output_workbook(
         from openpyxl.utils import get_column_letter
         for sheet in wb.worksheets:
             try:
-                for pivot in sheet._pivots:
-                    if pivot.cacheDefinition:
+                for pivot in getattr(sheet, "_pivots", []):
+                    # In some openpyxl versions, cacheDefinition is accessed differently
+                    if hasattr(pivot, "cacheDefinition") and pivot.cacheDefinition:
                         pivot.cacheDefinition.refreshOnLoad = True
-                        
-                        # Dynamically expand the pivot table's source range
                         cache_source = pivot.cacheDefinition.cacheSource
-                        if cache_source and cache_source.worksheetSource:
+                        
+                        if cache_source and hasattr(cache_source, "worksheetSource") and cache_source.worksheetSource:
                             ws_source = cache_source.worksheetSource
-                            # Check if the pivot reads from a sheet we just updated
-                            source_sheet_name = ws_source.sheet
-                            
-                            # If no explicit sheet name is defined in the cache, it usually defaults to the active sheet
-                            if not source_sheet_name:
-                                source_sheet_name = sheet.title
+                            source_sheet_name = ws_source.sheet or sheet.title
                                 
                             if source_sheet_name in target_sheets and source_sheet_name in wb.sheetnames:
                                 src_ws = wb[source_sheet_name]
                                 max_col_letter = get_column_letter(src_ws.max_column)
-                                max_row = src_ws.max_row
-                                # Update range, e.g., "A1:Z250"
-                                ws_source.ref = f"A1:{max_col_letter}{max_row}"
+                                ws_source.ref = f"A1:{max_col_letter}{src_ws.max_row}"
+                    elif hasattr(pivot, "cache") and pivot.cache:
+                        pivot.cache.refreshOnLoad = True
             except Exception as e:
-                print(f"Warning: Could not update pivot table cache in '{sheet.title}': {e}")
+                pass # Fail silently for openpyxl XML modification, rely on win32com
 
     else:
         # Create new workbook
