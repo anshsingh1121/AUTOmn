@@ -315,7 +315,7 @@ def write_output_workbook(
 
             print(f"  Sheet '{sheet_name}': {num_records} records written.")
 
-        # --- BULLETPROOF PIVOT UPDATE (HANDLES TABLES AND RANGES) ---
+        # --- BULLETPROOF PIVOT UPDATE ---
         try:
             # 1. Expand standard ranges for any pivot NOT using a Table
             sheet_ranges = {}
@@ -331,7 +331,15 @@ def write_output_workbook(
                 except Exception:
                     pass
 
-            # 2. Process every single Pivot Cache
+            # 2. CRITICAL: Force Excel to evaluate all formulas FIRST.
+            # If a Pivot Table relies on a formula helper column (like "Month"), 
+            # it MUST be calculated before the Pivot Cache reads it!
+            try:
+                excel.CalculateFull()
+            except Exception:
+                pass
+
+            # 3. Process every single Pivot Cache
             for pc in wb.PivotCaches():
                 # Force synchronous refresh to prevent race conditions
                 try:
@@ -341,6 +349,11 @@ def write_output_workbook(
                 # Clear ghost items from cache (xlMissingItemsNone = 0)
                 try:
                     pc.MissingItemsLimit = 0
+                except Exception:
+                    pass
+                # GOLD STANDARD: Tell native Excel to refresh this cache the moment the user opens the file.
+                try:
+                    pc.RefreshOnFileOpen = True
                 except Exception:
                     pass
 
@@ -354,13 +367,13 @@ def write_output_workbook(
                 except Exception:
                     pass
                 
-                # Explicitly force this cache to refresh
+                # Explicitly force this cache to refresh NOW that formulas are evaluated
                 try:
                     pc.Refresh()
                 except Exception as e:
                     print(f"  Warning: Cache refresh failed: {e}")
 
-            # 3. Update all Pivot Tables and force new items to be visible
+            # 4. Update all Pivot Tables and force new items to be visible
             for ws in wb.Worksheets:
                 for pt in ws.PivotTables():
                     try:
@@ -379,9 +392,11 @@ def write_output_workbook(
         except Exception as e:
             print(f"  Warning: Global pivot update failed: {e}")
 
-        # --- refresh all other data connections & formulas ---
-        wb.RefreshAll()
-        excel.CalculateUntilAsyncQueriesDone()
+        # --- refresh all other data connections ---
+        try:
+            wb.RefreshAll()
+        except Exception:
+            pass
 
         wb.Save()
         wb.Close(SaveChanges=True)
