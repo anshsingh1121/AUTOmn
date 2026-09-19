@@ -270,20 +270,28 @@ def write_output_workbook(
                 row_data: List[Any] = []
                 for c_idx, h in enumerate(headers, start=1):
                     if c_idx in existing_formulas:
-                        # inject the preserved R1C1 formula
-                        row_data.append(existing_formulas[c_idx])
+                        # Leave formula columns blank for now, applied in second pass
+                        row_data.append("")
                     elif h in df_write.columns:
                         row_data.append(_to_com_safe(row[h]))
                     else:
                         row_data.append("")
                 write_data.append(row_data)
 
-            # --- write entire array at once (fast) ---
+            # --- write entire array at once (Value preserves real Excel Dates) ---
             target_range = ws.Range(
                 ws.Cells(2, 1),
                 ws.Cells(1 + num_records, last_col),
             )
-            target_range.FormulaR1C1 = write_data
+            target_range.Value = write_data
+            
+            # --- Second Pass: Apply preserved R1C1 formulas ---
+            for c_idx, f_str in existing_formulas.items():
+                f_range = ws.Range(
+                    ws.Cells(2, c_idx),
+                    ws.Cells(1 + num_records, c_idx)
+                )
+                f_range.FormulaR1C1 = f_str
 
             # --- resize ListObjects (Excel Tables) ---
             try:
