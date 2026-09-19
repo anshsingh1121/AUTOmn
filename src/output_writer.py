@@ -350,10 +350,16 @@ def write_output_workbook(
                 except Exception as e:
                     print(f"  Warning: Cache refresh failed: {e}")
 
-            # 3. Update all Pivot Tables
+            # 3. Update all Pivot Tables and force new items to be visible
             for ws in wb.Worksheets:
                 for pt in ws.PivotTables():
                     try:
+                        # Tell Excel to automatically check the box for new Months/items
+                        for pf in pt.PivotFields():
+                            try:
+                                pf.IncludeNewItemsInFilter = True
+                            except Exception:
+                                pass
                         pt.Update()
                     except Exception:
                         pass
