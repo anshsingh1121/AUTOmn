@@ -338,6 +338,11 @@ def write_output_workbook(
                     pc.BackgroundQuery = False
                 except Exception:
                     pass
+                # Clear ghost items from cache (xlMissingItemsNone = 0)
+                try:
+                    pc.MissingItemsLimit = 0
+                except Exception:
+                    pass
 
                 # If this cache uses a standard range, expand it
                 try:
@@ -349,7 +354,7 @@ def write_output_workbook(
                 except Exception:
                     pass
                 
-                # Explicitly force this cache to refresh (CRITICAL for 'Table1')
+                # Explicitly force this cache to refresh
                 try:
                     pc.Refresh()
                 except Exception as e:
@@ -359,6 +364,9 @@ def write_output_workbook(
             for ws in wb.Worksheets:
                 for pt in ws.PivotTables():
                     try:
+                        # UNCONDITIONALLY CLEAR ALL FILTERS TO FORCE HIDDEN DATA TO SHOW
+                        pt.ClearAllFilters()
+                        
                         # Tell Excel to automatically check the box for new Months/items
                         for pf in pt.PivotFields():
                             try:
