@@ -170,9 +170,12 @@ def write_output_workbook(
     # ------------------------------------------------------------------
     df_write = output_df.copy()
 
-    # Convert datetime64 columns to plain datetime objects
+    # Force convert known date columns to real DateTime objects (fixes left-aligned text issue)
+    date_columns = ["Created", "Resolved", "Actual Incident Resolve"]
     for col in df_write.columns:
-        if pd.api.types.is_datetime64_any_dtype(df_write[col]):
+        if col in date_columns or pd.api.types.is_datetime64_any_dtype(df_write[col]):
+            # Coerce forces invalid dates to NaT, which we then turn into empty strings
+            df_write[col] = pd.to_datetime(df_write[col], errors='coerce')
             df_write[col] = df_write[col].apply(
                 lambda x: "" if pd.isna(x) else x.to_pydatetime()
             )
@@ -209,6 +212,7 @@ def write_output_workbook(
         excel.DisplayAlerts = False
         excel.Visible = False
         excel.AskToUpdateLinks = False  # prevent dialogs
+        excel.AutomationSecurity = 1    # msoAutomationSecurityLow: Bypasses yellow security banner to allow Refresh!
 
         wb = excel.Workbooks.Open(abs_output, UpdateLinks=0)
 
