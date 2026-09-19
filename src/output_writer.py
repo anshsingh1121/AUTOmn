@@ -332,51 +332,40 @@ def write_output_workbook(
                     pass
 
             # 2. CRITICAL: Force Excel to evaluate all formulas FIRST.
-            # If a Pivot Table relies on a formula helper column (like "Month"), 
-            # it MUST be calculated before the Pivot Cache reads it!
             try:
                 excel.CalculateFull()
             except Exception:
                 pass
 
-            # 3. Process every single Pivot Cache
-            for pc in wb.PivotCaches():
-                # Force synchronous refresh to prevent race conditions
-                try:
-                    pc.BackgroundQuery = False
-                except Exception:
-                    pass
-                # Clear ghost items from cache (xlMissingItemsNone = 0)
-                try:
-                    pc.MissingItemsLimit = 0
-                except Exception:
-                    pass
-                # GOLD STANDARD: Tell native Excel to refresh this cache the moment the user opens the file.
-                try:
-                    pc.RefreshOnFileOpen = True
-                except Exception:
-                    pass
-
-                # If this cache uses a standard range, expand it
-                try:
-                    current_src = pc.SourceData
-                    if isinstance(current_src, str) and "!" in current_src:
-                        src_sheet = current_src.split("!")[0].replace("'", "")
-                        if src_sheet in sheet_ranges:
-                            pc.SourceData = sheet_ranges[src_sheet]
-                except Exception:
-                    pass
+            # 3. Process every single Pivot Cache by forcefully recreating them!
+            # Instead of relying on Excel to refresh a potentially broken cache or Table,
+            # we will create a BRAND NEW cache pointing to the absolute boundaries of the data.
+            try:
+                data_ws = wb.Worksheets("Consolidated")
+                lr_cell = data_ws.Cells.Find(What="*", SearchOrder=1, SearchDirection=2)
+                lc_cell = data_ws.Cells.Find(What="*", SearchOrder=2, SearchDirection=2)
+                data_lr = lr_cell.Row if lr_cell else 1
+                data_lc = lc_cell.Column if lc_cell else 1
                 
-                # Explicitly force this cache to refresh NOW that formulas are evaluated
-                try:
-                    pc.Refresh()
-                except Exception as e:
-                    print(f"  Warning: Cache refresh failed: {e}")
+                # The exact literal bounds of the data
+                absolute_source = f"'Consolidated'!R1C1:R{data_lr}C{data_lc}"
+                
+                # Create a fresh, uncorrupted cache
+                new_cache = wb.PivotCaches().Create(SourceType=1, SourceData=absolute_source)
+                new_cache.MissingItemsLimit = 0
+                new_cache.RefreshOnFileOpen = True
+            except Exception as e:
+                print(f"  Warning: Could not create new pivot cache: {e}")
+                new_cache = None
 
-            # 4. Update all Pivot Tables and force new items to be visible
+            # 4. Update all Pivot Tables to use the new cache and force new items to be visible
             for ws in wb.Worksheets:
                 for pt in ws.PivotTables():
                     try:
+                        if new_cache:
+                            # Force the Pivot Table to abandon its old cache and use the new one
+                            pt.ChangePivotCache(new_cache)
+                            
                         # UNCONDITIONALLY CLEAR ALL FILTERS TO FORCE HIDDEN DATA TO SHOW
                         pt.ClearAllFilters()
                         
@@ -386,7 +375,10 @@ def write_output_workbook(
                                 pf.IncludeNewItemsInFilter = True
                             except Exception:
                                 pass
+                        
+                        # Force update the table layout and data
                         pt.Update()
+                        pt.RefreshTable()
                     except Exception:
                         pass
         except Exception as e:
