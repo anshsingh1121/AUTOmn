@@ -295,31 +295,55 @@ def write_output_workbook(
 
             print(f"  Sheet '{sheet_name}': {num_records} records written.")
 
-        # --- expand PivotCache source ranges ---
+        # --- expand PivotCache source ranges and FORCE refresh ---
         try:
             for pc in wb.PivotCaches():
+                # 1) Force foreground refresh so it doesn't save prematurely
+                try:
+                    pc.BackgroundQuery = False
+                except Exception:
+                    pass
+
+                # 2) Expand the data range if it's a fixed range
                 try:
                     src = pc.SourceData
                     if isinstance(src, str) and "!" in src:
                         p_sheet = src.split("!")[0].replace("'", "")
                         p_ws = wb.Worksheets(p_sheet)
-                        p_last_row = p_ws.Cells(
-                            p_ws.Rows.Count, 1
-                        ).End(-4162).Row
-                        p_last_col = p_ws.Cells(
-                            1, p_ws.Columns.Count
-                        ).End(-4159).Column
-                        if p_last_row > 1 and p_last_col > 0:
-                            new_src = (
-                                f"'{p_sheet}'!R1C1:R{p_last_row}C{p_last_col}"
-                            )
-                            pc.SourceData = new_src
-                except Exception:
-                    pass
+                        
+                        # Find actual last row and col (much safer than End(xlUp))
+                        last_cell = p_ws.Cells.Find(What="*", SearchOrder=1, SearchDirection=2)
+                        if last_cell is not None:
+                            p_last_row = last_cell.Row
+                            last_col_cell = p_ws.Cells.Find(What="*", SearchOrder=2, SearchDirection=2)
+                            p_last_col = last_col_cell.Column if last_col_cell else 1
+                            
+                            if p_last_row > 1 and p_last_col > 0:
+                                new_src = f"'{p_sheet}'!R1C1:R{p_last_row}C{p_last_col}"
+                                pc.SourceData = new_src
+                except Exception as e:
+                    print(f"  Warning: Could not resize PivotCache: {e}")
+
+                # 3) Explicitly refresh this exact cache
+                try:
+                    pc.Refresh()
+                except Exception as e:
+                    print(f"  Warning: Could not refresh PivotCache: {e}")
         except Exception:
             pass  # no pivot caches
 
-        # --- refresh all pivots & calculations ---
+        # 4) Explicitly update all PivotTables
+        try:
+            for ws in wb.Worksheets:
+                for pt in ws.PivotTables():
+                    try:
+                        pt.Update()
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
+        # --- refresh all other data connections & formulas ---
         wb.RefreshAll()
         excel.CalculateUntilAsyncQueriesDone()
 
