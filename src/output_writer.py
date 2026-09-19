@@ -296,17 +296,22 @@ def write_output_workbook(
                 )
                 f_range.FormulaR1C1 = f_str
 
-            # --- resize ListObjects (Excel Tables) ---
+            # --- resize ListObjects (Excel Tables) without amputating helper columns ---
             try:
                 for i in range(1, ws.ListObjects.Count + 1):
                     obj = ws.ListObjects(i)
+                    # Use the table's original width to prevent cutting off custom helper columns
+                    tbl_width = obj.Range.Columns.Count
+                    tbl_start_col = obj.Range.Column
+                    tbl_start_row = obj.Range.Row
+                    
                     new_range = ws.Range(
-                        ws.Cells(1, 1),
-                        ws.Cells(1 + num_records, last_col),
+                        ws.Cells(tbl_start_row, tbl_start_col),
+                        ws.Cells(tbl_start_row + num_records, tbl_start_col + tbl_width - 1),
                     )
                     obj.Resize(new_range)
-            except Exception:
-                pass  # no tables, or resize not applicable
+            except Exception as e:
+                print(f"  Warning: Could not resize table: {e}")
 
             print(f"  Sheet '{sheet_name}': {num_records} records written.")
 
