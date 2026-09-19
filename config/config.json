@@ -132,8 +132,7 @@
     "formula_columns": {
         "note": "Columns containing Excel formulas that must be preserved. Actual list requires corporate validation.",
         "known_formulas": [
-            "Resolution Time",
-            "Duration"
+            "Resolution Time"
         ],
         "preserve_all_detected": true
     },

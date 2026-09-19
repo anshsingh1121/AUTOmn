@@ -253,7 +253,10 @@ def run_pipeline(config: Config) -> int:
             print(f"  Archive created: {os.path.basename(archive_path)}")
 
         # Write output workbook
-        output_path = create_output_path(config.output_directory)
+        output_path = create_output_path(
+            config.output_directory,
+            source_path=config.master_tracker_path,
+        )
         write_output_workbook(
             output_df=output_df,
             output_path=output_path,

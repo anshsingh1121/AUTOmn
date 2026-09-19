@@ -22,7 +22,7 @@ def create_master_test_data():
     """Create synthetic Master Tracker test data."""
     wb = Workbook()
     ws = wb.active
-    ws.title = "FCB"
+    ws.title = "Consolidated"
 
     # Headers
     headers = [
