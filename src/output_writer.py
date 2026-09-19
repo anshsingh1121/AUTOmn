@@ -315,13 +315,74 @@ def write_output_workbook(
 
             print(f"  Sheet '{sheet_name}': {num_records} records written.")
 
-        # --- PURE PYTHON STATIC DASHBOARD REPLACEMENT ---
+        # --- BULLETPROOF PIVOT UPDATE ---
         try:
-            from src.dashboard_generator import build_static_dashboard
-            build_static_dashboard(wb, output_df)
-            print("  Replaced broken native pivots with static Python-calculated dashboard.")
+            # 1. Expand standard ranges for any pivot NOT using a Table
+            sheet_ranges = {}
+            for sheet_name in target_sheets:
+                try:
+                    p_ws = wb.Worksheets(sheet_name)
+                    last_cell = p_ws.Cells.Find(What="*", SearchOrder=1, SearchDirection=2)
+                    if last_cell:
+                        last_row = last_cell.Row
+                        last_col_cell = p_ws.Cells.Find(What="*", SearchOrder=2, SearchDirection=2)
+                        last_col = last_col_cell.Column if last_col_cell else 1
+                        sheet_ranges[sheet_name] = f"'{sheet_name}'!R1C1:R{last_row}C{last_col}"
+                except Exception:
+                    pass
+
+            # 2. CRITICAL: Force Excel to evaluate all formulas FIRST.
+            try:
+                excel.CalculateFull()
+            except Exception:
+                pass
+
+            # 3. Process every single Pivot Cache by forcefully recreating them!
+            # Instead of relying on Excel to refresh a potentially broken cache or Table,
+            # we will create a BRAND NEW cache pointing to the absolute boundaries of the data.
+            try:
+                data_ws = wb.Worksheets("Consolidated")
+                lr_cell = data_ws.Cells.Find(What="*", SearchOrder=1, SearchDirection=2)
+                lc_cell = data_ws.Cells.Find(What="*", SearchOrder=2, SearchDirection=2)
+                data_lr = lr_cell.Row if lr_cell else 1
+                data_lc = lc_cell.Column if lc_cell else 1
+                
+                # The exact literal bounds of the data
+                absolute_source = f"'Consolidated'!R1C1:R{data_lr}C{data_lc}"
+                
+                # Create a fresh, uncorrupted cache
+                new_cache = wb.PivotCaches().Create(SourceType=1, SourceData=absolute_source)
+                new_cache.MissingItemsLimit = 0
+                new_cache.RefreshOnFileOpen = True
+            except Exception as e:
+                print(f"  Warning: Could not create new pivot cache: {e}")
+                new_cache = None
+
+            # 4. Update all Pivot Tables to use the new cache and force new items to be visible
+            for ws in wb.Worksheets:
+                for pt in ws.PivotTables():
+                    try:
+                        if new_cache:
+                            # Force the Pivot Table to abandon its old cache and use the new one
+                            pt.ChangePivotCache(new_cache)
+                            
+                        # UNCONDITIONALLY CLEAR ALL FILTERS TO FORCE HIDDEN DATA TO SHOW
+                        pt.ClearAllFilters()
+                        
+                        # Tell Excel to automatically check the box for new Months/items
+                        for pf in pt.PivotFields():
+                            try:
+                                pf.IncludeNewItemsInFilter = True
+                            except Exception:
+                                pass
+                        
+                        # Force update the table layout and data
+                        pt.Update()
+                        pt.RefreshTable()
+                    except Exception:
+                        pass
         except Exception as e:
-            print(f"  Warning: Python dashboard generation failed: {e}")
+            print(f"  Warning: Global pivot update failed: {e}")
 
         # --- refresh all other data connections ---
         try:
