@@ -299,46 +299,53 @@ def write_output_workbook(
 
             print(f"  Sheet '{sheet_name}': {num_records} records written.")
 
-        # --- BULLETPROOF PIVOT RECREATION ---
+        # --- BULLETPROOF PIVOT UPDATE (HANDLES TABLES AND RANGES) ---
         try:
-            # 1. Calculate the exact new boundaries for the data sheets
+            # 1. Expand standard ranges for any pivot NOT using a Table
             sheet_ranges = {}
             for sheet_name in target_sheets:
                 try:
                     p_ws = wb.Worksheets(sheet_name)
-                    # Find the absolute last row and column containing data
                     last_cell = p_ws.Cells.Find(What="*", SearchOrder=1, SearchDirection=2)
                     if last_cell:
                         last_row = last_cell.Row
                         last_col_cell = p_ws.Cells.Find(What="*", SearchOrder=2, SearchDirection=2)
                         last_col = last_col_cell.Column if last_col_cell else 1
-                        
-                        # Format as R1C1 string (e.g., 'Consolidated'!R1C1:R500C20)
                         sheet_ranges[sheet_name] = f"'{sheet_name}'!R1C1:R{last_row}C{last_col}"
                 except Exception:
                     pass
 
-            # 2. Inject a brand new cache into every Pivot Table
+            # 2. Process every single Pivot Cache
+            for pc in wb.PivotCaches():
+                # Force synchronous refresh to prevent race conditions
+                try:
+                    pc.BackgroundQuery = False
+                except Exception:
+                    pass
+
+                # If this cache uses a standard range, expand it
+                try:
+                    current_src = pc.SourceData
+                    if isinstance(current_src, str) and "!" in current_src:
+                        src_sheet = current_src.split("!")[0].replace("'", "")
+                        if src_sheet in sheet_ranges:
+                            pc.SourceData = sheet_ranges[src_sheet]
+                except Exception:
+                    pass
+                
+                # Explicitly force this cache to refresh (CRITICAL for 'Table1')
+                try:
+                    pc.Refresh()
+                except Exception as e:
+                    print(f"  Warning: Cache refresh failed: {e}")
+
+            # 3. Update all Pivot Tables
             for ws in wb.Worksheets:
                 for pt in ws.PivotTables():
                     try:
-                        # Check what sheet this pivot table is currently looking at
-                        current_src = pt.PivotCache().SourceData
-                        if isinstance(current_src, str) and "!" in current_src:
-                            src_sheet = current_src.split("!")[0].replace("'", "")
-                            
-                            # If it belongs to one of the sheets we just updated with new data
-                            if src_sheet in sheet_ranges:
-                                new_src = sheet_ranges[src_sheet]
-                                
-                                # SourceType=1 means xlDatabase. We create a completely fresh cache.
-                                new_cache = wb.PivotCaches().Create(SourceType=1, SourceData=new_src)
-                                
-                                # Swap the old cache for the new one and force an update
-                                pt.ChangePivotCache(new_cache)
-                                pt.Update()
-                    except Exception as e:
-                        print(f"  Warning: Could not recreate cache for Pivot Table '{pt.Name}': {e}")
+                        pt.Update()
+                    except Exception:
+                        pass
         except Exception as e:
             print(f"  Warning: Global pivot update failed: {e}")
 
