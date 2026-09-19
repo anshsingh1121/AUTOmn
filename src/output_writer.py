@@ -112,11 +112,14 @@ def _to_com_safe(val: Any) -> Any:
     if isinstance(val, np.bool_):
         return bool(val)
 
-    # pandas Timestamp
-    if isinstance(val, pd.Timestamp):
+    # pandas Timestamp or native datetime
+    if isinstance(val, (pd.Timestamp, datetime)):
         if pd.isna(val):
             return ""
-        return val.to_pydatetime()
+        # Convert to Excel Serial Date float (days since 1899-12-30)
+        # This completely guarantees COM never mangles it into a text string
+        delta = pd.Timestamp(val) - pd.Timestamp("1899-12-30")
+        return float(delta.total_seconds() / 86400.0)
 
     # plain Python float NaN
     if isinstance(val, float) and val != val:
