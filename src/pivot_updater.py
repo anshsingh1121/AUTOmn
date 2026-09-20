@@ -195,11 +195,13 @@ def _write_region_table(ws, df_calc: pd.DataFrame, start_row: int, latest_month:
 
     ct = pd.crosstab(df_region['Month'], df_region[region_col], dropna=False)
 
-    # Use the globally identified latest month to anchor the 3-month window
-    end_idx = MONTHS_ORDERED.index(latest_month)
-    # Grab EXACTLY the last 3 months leading up to it (e.g. Jul, Aug, Sep)
-    start_idx = max(0, end_idx - 2)
-    ct = ct.iloc[start_idx : end_idx + 1]
+    # Remove months that have zero Region incidents
+    ct = ct.loc[(ct != 0).any(axis=1)]
+    # Grab the last 3 months that actually have data
+    ct = ct.tail(3)
+
+    if ct.empty:
+        return None
 
     # Sort region columns alphabetically (India < US)
     ct = ct.reindex(sorted(ct.columns), axis=1)
