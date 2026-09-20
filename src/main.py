@@ -17,10 +17,15 @@ import os
 import sys
 from datetime import datetime
 
-# Add project root to path for imports
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
+# Determine the root directory (handles both script and PyInstaller .exe execution)
+if getattr(sys, 'frozen', False):
+    # Running as compiled executable - use the folder containing the .exe
+    project_root = os.path.dirname(sys.executable)
+else:
+    # Running as normal script
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
 
 from src.config_loader import Config, ConfigError, load_config
 from src.data_loader import DataLoadError, load_excel_to_dataframe, load_master_tracker, load_servicenow, load_ic_lookup
