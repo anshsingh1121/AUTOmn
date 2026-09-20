@@ -41,6 +41,7 @@ def integration_config():
     # Override GUI "ASK" defaults with actual test data
     config._data["paths"]["master_tracker"] = "test_data/master_test.xlsx"
     config._data["paths"]["servicenow_input"] = "test_data/servicenow_test.xlsx"
+    config._data["sheets"]["servicenow_sheet"] = "Sheet1"  # test file uses Sheet1
     return config
 
 

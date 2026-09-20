@@ -10,7 +10,7 @@
     },
     "sheets": {
         "master_sheet": "Consolidated",
-        "servicenow_sheet": "Sheet1",
+        "servicenow_sheet": "Page 1",
         "ic_lookup_sheet": "IC Lookup",
         "target_sheets": [
             "Consolidated",
