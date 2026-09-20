@@ -101,7 +101,7 @@ def reconcile(
             master_record = master_index[sn_number]
 
             # Apply field mapping with non-blank overwrite protection
-            updated_record, changes = apply_field_mapping(
+            updated_record, _ = apply_field_mapping(
                 master_record, sn_record, field_mapping
             )
 
@@ -109,6 +109,16 @@ def reconcile(
             updated_record = apply_all_business_rules(
                 updated_record, sn_record, ic_lookup, config
             )
+
+            # Explicitly detect all changes (including business rule modifications)
+            changes = []
+            for col, new_val in updated_record.items():
+                old_val = master_record.get(col, "")
+                # Normalize both to strings for safe comparison
+                str_new = normalize_whitespace(new_val) or ""
+                str_old = normalize_whitespace(old_val) or ""
+                if str_new != str_old:
+                    changes.append(f"{col}: '{str_old}' -> '{str_new}'")
 
             # Track IC lookup misses
             ic_val = normalize_whitespace(updated_record.get("IC", ""))

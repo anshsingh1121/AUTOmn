@@ -238,8 +238,11 @@ def run_pipeline(config: Config) -> int:
     # ========================================
     output_path = None
     archive_path = None
+    has_updates = bool(recon_result.new_records or recon_result.change_details)
 
-    if config.dry_run:
+    if not has_updates:
+        print("[7/8] No new incidents or changes detected. Skipping output write.")
+    elif config.dry_run:
         print("[7/8] DRY RUN — skipping output write.")
         print("  (Re-run with --production to write output)")
     else:
@@ -288,33 +291,41 @@ def run_pipeline(config: Config) -> int:
     print()
 
     # Write Excel reconciliation report
-    report_path = create_output_path(config.output_directory, prefix="Reconciliation_Report")
-    write_reconciliation_report_excel(report, report_path)
-    print(f"  Report generated: {os.path.basename(report_path)}")
+    if has_updates:
+        report_path = create_output_path(config.output_directory, prefix="Reconciliation_Report")
+        write_reconciliation_report_excel(report, report_path)
+        print(f"  Report generated: {os.path.basename(report_path)}")
+    else:
+        print("  Skipped Excel report generation (no changes).")
 
     # Write audit log
-    audit_record = create_audit_record(
-        config=config,
-        master_before_count=master_before_count,
-        servicenow_count=len(servicenow_df),
-        recon_summary=summary,
-        validation_passed=(input_validation.is_valid and output_validation.is_valid),
-        report_summary=report["summary"],
-        output_path=output_path,
-        archive_path=archive_path,
-        errors=report.get("errors", []),
-        warnings=report.get("warnings", [])
-    )
-    audit_path = save_audit_log(audit_record, config.output_directory)
-    print(f"  Audit log: {os.path.basename(audit_path)}")
+    if has_updates:
+        audit_record = create_audit_record(
+            config=config,
+            master_before_count=master_before_count,
+            servicenow_count=len(servicenow_df),
+            recon_summary=summary,
+            validation_passed=(input_validation.is_valid and output_validation.is_valid),
+            report_summary=report["summary"],
+            output_path=output_path,
+            archive_path=archive_path,
+            errors=report.get("errors", []),
+            warnings=report.get("warnings", [])
+        )
+        audit_path = save_audit_log(audit_record, config.output_directory)
+        print(f"  Audit log: {os.path.basename(audit_path)}")
+    else:
+        print("  Skipped Audit log generation (no changes).")
 
     print()
     print("=" * 60)
     final_status = report["summary"].get("Status", "UNKNOWN")
+    if final_status == "PASSED" and not has_updates:
+        final_status = "UP TO DATE (NO CHANGES)"
     print(f"PIPELINE COMPLETE — STATUS: {final_status}")
     print("=" * 60)
 
-    return 0 if final_status == "PASSED" else 1
+    return 0 if "PASSED" in final_status or "UP TO DATE" in final_status else 1
 
 
 def main():
