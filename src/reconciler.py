@@ -16,6 +16,30 @@ from .business_rules import (
 )
 from .normalizer import normalize_whitespace
 
+def is_equivalent(val1: Any, val2: Any) -> bool:
+    """Safely compare two values ignoring type coercion artifacts like '3.0' vs '3'."""
+    str1 = (normalize_whitespace(val1) or "").strip().lower()
+    str2 = (normalize_whitespace(val2) or "").strip().lower()
+    
+    if str1 == str2:
+        return True
+        
+    # Try numeric comparison (handles '3.0' == '3')
+    try:
+        if float(str1) == float(str2):
+            return True
+    except (ValueError, TypeError):
+        pass
+        
+    # Try date comparison (handles '2024-09-01 00:00:00' == '2024-09-01')
+    try:
+        if pd.to_datetime(str1) == pd.to_datetime(str2):
+            return True
+    except Exception:
+        pass
+        
+    return False
+
 
 @dataclass
 class ReconciliationResult:
@@ -114,10 +138,9 @@ def reconcile(
             changes = []
             for col, new_val in updated_record.items():
                 old_val = master_record.get(col, "")
-                # Normalize both to strings for safe comparison
-                str_new = normalize_whitespace(new_val) or ""
-                str_old = normalize_whitespace(old_val) or ""
-                if str_new != str_old:
+                if not is_equivalent(old_val, new_val):
+                    str_old = normalize_whitespace(old_val) or ""
+                    str_new = normalize_whitespace(new_val) or ""
                     changes.append(f"{col}: '{str_old}' -> '{str_new}'")
 
             # Track IC lookup misses
