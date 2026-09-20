@@ -299,7 +299,18 @@ def apply_all_business_rules(
         ic_lookup=ic_lookup,
         case_sensitive=region_config.get("case_sensitive", False)
     )
-    record[region_config.get("target_column", "Region")] = region_value if region_value else ""
+    
+    target_region_col = region_config.get("target_column", "Region")
+    if matched and region_value:
+        record[target_region_col] = region_value
+    else:
+        # BEST OPTION FOR NON-TECH TEAMS:
+        # If the IC is missing from the lookup, DO NOT overwrite with a blank.
+        # Retain whatever Region was already manually typed into the master tracker.
+        existing_val = record.get(target_region_col)
+        if existing_val is None or pd.isna(existing_val):
+            record[target_region_col] = ""
+        # else keep existing_val untouched
 
     # Bank Determination
     bank_value = determine_bank(
