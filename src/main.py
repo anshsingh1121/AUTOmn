@@ -350,8 +350,8 @@ def main():
     import os
 
     # 1. Ask for Master Tracker if not found
-    master_path = config.master_tracker_path
-    if not master_path or master_path == "ASK" or not os.path.exists(master_path):
+    raw_master = config._data.get("paths", {}).get("master_tracker", "")
+    if not raw_master or raw_master == "ASK" or not os.path.exists(config.master_tracker_path):
         print("Waiting for user to select the Master Tracker file...")
         selected = prompt_for_file(
             "Select the Master Tracker Excel File",
@@ -360,12 +360,12 @@ def main():
         if not selected:
             print("✗ Operation cancelled. No Master Tracker selected.")
             sys.exit(1)
-        config._data["master_tracker_path"] = selected
+        config._data["paths"]["master_tracker"] = selected
         print(f"Master Tracker: {selected}")
 
     # 2. Ask for ServiceNow Export if not found
-    sn_path = config.servicenow_export_path
-    if not sn_path or sn_path == "ASK" or not os.path.exists(sn_path):
+    raw_sn = config._data.get("paths", {}).get("servicenow_input", "")
+    if not raw_sn or raw_sn == "ASK" or not os.path.exists(config.servicenow_input_path):
         print("Waiting for user to select the ServiceNow Export file...")
         selected = prompt_for_file(
             "Select the downloaded ServiceNow Export File",
@@ -374,7 +374,7 @@ def main():
         if not selected:
             print("✗ Operation cancelled. No ServiceNow Export selected.")
             sys.exit(1)
-        config._data["servicenow_export_path"] = selected
+        config._data["paths"]["servicenow_input"] = selected
         print(f"ServiceNow Export: {selected}")
 
     print()
