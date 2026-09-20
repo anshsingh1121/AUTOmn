@@ -1,10 +1,10 @@
 @echo off
 echo Installing Required Libraries (PyInstaller, Pandas, OpenPyXL)...
-pip install pyinstaller pandas openpyxl
+python -m pip install pyinstaller pandas openpyxl
 
 echo.
 echo Building the executable...
-pyinstaller --onefile --console --name "FCB_Tracker_Updater" --hidden-import openpyxl --hidden-import pandas src/main.py
+python -m PyInstaller --onefile --console --name "FCB_Tracker_Updater" --hidden-import openpyxl --hidden-import pandas src/main.py
 
 echo.
 echo =======================================================
