@@ -363,7 +363,7 @@ def write_output_workbook(
         wb.Save()
         wb.Close(SaveChanges=True)
 
-        print("  Pivot tables refreshed via COM.")
+        print("  Output workbook saved (Consolidated, FCB, Pivots updated).")
 
     except ImportError:
         raise OutputWriteError(
