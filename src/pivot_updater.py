@@ -227,8 +227,7 @@ def _write_region_table(ws, df_calc: pd.DataFrame, start_row: int, latest_month:
     for month_label, row_data in ct.iterrows():
         ws.Cells(row_idx, 1).Value = str(month_label)
         for i, col_name in enumerate(region_cols):
-            val = int(row_data[col_name])
-            ws.Cells(row_idx, 2 + i).Value = val if val != 0 else ""
+            ws.Cells(row_idx, 2 + i).Value = int(row_data[col_name])
         row_idx += 1
 
     last_row = row_idx - 1
