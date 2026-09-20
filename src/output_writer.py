@@ -296,10 +296,40 @@ def write_output_workbook(
                 )
                 f_range.FormulaR1C1 = f_str
 
-            # --- resize ListObjects (Excel Tables) without amputating helper columns ---
+            # --- Third Pass: Format date columns so they don't show ##### ---
+            date_column_names = {"Created", "Resolved", "Actual Incident Resolve",
+                                 "Actual Incident Start"}
+            for c_idx, h in enumerate(headers, start=1):
+                if h in date_column_names:
+                    try:
+                        col_range = ws.Range(
+                            ws.Cells(2, c_idx),
+                            ws.Cells(1 + num_records, c_idx)
+                        )
+                        col_range.NumberFormat = "yyyy-mm-dd"
+                    except Exception:
+                        pass
+
+            # --- Auto-fit all columns to eliminate ##### ---
+            try:
+                ws.Columns.AutoFit()
+            except Exception:
+                pass
+
+            # --- resize ListObjects (Excel Tables) and preserve banding ---
             try:
                 for i in range(1, ws.ListObjects.Count + 1):
                     obj = ws.ListObjects(i)
+                    # Save the table's original style before touching anything
+                    try:
+                        original_style = obj.TableStyle
+                    except Exception:
+                        original_style = None
+                    try:
+                        original_banding = obj.ShowTableStyleRowStripes
+                    except Exception:
+                        original_banding = True
+
                     # Use the table's original width to prevent cutting off custom helper columns
                     tbl_width = obj.Range.Columns.Count
                     tbl_start_col = obj.Range.Column
@@ -310,6 +340,14 @@ def write_output_workbook(
                         ws.Cells(tbl_start_row + num_records, tbl_start_col + tbl_width - 1),
                     )
                     obj.Resize(new_range)
+
+                    # Re-apply the saved style + banding (fixes lost blue-white rows)
+                    try:
+                        if original_style:
+                            obj.TableStyle = original_style
+                        obj.ShowTableStyleRowStripes = original_banding
+                    except Exception:
+                        pass
             except Exception as e:
                 print(f"  Warning: Could not resize table: {e}")
 
