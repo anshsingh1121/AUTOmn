@@ -57,12 +57,18 @@ def update_pivots_sheet(wb, df: pd.DataFrame):
         df_calc['Month'], categories=MONTHS_ORDERED, ordered=True
     )
 
+    # Find the absolute latest month in the dataset
+    latest_month_str = 'Dec' # fallback
+    if not df_calc.empty and not df_calc['Created'].dropna().empty:
+        # Get the actual maximum date (latest chronologically)
+        latest_month_str = df_calc['Created'].dropna().max().strftime('%b')
+
     # --- TABLE 1: Priority × Month (all months with data) ---
     t1_end_row = _write_priority_table(ws, df_calc)
 
     # --- TABLE 2: Region × Last 3 Months ---
     t2_start_row = t1_end_row + 8   # 8-row gap (matches screenshot spacing)
-    t2_data_info = _write_region_table(ws, df_calc, t2_start_row)
+    t2_data_info = _write_region_table(ws, df_calc, t2_start_row, latest_month_str)
 
     # --- CHART: IMT Region wise Incident Volume ---
     if t2_data_info:
@@ -171,7 +177,7 @@ def _write_priority_table(ws, df_calc: pd.DataFrame) -> int:
     return last_row
 
 
-def _write_region_table(ws, df_calc: pd.DataFrame, start_row: int):
+def _write_region_table(ws, df_calc: pd.DataFrame, start_row: int, latest_month: str):
     """
     Write Table 2: Count of incidents by Month × Region (last 3 months only).
 
@@ -188,14 +194,10 @@ def _write_region_table(ws, df_calc: pd.DataFrame, start_row: int):
         return None
 
     ct = pd.crosstab(df_region['Month'], df_region[region_col], dropna=False)
-    has_data = (ct != 0).any(axis=1)
-    if not has_data.any():
-        return None
 
-    # Find the latest month that has data (e.g. 'Jun')
-    last_valid_month = has_data[::-1].idxmax()
-    end_idx = MONTHS_ORDERED.index(last_valid_month)
-    # Grab EXACTLY the last 3 months leading up to it (e.g. Apr, May, Jun)
+    # Use the globally identified latest month to anchor the 3-month window
+    end_idx = MONTHS_ORDERED.index(latest_month)
+    # Grab EXACTLY the last 3 months leading up to it (e.g. Jul, Aug, Sep)
     start_idx = max(0, end_idx - 2)
     ct = ct.iloc[start_idx : end_idx + 1]
 
