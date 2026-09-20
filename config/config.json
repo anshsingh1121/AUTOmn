@@ -1,6 +1,6 @@
 {
-    "mode": "development",
-    "dry_run": true,
+    "mode": "production",
+    "dry_run": false,
     "paths": {
         "master_tracker": "ASK",
         "servicenow_input": "ASK",
