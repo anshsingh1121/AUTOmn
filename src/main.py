@@ -345,8 +345,50 @@ def main():
     elif args.dry_run:
         config._data["dry_run"] = True
 
+    # GUI File Picker for non-tech users
+    from src.gui_picker import prompt_for_file
+    import os
+
+    # 1. Ask for Master Tracker if not found
+    master_path = config.master_tracker_path
+    if not master_path or master_path == "ASK" or not os.path.exists(master_path):
+        print("Waiting for user to select the Master Tracker file...")
+        selected = prompt_for_file(
+            "Select the Master Tracker Excel File",
+            [("Excel Macro-Enabled", "*.xlsm"), ("Excel Workbook", "*.xlsx"), ("All Files", "*.*")]
+        )
+        if not selected:
+            print("✗ Operation cancelled. No Master Tracker selected.")
+            sys.exit(1)
+        config._data["master_tracker_path"] = selected
+        print(f"Master Tracker: {selected}")
+
+    # 2. Ask for ServiceNow Export if not found
+    sn_path = config.servicenow_export_path
+    if not sn_path or sn_path == "ASK" or not os.path.exists(sn_path):
+        print("Waiting for user to select the ServiceNow Export file...")
+        selected = prompt_for_file(
+            "Select the downloaded ServiceNow Export File",
+            [("Excel Workbook", "*.xlsx"), ("CSV Document", "*.csv"), ("All Files", "*.*")]
+        )
+        if not selected:
+            print("✗ Operation cancelled. No ServiceNow Export selected.")
+            sys.exit(1)
+        config._data["servicenow_export_path"] = selected
+        print(f"ServiceNow Export: {selected}")
+
+    print()
+
     # Run pipeline
     exit_code = run_pipeline(config)
+
+    # Auto-open the output folder for the user (Windows only)
+    if exit_code == 0 and os.name == 'nt':
+        try:
+            os.startfile(os.path.abspath(config.output_directory))
+        except Exception:
+            pass
+
     sys.exit(exit_code)
 
 

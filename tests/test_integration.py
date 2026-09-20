@@ -35,9 +35,13 @@ from src.normalizer import normalize_whitespace
 
 @pytest.fixture(scope="module")
 def integration_config():
-    """Load the actual config.json for integration testing."""
+    """Load the actual config.json for integration testing and inject test paths."""
     config_path = os.path.join(project_root, "config", "config.json")
-    return load_config(config_path, base_dir=project_root)
+    config = load_config(config_path, base_dir=project_root)
+    # Override GUI "ASK" defaults with actual test data
+    config._data["paths"]["master_tracker"] = "test_data/master_test.xlsx"
+    config._data["paths"]["servicenow_input"] = "test_data/servicenow_test.xlsx"
+    return config
 
 
 @pytest.fixture(scope="module")

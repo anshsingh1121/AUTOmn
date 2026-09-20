@@ -2,8 +2,8 @@
     "mode": "development",
     "dry_run": true,
     "paths": {
-        "master_tracker": "test_data/master_test.xlsx",
-        "servicenow_input": "test_data/servicenow_test.xlsx",
+        "master_tracker": "ASK",
+        "servicenow_input": "ASK",
         "ic_lookup": "test_data/ic_lookup_test.xlsx",
         "output_directory": "output",
         "archive_directory": "archive"
