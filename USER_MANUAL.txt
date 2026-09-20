@@ -1,0 +1,419 @@
+================================================================================
+     FCB MONTHLY INCIDENT TRACKER AUTOMATION — USER MANUAL
+================================================================================
+
+     Version:  1.0
+     Date:     September 2026
+     Author:   FCB Automation Team
+
+================================================================================
+                        TABLE OF CONTENTS
+================================================================================
+
+     1. WHAT IS THIS TOOL?
+     2. WHAT DO I NEED?
+     3. HOW TO RUN THE TOOL (STEP BY STEP)
+     4. WHAT HAPPENS WHEN I RUN IT?
+     5. UNDERSTANDING THE OUTPUT
+     6. MONTHLY WORKFLOW CHECKLIST
+     7. THE IC LOOKUP TABLE
+     8. FREQUENTLY ASKED QUESTIONS (FAQ)
+     9. TROUBLESHOOTING COMMON ISSUES
+    10. GETTING HELP
+
+================================================================================
+  1. WHAT IS THIS TOOL?
+================================================================================
+
+  This tool automates your monthly FCB Incident Tracker update process.
+
+  BEFORE THIS TOOL:
+  Every month, you had to manually:
+    - Download the latest incident data from ServiceNow
+    - Open the Master Tracker Excel file
+    - Compare each incident one by one
+    - Copy and paste new incidents
+    - Update changed incidents
+    - Fill in IC, Region, and Bank columns manually
+    - Rebuild the Pivots sheet charts
+
+  WITH THIS TOOL:
+  You simply:
+    - Download the ServiceNow data (as you normally do)
+    - Double-click the tool
+    - Select your two files when prompted
+    - The tool does everything else automatically in seconds!
+
+  The tool will:
+    * Match incidents by their INC number
+    * Update existing incidents with the latest ServiceNow data
+    * Add any brand new incidents
+    * Keep all historical incidents safe (never deletes old data)
+    * Automatically fill in IC, Region, and Bank columns
+    * Rebuild the Pivots sheet with fresh charts and tables
+    * Create a backup of your original file
+    * Generate an audit trail and reconciliation report
+
+================================================================================
+  2. WHAT DO I NEED?
+================================================================================
+
+  TO RUN THE TOOL, YOU NEED:
+
+    1. The Tool Itself
+       -----------------------------------------------------------------------
+       You should have received a folder containing:
+         - FCB_Tracker_Updater.exe    (the program)
+         - config/                     (a folder with settings)
+             - config.json             (the settings file)
+
+       IMPORTANT: The .exe file and the config folder must ALWAYS be kept
+       in the same folder, right next to each other. If you move one
+       without the other, the tool will not work.
+
+    2. Your Master Tracker Excel File
+       -----------------------------------------------------------------------
+       This is your existing FCB Incident Tracker workbook (.xlsm or .xlsx).
+       It must contain at minimum:
+         - A sheet named "Consolidated" with your incident data
+         - A sheet named "IC Lookup" with the IC-to-Region mapping table
+
+    3. The Monthly ServiceNow Export
+       -----------------------------------------------------------------------
+       This is the Excel file you download from ServiceNow each month.
+       It must contain:
+         - A sheet named "Page 1" (this is the default ServiceNow sheet name)
+         - The standard incident columns (Number, Short Description,
+           Priority, State, etc.)
+
+  YOU DO NOT NEED:
+    - Python installed on your computer
+    - Any programming knowledge
+    - Any special software or libraries
+
+================================================================================
+  3. HOW TO RUN THE TOOL (STEP BY STEP)
+================================================================================
+
+  STEP 1: PREPARE YOUR FILES
+  -----------------------------------------------------------------------
+    a) Download the latest ServiceNow incident report as an Excel file.
+       Save it somewhere you can easily find it (e.g., your Desktop).
+
+    b) Make sure you know where your Master Tracker Excel file is saved.
+
+  STEP 2: OPEN THE TOOL
+  -----------------------------------------------------------------------
+    a) Navigate to the folder containing FCB_Tracker_Updater.exe
+    b) Double-click on FCB_Tracker_Updater.exe
+
+    NOTE: A black command window will appear. This is completely normal.
+    Do not close this window — it shows the progress of the automation.
+
+  STEP 3: SELECT THE MASTER TRACKER
+  -----------------------------------------------------------------------
+    a) A Windows file picker dialog will pop up with the title:
+       "Select the Master Tracker Excel File"
+    b) Navigate to your Master Tracker file
+    c) Select it and click "Open"
+
+  STEP 4: SELECT THE SERVICENOW EXPORT
+  -----------------------------------------------------------------------
+    a) A second file picker dialog will pop up with the title:
+       "Select the downloaded ServiceNow Export File"
+    b) Navigate to the ServiceNow file you just downloaded
+    c) Select it and click "Open"
+
+  STEP 5: WAIT FOR PROCESSING
+  -----------------------------------------------------------------------
+    The black command window will show progress messages like:
+      [1/8] Loading input files...
+      [2/8] Validating input data...
+      [3/8] Building IC lookup map...
+      [4/8] Reconciling incidents...
+      [5/8] Building output dataset...
+      [6/8] Validating output...
+      [7/8] Writing output...
+      [8/8] Generating reports and audit trail...
+
+    This usually takes 15 to 60 seconds depending on the size of
+    your data.
+
+  STEP 6: REVIEW THE OUTPUT
+  -----------------------------------------------------------------------
+    When the tool finishes:
+      a) The output folder will automatically open in File Explorer.
+      b) Inside, you will find your updated Master Tracker file.
+      c) Open it and review the Consolidated sheet and Pivots sheet.
+
+    If the tool says "UP TO DATE (NO CHANGES)" it means there were
+    no new or changed incidents — your Master Tracker is already current.
+
+================================================================================
+  4. WHAT HAPPENS WHEN I RUN IT?
+================================================================================
+
+  Behind the scenes, the tool performs these steps automatically:
+
+  1. LOADING
+     Reads your Master Tracker, ServiceNow export, and IC Lookup table.
+
+  2. VALIDATION
+     Checks that all required columns exist and there are no duplicate
+     or blank incident numbers.
+
+  3. RECONCILIATION
+     Compares every ServiceNow incident against the Master Tracker:
+       - MATCHED:     Incident exists in both → updates with latest data
+       - NEW:         Incident only in ServiceNow → adds to the tracker
+       - HISTORICAL:  Incident only in Master → keeps it safe
+
+     IMPORTANT: The tool NEVER deletes historical incidents from your
+     Master Tracker. Your old data is always preserved.
+
+  4. BUSINESS RULES
+     Automatically fills in:
+       - IC:     Uses ServiceNow IC field. If blank, uses "Proposed By".
+       - Region: Looks up the IC in your IC Lookup table to find
+                 India or US. If the IC is not in the lookup, it keeps
+                 whatever Region was already typed in manually.
+       - Bank:   If Assignment Group contains "SVB", sets Bank = "SVB".
+       - Duration: Calculates time between incident start and resolution.
+
+  5. OUTPUT
+     Creates a brand new copy of your Master Tracker with all updates
+     applied. Your original file is NEVER modified directly.
+
+  6. PIVOTS
+     Rebuilds the Pivots sheet with:
+       - Table 1: Incident count by Month and Priority (full year)
+       - Table 2: Incident count by Month and Region (last 3 months)
+       - Chart:   Stacked column chart of Region data
+
+  7. ARCHIVE
+     Creates a timestamped backup of your original Master Tracker
+     in the archive/ folder, so you can always go back if needed.
+
+  8. AUDIT
+     Saves a JSON audit log recording exactly what was changed,
+     how many records were added/updated, and whether all validations
+     passed.
+
+================================================================================
+  5. UNDERSTANDING THE OUTPUT
+================================================================================
+
+  After running the tool, your output folder will contain:
+
+  output/
+  └── 2026/
+      └── 09_September/
+          ├── Master_Updated_20260920_153000.xlsm   (Your updated tracker)
+          ├── Reconciliation_Report_20260920_153000.xlsx  (Change report)
+          └── audit_20260920_153000.json             (Audit trail)
+
+  MASTER TRACKER (Master_Updated_*.xlsm)
+  -----------------------------------------------------------------------
+  This is your fully updated Master Tracker. Open it to review:
+    - Consolidated sheet:  All incidents (updated, new, and historical)
+    - FCB sheet:           Same data (both sheets are kept in sync)
+    - Pivots sheet:        Fresh summary tables and chart
+    - SVB sheet:           Untouched (the tool never modifies this sheet)
+    - IC Lookup sheet:     Untouched (the tool only reads from this)
+
+  RECONCILIATION REPORT (Reconciliation_Report_*.xlsx)
+  -----------------------------------------------------------------------
+  A separate Excel file with 4 sheets:
+    - Summary:            Key metrics (records matched, added, retained)
+    - New Incidents:      List of newly added incident numbers
+    - Changes:            Field-by-field change log for updated incidents
+    - IC Lookup Misses:   ICs that were not found in the IC Lookup table
+
+  AUDIT LOG (audit_*.json)
+  -----------------------------------------------------------------------
+  A machine-readable log file recording:
+    - Timestamp of the run
+    - Source file names
+    - Record counts (before, after, new, updated, retained)
+    - Whether all validations passed
+    - Error and warning counts
+
+================================================================================
+  6. MONTHLY WORKFLOW CHECKLIST
+================================================================================
+
+  Use this checklist every month:
+
+  [ ] 1. Download the latest ServiceNow incident report
+  [ ] 2. Double-click FCB_Tracker_Updater.exe
+  [ ] 3. Select your Master Tracker when prompted
+  [ ] 4. Select the ServiceNow download when prompted
+  [ ] 5. Wait for the tool to finish processing
+  [ ] 6. Open the updated Master Tracker from the output folder
+  [ ] 7. Spot-check a few incidents to confirm the data looks correct
+  [ ] 8. Review the Pivots sheet charts
+  [ ] 9. Review the Reconciliation Report for any IC Lookup misses
+  [ ]10. If there are IC Lookup misses, add the missing ICs to
+         the IC Lookup sheet in your Master Tracker for next month
+  [ ]11. Save/distribute the updated Master Tracker as needed
+
+================================================================================
+  7. THE IC LOOKUP TABLE
+================================================================================
+
+  The IC Lookup table is a small reference table inside your Master
+  Tracker that maps IC names to Regions (India or US).
+
+  WHERE TO FIND IT:
+    Open your Master Tracker → go to the "IC Lookup" sheet
+
+  WHAT IT LOOKS LIKE:
+    ┌──────────────────────┬──────────┐
+    │   IC                 │  Region  │
+    ├──────────────────────┼──────────┤
+    │   John Smith         │  US      │
+    │   Priya Sharma       │  India   │
+    │   Mike Johnson       │  US      │
+    │   Ankit Patel        │  India   │
+    └──────────────────────┴──────────┘
+
+  WHY IT MATTERS:
+    The tool uses this table to automatically assign a Region
+    (India or US) to each incident based on the IC name.
+
+  WHAT IF AN IC IS MISSING?
+    If a new IC appears in ServiceNow that is not in this table:
+      - The tool will NOT erase existing Regions
+      - The tool will leave the Region as whatever was already there
+      - The Reconciliation Report will list it as an "IC Lookup Miss"
+      - You should add the missing IC to the IC Lookup sheet
+        before next month's run
+
+  HOW TO ADD A NEW IC:
+    1. Open your Master Tracker
+    2. Go to the "IC Lookup" sheet
+    3. In the next empty row:
+       - Type the IC name in the IC column
+       - Type "India" or "US" in the Region column
+    4. Save the file
+
+================================================================================
+  8. FREQUENTLY ASKED QUESTIONS (FAQ)
+================================================================================
+
+  Q: Will the tool delete my old incidents?
+  A: NO. The tool NEVER deletes any historical data. Old incidents
+     that are not in the latest ServiceNow download are safely kept
+     as "Historical" records.
+
+  Q: Will the tool modify my original Master Tracker file?
+  A: NO. The tool creates a brand new copy in the output folder.
+     Your original file is never touched. A backup is also saved
+     in the archive folder.
+
+  Q: What if I accidentally run the tool twice?
+  A: Nothing bad will happen. If there are no new changes since the
+     last run, the tool will detect this and skip output generation,
+     showing "UP TO DATE (NO CHANGES)".
+
+  Q: Do I need the internet to run this tool?
+  A: NO. The tool runs 100% offline on your local computer. It does
+     not connect to the internet or any external servers.
+
+  Q: What if the ServiceNow sheet name is different?
+  A: By default, the tool expects the sheet name "Page 1".
+     If your ServiceNow download uses a different sheet name,
+     ask the tool administrator to update config.json.
+
+  Q: What if I close the black window while the tool is running?
+  A: The tool will stop immediately. No output will be generated.
+     Your original files are completely safe. Simply run it again.
+
+  Q: Can I undo the changes?
+  A: Yes. A timestamped backup of your original Master Tracker is
+     always saved in the archive folder. You can restore it at
+     any time by simply opening that backup file.
+
+  Q: What if I get a "pywin32" error?
+  A: This means you need a tiny free add-on for Python. Ask your
+     IT team to run: pip install pywin32
+
+  Q: What if Excel is already open when I run the tool?
+  A: Close all Excel windows first, then run the tool. Having Excel
+     open can sometimes cause file-locking conflicts.
+
+================================================================================
+  9. TROUBLESHOOTING COMMON ISSUES
+================================================================================
+
+  ISSUE: The tool flashes and closes immediately
+  -----------------------------------------------------------------------
+  CAUSE:  The config folder is missing or not next to the .exe file.
+  FIX:    Make sure FCB_Tracker_Updater.exe and the config/ folder are
+          in the same directory.
+
+  ISSUE: "Configuration file not found"
+  -----------------------------------------------------------------------
+  CAUSE:  The config/config.json file is missing.
+  FIX:    Make sure the config folder contains config.json.
+
+  ISSUE: "Sheet 'Page 1' not found"
+  -----------------------------------------------------------------------
+  CAUSE:  Your ServiceNow download has a different sheet name.
+  FIX:    Open the ServiceNow Excel file and check the sheet tab name
+          at the bottom. Ask the administrator to update config.json.
+
+  ISSUE: "Missing required column: 'Number'"
+  -----------------------------------------------------------------------
+  CAUSE:  The ServiceNow or Master Tracker file is missing expected
+          column headers.
+  FIX:    Open the file and verify the column names match exactly
+          what the tool expects (see Section 2 above).
+
+  ISSUE: "Duplicate Number value(s) detected"
+  -----------------------------------------------------------------------
+  CAUSE:  The same INC number appears more than once in the data.
+  FIX:    Open the source file and remove the duplicate rows.
+
+  ISSUE: "HISTORICAL DATA LOSS" error
+  -----------------------------------------------------------------------
+  CAUSE:  CRITICAL — some existing Master Tracker incidents would be
+          lost in the output.
+  FIX:    DO NOT use the output file. Contact the tool administrator.
+          This is a safety check that prevents data loss.
+
+  ISSUE: "Permission denied" or "File is locked"
+  -----------------------------------------------------------------------
+  CAUSE:  The Master Tracker file is open in Excel.
+  FIX:    Close all Excel windows and try again.
+
+  ISSUE: The Pivots chart is empty
+  -----------------------------------------------------------------------
+  CAUSE:  The Region column is blank for recent incidents because
+          their ICs are not in the IC Lookup table.
+  FIX:    Open the IC Lookup sheet in your Master Tracker and add
+          the missing ICs. Run the tool again.
+
+  ISSUE: The output folder shows "UP TO DATE (NO CHANGES)"
+  -----------------------------------------------------------------------
+  CAUSE:  This is not an error. It means the Master Tracker already
+          has the same data as the ServiceNow export. There is
+          nothing to update.
+
+================================================================================
+  10. GETTING HELP
+================================================================================
+
+  If you encounter an issue not listed above:
+
+    1. Note down the exact error message from the black command window
+    2. Take a screenshot of the error
+    3. Contact the FCB Automation Team with the screenshot and a
+       description of what you were trying to do
+
+  The tool also generates detailed logs. If asked, you can find the
+  audit log file in:   output/YYYY/MM_MonthName/audit_*.json
+
+================================================================================
+               END OF USER MANUAL
+================================================================================
