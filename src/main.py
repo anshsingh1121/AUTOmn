@@ -382,6 +382,15 @@ def main():
         config._data["paths"]["servicenow_input"] = selected
         print(f"ServiceNow Export: {selected}")
 
+    # 3. IC Lookup: automatically use the Master Tracker file
+    #    (the "IC Lookup" sheet lives inside the Master Tracker workbook)
+    raw_ic = config._data.get("paths", {}).get("ic_lookup", "")
+    if not raw_ic or raw_ic == "ASK" or not os.path.exists(config.ic_lookup_path):
+        # Point IC Lookup to the same file as the Master Tracker
+        master_path = config._data["paths"]["master_tracker"]
+        config._data["paths"]["ic_lookup"] = master_path
+        print(f"IC Lookup: Reading from Master Tracker ({os.path.basename(master_path)})")
+
     print()
 
     # Run pipeline
