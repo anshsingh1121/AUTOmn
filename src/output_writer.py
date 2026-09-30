@@ -268,6 +268,19 @@ def write_output_workbook(
             if num_records == 0:
                 continue
 
+            # --- detect new columns in DataFrame that aren't in the template ---
+            headers_set = set(headers)
+            new_cols = [c for c in df_write.columns if c not in headers_set and c != ""]
+            if new_cols:
+                # Write new column headers at the end of row 1
+                for i, col_name in enumerate(new_cols):
+                    ws.Cells(1, last_col + 1 + i).Value = col_name
+                headers.extend(new_cols)
+                new_last_col = last_col + len(new_cols)
+                print(f"  New columns added to '{sheet_name}': {new_cols}")
+            else:
+                new_last_col = last_col
+
             write_data: List[List[Any]] = []
             for _, row in df_write.iterrows():
                 row_data: List[Any] = []
@@ -284,7 +297,7 @@ def write_output_workbook(
             # --- write entire array at once (Value preserves real Excel Dates) ---
             target_range = ws.Range(
                 ws.Cells(2, 1),
-                ws.Cells(1 + num_records, last_col),
+                ws.Cells(1 + num_records, new_last_col),
             )
             target_range.Value = write_data
             
@@ -297,18 +310,20 @@ def write_output_workbook(
                 f_range.FormulaR1C1 = f_str
 
             # --- Third Pass: Format date columns so they don't show ##### ---
-            date_column_names = {"Created", "Resolved", "Actual Incident Resolve",
-                                 "Actual Incident Start"}
+            date_only_columns = {"Created", "Resolved"}
+            datetime_columns = {"Actual Incident Resolve", "Actual Incident Start"}
             for c_idx, h in enumerate(headers, start=1):
-                if h in date_column_names:
-                    try:
-                        col_range = ws.Range(
-                            ws.Cells(2, c_idx),
-                            ws.Cells(1 + num_records, c_idx)
-                        )
+                try:
+                    col_range = ws.Range(
+                        ws.Cells(2, c_idx),
+                        ws.Cells(1 + num_records, c_idx)
+                    )
+                    if h in datetime_columns:
+                        col_range.NumberFormat = "yyyy-mm-dd hh:mm:ss"
+                    elif h in date_only_columns:
                         col_range.NumberFormat = "yyyy-mm-dd"
-                    except Exception:
-                        pass
+                except Exception:
+                    pass
 
             # --- Auto-fit all columns to eliminate ##### ---
             try:

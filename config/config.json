@@ -73,6 +73,16 @@
             "source_column": "Actual Incident Start",
             "target_column": "Created",
             "overwrite_if_blank": false
+        },
+        "Actual Incident Start": {
+            "source_column": "Actual Incident Start",
+            "target_column": "Actual Incident Start",
+            "overwrite_if_blank": false
+        },
+        "Actual Incident Resolve": {
+            "source_column": "Actual Incident Resolve",
+            "target_column": "Actual Incident Resolve",
+            "overwrite_if_blank": false
         }
     },
     "unmapped_fields": {
