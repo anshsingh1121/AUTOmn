@@ -1,653 +1,485 @@
-CREATE ONE COMPLETELY NEW POWERPOINT SLIDE FOR MY INTERNSHIP PRESENTATION.
+CREATE ONE COMPLETELY NEW FINAL POWERPOINT SLIDE FOR MY INTERNSHIP PRESENTATION.
 
-PROJECT:
-Change Management Audit Automation
+SLIDE PURPOSE:
+This is the FINAL “Learnings & Takeaways” slide of my First Citizens India internship presentation.
+
+The slide should close the presentation on a thoughtful, professional and memorable note.
 
 IMPORTANT:
-This is a NEW slide.
-Do NOT edit, redesign, overwrite, or modify any existing slide.
+I am NOT providing a reference slide.
 
-I am intentionally NOT providing a reference slide.
+Design the slide independently using the detailed requirements below.
 
-Independently design the slide using the complete project context and design requirements below.
-
-The slide will ultimately be COPIED INTO MY ORIGINAL FIRST CITIZENS INDIA INTERNSHIP POWERPOINT.
-
-Therefore, this must be designed as an editable PROJECT-CONTENT SLIDE that can be inserted into my existing presentation without disturbing the original presentation's branding, master, footer, logo, page number, or template structure.
+Do NOT edit, overwrite, redesign, or modify any existing slide.
 
 ============================================================
-1. PROJECT CONTEXT
+SLIDE TITLE
 ============================================================
 
-This project is a ServiceNow-based Change Management Audit Automation workflow.
+Use:
 
-The objective is to automate the auditing of Change Requests against predefined audit/control rules and generate a structured QAR (Quality Assurance Review) report.
+KEY LEARNINGS & TAKEAWAYS
 
-The workflow works broadly as follows:
+The title should be prominent, professional and consistent with a
+corporate internship presentation.
 
-ServiceNow Change Requests
-        ↓
-Collect required Change data
-        ↓
-Select changes that need to be audited
-        ↓
-Run predefined audit/control checks
-        ↓
-Inspect related records and attachments when evidence is required
-        ↓
-Use local OCR to analyze dashboard/image evidence where required
-        ↓
-Produce YES / NO / NA / ERROR audit results
-        ↓
-Populate the predefined Excel QAR report
+Optional small subtitle:
 
-The system uses deterministic audit/control logic rather than ML.
+“Beyond projects, an experience in continuous learning and growth”
 
-For Standard Changes specifically:
-- Standard Change Template / QAR checks apply ONLY to Standard Changes.
-- Do NOT imply that Standard Change Template checks are applied to Normal, Emergency, or Expedited Changes.
-
-The slide should communicate the automation concept without going into code-level implementation.
+Use the subtitle only if it improves the visual composition.
 
 ============================================================
-2. CORE SLIDE STORY
+CORE MESSAGE
 ============================================================
 
-Build the entire slide around:
+The slide should communicate that the internship was not only about
+technical projects, but also about developing the mindset, listening,
+collaboration and practical understanding required to grow as a
+professional.
 
-PROBLEM
-      ↓
-SOLUTION
-      ↓
-AUTOMATED AUDIT PIPELINE
-      ↓
-STRUCTURED QAR OUTPUT
+The four key takeaways are:
 
-The audience should understand the complete project within approximately 5–8 seconds.
+1. LEARN TO LEARN
+2. BE A GOOD LISTENER
+3. TEAMWORK & COLLABORATION
+4. EXPANDED TECHNICAL, THEORETICAL & PRACTICAL KNOWLEDGE
 
-The slide must answer:
-
-WHAT WAS THE PROBLEM?
-WHAT WAS AUTOMATED?
-HOW DOES THE WORKFLOW OPERATE?
-WHAT IS THE OUTPUT?
+These four ideas are the central content of the slide.
 
 ============================================================
-3. DESIGN OBJECTIVE
+1. LEARN TO LEARN
 ============================================================
 
-This is an internship presentation for a professional First Citizens India audience.
+Use the heading:
 
-The slide should look:
+LEARN TO LEARN
 
-- Corporate
-- Clean
-- Professional
-- Minimal
-- Structured
-- Executive-friendly
-- Process-oriented
-- Technically credible
+Supporting statement:
 
-It should NOT look like:
+“Learned to learn — from anyone and everyone.”
 
-- An AI dashboard
-- A futuristic technology poster
-- A cybersecurity dashboard
-- A startup pitch deck
-- A dark-tech infographic
-- A software UI mockup
+The idea should communicate:
+- Staying open to learning
+- Learning from people at every level
+- Being receptive to different perspectives
+- Continuous self-improvement
 
-Do NOT over-design the slide.
+Keep the supporting text concise.
 
-The workflow itself should be the primary visual.
+Do NOT turn this into a paragraph.
 
 ============================================================
-4. FIRST CITIZENS PRESENTATION COMPATIBILITY
+2. BE A GOOD LISTENER
 ============================================================
 
-The destination presentation already has its own corporate template.
+Use the heading:
 
-When this slide is copied into that presentation, the following ORIGINAL elements must remain completely untouched:
+BE A GOOD LISTENER
 
-- First Citizens India logo
-- Existing page number
-- Existing footer
-- “Internal” marking, if present
-- Existing master-slide elements
-- Existing background
-- Existing header
-- Existing presentation-level branding
-- Existing template structure
+Supporting statement:
 
-CRITICAL:
+“Listening first leads to better understanding, better questions and
+better decisions.”
 
-DO NOT CREATE A SECOND FIRST CITIZENS LOGO.
+Keep this concise and professional.
 
-DO NOT CREATE A PAGE NUMBER.
-
-DO NOT CREATE A FOOTER.
-
-DO NOT CREATE AN “INTERNAL” LABEL.
-
-DO NOT RECREATE THE PRESENTATION MASTER.
-
-DO NOT CREATE A NEW PRESENTATION THEME.
-
-DO NOT CREATE A FULL-SLIDE IMAGE.
-
-DO NOT create a full-slide background containing branding.
-
-DO NOT create any object that overlaps the normal logo/header/footer/page-number areas.
+The emphasis should be on active listening and understanding before
+responding or acting.
 
 ============================================================
-5. CONTENT-ONLY / SAFE-COPY DESIGN
+3. TEAMWORK & COLLABORATION
 ============================================================
 
-Treat the slide as two layers:
+Use the heading:
 
-LAYER 1 — EXISTING PRESENTATION TEMPLATE
-This belongs to my original PowerPoint.
+TEAMWORK & COLLABORATION
 
-It contains:
-- Logo
-- Footer
-- Page number
-- Internal/confidentiality marking
-- Master background
-- Template elements
+Supporting statement:
 
-DO NOT CREATE OR MODIFY THIS LAYER.
+“Strong outcomes come from communication, collaboration and shared
+ownership.”
 
-LAYER 2 — PROJECT CONTENT
-This is the ONLY layer you should create.
+The visual should subtly communicate people working together.
 
-It contains:
-- Project title
-- Problem statement
-- Solution
-- Audit pipeline
-- Output
-
-Create ONLY Layer 2.
-
-Keep all project content within the safe central content area.
-
-Leave appropriate space around:
-- top-left/header branding area
-- bottom/footer area
-- bottom-right page-number area
-
-The slide should therefore be safe to copy into the original presentation.
+Do not make it look like a generic corporate stock illustration.
 
 ============================================================
-6. EDITABLE POWERPOINT OBJECTS
+4. TECHNICAL, THEORETICAL & PRACTICAL GROWTH
 ============================================================
 
-Create the slide using editable native PowerPoint objects wherever possible:
+Use the heading:
 
-- Text boxes
-- Shapes
-- Lines
-- Arrows
-- Simple editable icons
+TECHNICAL, THEORETICAL & PRACTICAL GROWTH
 
-Do NOT flatten the slide into one image.
+Supporting statement:
 
-The pipeline must remain editable.
+“Enhanced my technical, theoretical and practical knowledge base
+through real-world problem solving.”
+
+This should communicate that the internship connected:
+Theory → Technology → Practical Application
+
+Keep it concise.
 
 ============================================================
-7. VISUAL STYLE
+VISUAL STRUCTURE
 ============================================================
 
-Since no reference slide is being provided, independently use a professional First Citizens India corporate visual direction:
+Create a balanced four-part composition.
+
+Preferred structure:
+
+                 KEY LEARNINGS & TAKEAWAYS
+                         |
+        -----------------------------------------
+        |                  |                    |
+   LEARN TO LEARN    BE A GOOD LISTENER   TEAMWORK &
+                                           COLLABORATION
+        |
+        -----------------------------------------
+                         |
+        TECHNICAL • THEORETICAL • PRACTICAL
+                    KNOWLEDGE
+
+However, do NOT literally reproduce this layout.
+
+Use your own professional design judgment.
+
+A strong option is four clean visual blocks/cards arranged in a
+2 × 2 grid, with each block containing:
+
+• Small simple line icon
+• Learning heading
+• One concise supporting statement
+
+The four blocks should feel connected as parts of ONE internship
+journey rather than four unrelated boxes.
+
+============================================================
+VISUAL HIERARCHY
+============================================================
+
+Priority:
+
+1. Slide title
+2. Four learning themes
+3. Supporting statements
+4. Small visual/icon elements
+
+Do not allow the icons to dominate the slide.
+
+The text should remain the main communication mechanism.
+
+============================================================
+VISUAL STYLE
+============================================================
+
+The presentation is a First Citizens India corporate internship deck.
+
+Independently use a polished corporate visual language:
 
 BACKGROUND:
 - Clean white / very light neutral
-- No dark background
-- No black background
-- No charcoal dashboard
+- Spacious
+- Minimal
 
-PRIMARY VISUAL:
-- Deep corporate navy / blue typography
+PRIMARY:
+- Deep navy / corporate blue typography
 
 SECONDARY:
 - Muted blue / gray
 
 ACCENT:
-- Very restrained red accent where appropriate
+- Very restrained First Citizens-style red where appropriate
 
-NEUTRALS:
-- Dark gray body text
-- Light gray dividers / subtle containers
+Use the accent color sparingly.
 
-Use generous whitespace.
+The slide should feel:
 
-Use strong alignment.
+- Professional
+- Warm
+- Reflective
+- Sophisticated
+- Clean
+- Corporate
+- Human
+- Minimal
 
-Use clean professional sans-serif typography.
-
-Avoid excessive color.
-
-Avoid gradients.
-
-Avoid glowing effects.
-
-Avoid heavy borders.
-
-Avoid oversized icons.
+It should NOT feel like a technical dashboard.
 
 ============================================================
-8. SLIDE TITLE
+DO NOT USE
 ============================================================
 
-Use this exact title:
+Absolutely avoid:
 
-Change Management Audit Automation
+- Dark backgrounds
+- Neon colors
+- Futuristic AI styling
+- Cybersecurity styling
+- Dashboard aesthetics
+- 3D graphics
+- Stock photographs
+- Cartoon illustrations
+- Excessive icons
+- Heavy gradients
+- Excessive borders
+- Large decorative graphics
+- Inspirational poster clichés
+- Generic “corporate handshake” imagery
+- Excessive text
 
-Place it prominently at the top of the project-content area.
+Do not make it look like a motivational poster.
 
-Use a strong professional corporate title.
-
-Optional subtitle, ONLY if it improves the composition:
-
-“Automated ServiceNow Change Auditing & QAR Reporting”
-
-Do not add the subtitle if it makes the slide crowded.
-
-============================================================
-9. PROBLEM SECTION
-============================================================
-
-Create a compact section titled:
-
-PROBLEM
-
-Use concise points:
-
-• Change audits require checking multiple ServiceNow data points and controls
-• Evidence may be distributed across related records and attachments
-• Manual audit decisions and QAR preparation are repetitive and time-consuming
-
-Do NOT use a paragraph.
-
-The problem should visually communicate:
-
-Multiple Change records
-        +
-Multiple control checks
-        +
-Evidence / attachments
-        +
-Manual audit effort
-
-Keep this section compact.
+It should remain a professional internship presentation slide.
 
 ============================================================
-10. SOLUTION SECTION
+ICONOGRAPHY
 ============================================================
 
-Create a visually distinct but clean section titled:
+Use simple, elegant line icons if appropriate:
 
-SOLUTION
+LEARN TO LEARN:
+Book / lightbulb / open learning symbol
 
-Main statement:
+GOOD LISTENER:
+Ear / listening / conversation symbol
 
-Automated ServiceNow Change Audit Workflow
+TEAMWORK:
+Connected people / collaboration symbol
 
-Supporting line:
+KNOWLEDGE GROWTH:
+Book + technology / layered knowledge / growth symbol
 
-“Collect → Validate → Audit → Report”
+Keep all icons visually consistent.
 
-Add one concise supporting statement if space permits:
+Use the same restrained corporate color palette.
 
-“Applies predefined audit controls and produces structured, traceable results.”
-
-Do NOT claim AI/ML.
-
-Do NOT claim predictive analytics.
-
-Do NOT invent automation capabilities that are not described here.
+Do not use colorful cartoon icons.
 
 ============================================================
-11. MAIN PIPELINE
+KEY VISUAL CONCEPT
 ============================================================
 
-The AUTOMATED PIPELINE should be the largest and most visually important part of the slide.
+If appropriate, subtly connect the four learnings using a very light
+visual progression:
 
-Section title:
+MINDSET
+   →
+LISTENING
+   →
+COLLABORATION
+   →
+GROWTH
 
-AUTOMATED AUDIT PIPELINE
+This should be subtle.
 
-Show the workflow as a connected process.
-
-Use these stages:
-
-01  ServiceNow Change Requests
-        ↓
-02  Fetch Required ServiceNow Data
-        ↓
-03  Select Changes for Audit
-        ↓
-04  Run Predefined Audit / Control Rules
-        ↓
-05  Inspect Related Records & Attachments
-        ↓
-06  Local OCR for Image / Dashboard Evidence
-        ↓
-07  Produce YES / NO / NA / ERROR Results
-        ↓
-08  Populate Excel QAR Report
+Do not turn the slide into a complex diagram.
 
 ============================================================
-12. PIPELINE DESIGN
+CLOSING MESSAGE
 ============================================================
 
-DO NOT display this as a long vertical text list.
+At the bottom, if space permits, include ONE short closing statement:
 
-Prefer a clean horizontal or two-row process flow.
+“An internship is not just about what you build — it is about how you
+learn, listen, collaborate and grow.”
 
-Recommended conceptual arrangement:
+This should be visually subtle and serve as the closing thought of the
+presentation.
 
-ServiceNow
-     →
-Data Collection
-     →
-Audit Selection
-     →
-Control Checks
-     →
-Evidence Validation
-     →
-OCR
-     →
-Audit Results
-     →
-QAR Report
+Do NOT add another large section around it.
 
-Each stage should have:
-
-- Small stage number
-- Short readable title
-- Optional one-line descriptor
-- Simple professional icon where useful
-- Clear directional connector
-
-Keep the pipeline readable.
-
-If eight stages cannot comfortably fit in one horizontal row, use a balanced two-row process.
-
-For example:
-
-ServiceNow → Data Collection → Audit Selection → Control Checks
-                                                       ↓
-QAR Report ← Audit Results ← OCR / Evidence ← Attachments
-
-Do NOT use this exact arrangement if it compromises readability.
-
-Use your design judgment.
+If the slide becomes crowded, remove the closing statement rather than
+shrinking the main content.
 
 ============================================================
-13. IMPORTANT AUDIT LOGIC
+COPY / PASTE SAFETY — CRITICAL
 ============================================================
 
-Represent the control-check stage accurately.
+This slide will be COPIED INTO MY ORIGINAL FIRST CITIZENS INDIA
+INTERNSHIP POWERPOINT.
 
-The workflow uses predefined deterministic audit/control rules.
+Therefore, create ONLY the project/presentation CONTENT.
 
-Where evidence is required:
+DO NOT recreate or modify:
 
-Related ServiceNow records and attachments are inspected.
+- First Citizens India logo
+- Existing page number
+- Existing footer
+- “Internal” marking
+- Existing master-slide background
+- Existing header
+- Existing template elements
+- Existing presentation-level branding
 
-Where image/dashboard evidence is present:
+DO NOT create a duplicate logo.
 
-Local OCR is used to extract/analyze the required evidence.
+DO NOT create a duplicate page number.
 
-The resulting audit decisions can be:
+DO NOT create a footer.
 
-YES
-NO
-NA
-ERROR
+DO NOT create an “Internal” label.
 
-These results are then used to populate the predefined Excel QAR report.
+DO NOT create a new PowerPoint theme.
 
-For Standard Changes:
+DO NOT create a custom master slide.
 
-Show a subtle note or sub-label under the relevant control-check stage:
+DO NOT create a full-slide image.
 
-“Standard Change Template / QAR checks → Standard Changes only”
+DO NOT create a full-slide background containing branding.
 
-Do NOT make this note dominant.
+Keep the content inside the safe central content area.
 
-Do NOT imply that this check applies to every change type.
+Leave the normal:
+- logo/header region
+- footer region
+- page-number region
+
+clear of project objects.
 
 ============================================================
-14. OUTPUT / BUSINESS RESULT
+EDITABILITY
 ============================================================
 
-At the end of the pipeline, show a compact OUTPUT section.
+All content must remain editable PowerPoint objects.
 
 Use:
 
-Structured QAR Report
+- Editable text boxes
+- Editable shapes
+- Editable lines
+- Editable icons where possible
 
-and optionally:
-
-• Control-wise Audit Results
-• Evidence-backed Findings
-• Traceable Audit Output
-
-The most important final output should be:
-
-Excel QAR Report
-
-Do not invent numerical business impact.
-
-Do not invent percentages.
-
-Do not invent time savings.
-
-Do not invent number of audits.
+Do NOT flatten the slide into a single image.
 
 ============================================================
-15. VISUAL STORY
+CONTENT DENSITY
 ============================================================
 
-The final visual story should be:
+This is the final slide of a 10-minute internship presentation.
 
-PROBLEM
-Manual / repetitive change auditing
-        ↓
-SOLUTION
-Automated ServiceNow audit workflow
-        ↓
-PIPELINE
-Collect → Select → Check → Validate Evidence → Decide → Report
-        ↓
-OUTPUT
-Structured Excel QAR Report
+It must be immediately readable.
 
-The viewer should immediately understand:
+Do NOT write long descriptions.
 
-“Change Requests are collected from ServiceNow, evaluated against predefined controls, evidence is validated when required, audit results are generated, and the QAR report is populated automatically.”
+Each learning should contain:
 
-============================================================
-16. CONTENT DENSITY
-============================================================
+HEADING
++
+ONE SHORT SUPPORTING STATEMENT
 
-This is ONE presentation slide.
+Maximum:
+2 lines of supporting text per learning where possible.
 
-Do not turn it into documentation.
-
-Do not include:
-
-- Code
-- Python filenames
-- Function names
-- API endpoints
-- Repository structure
-- Detailed implementation architecture
-- Long explanations
-- Future scope
-- Technologies-used list
-- Unrelated technical details
-
-The slide should communicate the project at a high level.
-
-The pipeline itself provides the technical depth.
+Prioritize whitespace.
 
 ============================================================
-17. ICONOGRAPHY
+TONE
 ============================================================
 
-Use simple professional line icons only where they improve scanning.
+The tone should be:
 
-Possible icons:
+Reflective but confident.
 
-ServiceNow / system
-Data
-Filter / selection
-Checklist / audit
-Attachment / document
-OCR / image
-Decision / validation
-Excel / report
+Professional but personal.
 
-Icons should be:
+Positive but not exaggerated.
 
-- Small
-- Consistent
-- Minimal
-- Corporate
+Avoid clichés such as:
 
-No cartoon graphics.
+“Dream big”
+“Believe in yourself”
+“Never give up”
+“Success is a journey”
 
-No glowing icons.
-
-No 3D icons.
+This is an internship presentation, so the learning should feel
+genuine and grounded in professional experience.
 
 ============================================================
-18. LAYOUT PRIORITY
+FINAL SLIDE STORY
 ============================================================
 
-Use this hierarchy:
+The audience should leave with the impression that the internship
+helped me grow in four dimensions:
 
-TOP:
-Change Management Audit Automation
+MINDSET
+→ Learning from everyone
 
-SECONDARY:
-Problem + Solution
+COMMUNICATION
+→ Listening before responding
 
-LARGEST AREA:
-Automated Audit Pipeline
+COLLABORATION
+→ Working effectively with others
 
-BOTTOM:
-Structured QAR Report / Outputs
+KNOWLEDGE
+→ Connecting technical, theoretical and practical understanding
 
-The pipeline must receive the most visual space.
-
-Problem should be concise.
-
-Solution should be prominent.
-
-Output should be compact.
-
-Maintain generous whitespace.
+The slide should communicate professional growth rather than simply
+listing generic skills.
 
 ============================================================
-19. PROFESSIONAL PRESENTATION TEST
+FINAL QUALITY CHECK
 ============================================================
 
-The final slide should allow me to explain it in approximately 45–60 seconds:
+Before finalizing, verify:
 
-“The challenge was that Change Requests required multiple audit checks and evidence validation across ServiceNow records and attachments. The solution automates this process by collecting the required data, selecting the changes to audit, applying predefined control rules, checking related evidence and using local OCR where required. The resulting YES, NO, NA or ERROR decisions are then structured into the predefined Excel QAR report.”
-
-The slide should visually support this explanation rather than reproduce it as text.
-
-============================================================
-20. FINAL QUALITY CHECK
-============================================================
-
-Before finalizing, verify ALL of the following:
-
-✓ One slide only
-✓ Completely new slide
-✓ Clean corporate appearance
-✓ White/light presentation canvas
-✓ Professional navy/blue typography
+✓ One completely new slide
+✓ Clean corporate presentation design
+✓ White/light background
+✓ Navy/blue primary typography
 ✓ Minimal restrained accent color
-✓ No dark-tech dashboard
-✓ No futuristic AI styling
-✓ No excessive cards
-✓ No unnecessary decoration
-✓ Problem clearly visible
-✓ Solution clearly visible
-✓ Complete audit pipeline visible
-✓ QAR output clearly visible
-✓ Standard Change Template/QAR check correctly limited to Standard Changes
-✓ No ML/AI claims
-✓ No invented metrics
-✓ No excessive text
-✓ Pipeline is readable from presentation distance
-✓ Strong whitespace and alignment
-✓ All project elements are editable PowerPoint objects
-
-============================================================
-21. MOST IMPORTANT: COPY-SAFETY CHECK
-============================================================
-
-Before generating the final slide, ensure:
-
-NO First Citizens logo is generated.
-
-NO page number is generated.
-
-NO footer is generated.
-
-NO Internal label is generated.
-
-NO presentation master is generated.
-
-NO competing background is generated.
-
-NO template elements are recreated.
-
-NO project content overlaps the normal logo/header/footer/page-number zones.
-
-NO full-slide image is generated.
-
-The slide should contain ONLY the editable content required for:
-
-TITLE
-+
-PROBLEM
-+
-SOLUTION
-+
-AUTOMATED AUDIT PIPELINE
-+
-OUTPUT
-
-The destination presentation's existing template must remain the
-source of truth for all branding and presentation-level elements.
+✓ Four clear learning themes
+✓ Minimal text
+✓ Strong visual hierarchy
+✓ Professional and reflective tone
+✓ No generic motivational-poster appearance
+✓ No dark-tech/dashboard styling
+✓ No unnecessary graphics
+✓ No clutter
+✓ Plenty of whitespace
+✓ All text readable at presentation distance
+✓ All objects editable
+✓ No First Citizens logo recreated
+✓ No page number recreated
+✓ No footer recreated
+✓ No Internal label recreated
+✓ No master/template recreated
+✓ No existing presentation structure disturbed
+✓ Safe to copy into my original First Citizens presentation
 
 ============================================================
 FINAL INSTRUCTION
 ============================================================
 
-Generate ONE completely new, polished, professional slide titled:
+Generate ONE polished final slide titled:
 
-“Change Management Audit Automation”
+KEY LEARNINGS & TAKEAWAYS
 
-Design it independently using the complete specification above.
+The four primary takeaways must be:
 
-Do not ask for a reference slide.
+1. Learn to Learn
+   “Learned to learn — from anyone and everyone.”
 
-Do not modify an existing slide.
+2. Be a Good Listener
+   “Listening first leads to better understanding, better questions
+   and better decisions.”
 
-Do not recreate the First Citizens template.
+3. Teamwork & Collaboration
+   “Strong outcomes come from communication, collaboration and shared
+   ownership.”
 
-Do not recreate the logo, footer, page number, or Internal marking.
+4. Technical, Theoretical & Practical Growth
+   “Enhanced my technical, theoretical and practical knowledge base
+   through real-world problem solving.”
 
-Generate only the project-content layer so that the slide can be safely copied into my original First Citizens India internship presentation without disturbing its existing structure.
+Create a visually elegant closing slide that feels like the natural
+final chapter of a professional First Citizens India internship
+presentation.
+
+Generate ONLY the editable slide content.
+
+Do not recreate or interfere with any existing First Citizens
+presentation template, logo, footer, page number or master-slide
+elements.
