@@ -1,145 +1,117 @@
-MASTER PROMPT — FINAL POWERPOINT SLIDE
-======================================
+MASTER PROMPT — GENERATE ONLY THE INCIDENT CLASSIFIER SLIDE
+============================================================
 
-ROLE
-----
-Act as a senior enterprise solution architect, AI/ML architect, presentation designer,
-and Microsoft PowerPoint specialist.
+Act as a senior enterprise AI/ML architect and PowerPoint presentation
+designer.
 
-You are editing an EXISTING PowerPoint slide for my internship presentation at
-FIRST CITIZENS BANK.
+I need ONE SINGLE POWERPOINT SLIDE for my internship presentation.
 
-PROJECT:
-SERVICE NOW INCIDENT INTELLIGENCE PLATFORM
-
-Your task is to transform the existing slide into the strongest possible
-single-slide executive + technical overview of the project.
+PROJECT NAME:
+INCIDENT CLASSIFIER
 
 IMPORTANT:
-Do NOT create a generic AI slide.
-Do NOT turn this into a documentation page.
-Do NOT redesign it into a completely different concept.
+I already have a corporate PowerPoint template containing:
+• First Citizens branding
+• First Citizens logo
+• Footer
+• Page number
+• Slide master elements
+• Corporate template styling
 
-Use the EXISTING SLIDE as the visual foundation and intelligently improve it.
+DO NOT CREATE ANY OF THESE.
 
-The final slide must communicate the complete story in approximately 10 seconds:
+DO NOT MODIFY ANY OF THESE.
 
-    BUSINESS PROBLEM
-          ↓
-    AI SOLUTION
-          ↓
-    4-PHASE PIPELINE
-          ↓
-    INTELLIGENCE OUTPUT
+DO NOT RECREATE ANY OF THESE.
 
-The slide is for a 10-minute internship presentation, so it must be
-highly visual, concise, technically credible and easy to explain verbally.
+DO NOT ADD ANY LOGO.
 
+DO NOT ADD ANY PAGE NUMBER.
+
+DO NOT ADD ANY FOOTER.
+
+DO NOT ADD "First Citizens Bank" text.
+
+DO NOT add any branding element.
+
+DO NOT touch the slide master.
+
+DO NOT alter the existing template/background.
+
+The output from you must contain ONLY the CONTENT OF THE INCIDENT
+CLASSIFIER PROJECT SLIDE.
+
+When this slide is copied into my existing presentation, my original
+template elements must remain completely untouched.
+
+The slide should therefore be designed as a CONTENT-ONLY slide that
+fits naturally inside my existing corporate template.
 
 ============================================================
-1. THE CORE STORY
+1. OBJECTIVE
 ============================================================
 
-The project solves a ServiceNow incident-triage problem.
+Create a single, highly polished slide that communicates the complete
+Incident Classifier project:
 
-CURRENT STATE:
+PROBLEM
+    ↓
+SOLUTION
+    ↓
+END-TO-END AI PIPELINE
+    ↓
+INTELLIGENCE OUTPUT
 
-ServiceNow Incident
-        ↓
-Manual Reading
-        ↓
-Manual Triage + Routing
-        ↓
-Incorrect Assignment / Delays / SLA Risk / Knowledge Loss
+The slide must be understandable within approximately 10 seconds.
 
-TARGET STATE:
-
-ServiceNow Incident
-        ↓
-Data Intelligence
-        ↓
-Model Training
-        ↓
-Semantic Search
-        ↓
-Hybrid Inference
-        ↓
-AI-Assisted Incident Intelligence
-
-        ↓
-
-Assignment Group
-Resolution Time
-Historical Precedents
-Confidence / Explainability
-
-
-The slide should make this transformation visually obvious:
-
-        MANUAL INCIDENT TRIAGE
-                  →
-        AI-ASSISTED INCIDENT INTELLIGENCE
-
+It should look like a high-quality enterprise AI/ML architecture slide,
+not like technical documentation.
 
 ============================================================
 2. SLIDE TITLE
 ============================================================
 
-Use exactly:
+Use:
 
-SERVICE NOW INCIDENT INTELLIGENCE PLATFORM
+INCIDENT CLASSIFIER
 
 Subtitle:
 
-AI-powered incident triage, prediction and historical intelligence
+AI-powered ServiceNow incident triage, prediction and historical
+intelligence
 
-Do not make the subtitle too large.
-
-The title should be the strongest text on the slide after the
-central architecture.
-
+Do NOT add any organization name or branding.
 
 ============================================================
-3. OVERALL SLIDE STRUCTURE
+3. OVERALL LAYOUT
 ============================================================
 
-Use a 16:9 widescreen slide.
-
-Maintain a clean THREE-COLUMN composition:
-
-┌────────────────┬─────────────────────────────────────┬───────────────┐
-│ THE CHALLENGE  │        AI-POWERED SOLUTION          │ INTELLIGENCE  │
-│                │                                     │    OUTPUT     │
-│                │      4-PHASE AI PIPELINE            │               │
-└────────────────┴─────────────────────────────────────┴───────────────┘
+Use a clean three-section layout:
 
 LEFT:
-    THE CHALLENGE
+THE CHALLENGE
 
 CENTER:
-    AI-POWERED SOLUTION
+AI-POWERED SOLUTION
 
 RIGHT:
-    INTELLIGENCE OUTPUT
+INTELLIGENCE OUTPUT
 
-The CENTER must receive the greatest visual emphasis.
+The CENTER should receive the greatest visual emphasis.
 
-The LEFT establishes the business problem.
+Use a clean enterprise layout with strong whitespace.
 
-The RIGHT shows the tangible output/value.
-
-Do not give equal visual weight to every element.
-
+Do not overcrowd the slide.
 
 ============================================================
-4. LEFT COLUMN — THE CHALLENGE
+4. LEFT — THE CHALLENGE
 ============================================================
 
 Heading:
 
 THE CHALLENGE
 
-Use this compact flow:
+Show the incident journey:
 
 SERVICE NOW INCIDENT
         ↓
@@ -147,39 +119,28 @@ MANUAL READING
         ↓
 MANUAL TRIAGE + ROUTING
 
-Then:
+Then show:
 
 BUSINESS IMPACT
-
-Use four compact cards:
 
 • Incorrect Assignment
 • Delayed Resolution
 • SLA Risk
 • Knowledge Loss
 
-Do not write long explanations.
+Use short labels and simple professional icons.
 
-Each card should have:
-    small icon
-    short label
-    maximum 1 supporting line if required
+Do not use unsupported numerical claims.
 
-The purpose is to communicate:
+Do not write large paragraphs.
 
-"Human interpretation and routing create avoidable operational friction."
+The visual message should be:
 
-Do NOT invent numerical claims such as:
-"15 minutes per ticket"
-"3–4 teams"
-"2–8 hours"
-or similar figures unless they are explicitly verified in the project.
-
-Avoid exaggerated business claims.
-
+Manual incident understanding and routing can lead to
+misrouting, delay, SLA risk and loss of historical knowledge.
 
 ============================================================
-5. CENTER COLUMN — AI-POWERED SOLUTION
+5. CENTER — AI-POWERED SOLUTION
 ============================================================
 
 Heading:
@@ -190,35 +151,27 @@ Small descriptor:
 
 Four-phase enterprise ML pipeline
 
-The center is the HEART of the slide.
+The central architecture MUST contain exactly FOUR phases.
 
-Use EXACTLY FOUR phases.
+Use these EXACT names:
 
-Do NOT use five phases.
+01 — DATA INTELLIGENCE
 
-Do NOT display twelve large stages.
+02 — MODEL TRAINING
 
-The four phases MUST be:
+03 — SEMANTIC SEARCH
 
-01  DATA INTELLIGENCE
+04 — HYBRID INFERENCE
 
-02  MODEL TRAINING
+Do not rename these phases.
 
-03  SEMANTIC SEARCH
+Do not use:
+• Feature Intelligence
+• Predictive AI
+• Semantic Memory
+• Hybrid Intelligence
 
-04  HYBRID INFERENCE
-
-
-These names are intentional and must not be replaced by generic
-terminology such as:
-
-"Feature Intelligence"
-"Predictive AI"
-"Semantic Memory"
-"Hybrid Intelligence"
-
-Use the actual architecture terminology above.
-
+The four phases must appear as a connected left-to-right pipeline.
 
 ============================================================
 6. PHASE 1 — DATA INTELLIGENCE
@@ -233,11 +186,11 @@ Purpose:
 
 Prepare reliable, ML-ready incident data.
 
-Represent the underlying work compactly:
+Represent the underlying implementation compactly:
 
 Validate → Clean → Enrich → Engineer → Prepare
 
-Supporting keywords:
+Small supporting keywords:
 
 Validation
 ML Readiness
@@ -248,21 +201,10 @@ NLP
 EDA
 Zero-Leakage Split
 
-DO NOT display eight separate large cards.
+Do not show all eight underlying stages as separate large boxes.
 
-The audience does not need to read every implementation stage.
-
-Instead, visually communicate:
-
-RAW SERVICE NOW DATA
-        ↓
-QUALITY + CONTEXT
-        ↓
-ML-READY DATA
-
-
-The technical detail remains available for verbal explanation.
-
+The audience only needs to understand that raw ServiceNow data is
+converted into reliable ML-ready data.
 
 ============================================================
 7. PHASE 2 — MODEL TRAINING
@@ -273,52 +215,36 @@ Display:
 02
 MODEL TRAINING
 
-This phase should visually stand out slightly because it contains
-the primary predictive intelligence.
+Show TWO predictive branches:
 
-Show two parallel model outputs:
+                MODEL TRAINING
+                       │
+             ┌─────────┴─────────┐
+             ↓                   ↓
+     ASSIGNMENT GROUP      RESOLUTION TIME
+      CLASSIFICATION          REGRESSION
+             │                   │
+             └─────────┬─────────┘
+                       ↓
+                  CATBOOST + HPO
 
-                  MODEL TRAINING
-                         │
-             ┌───────────┴───────────┐
-             ↓                       ↓
-     ASSIGNMENT GROUP          RESOLUTION TIME
-      CLASSIFICATION              REGRESSION
-             │                       │
-             └───────────┬───────────┘
-                         ↓
-                    CATBOOST + HPO
+Clearly show:
 
-Use these exact technical labels:
+Assignment Group Classification
 
-CatBoost
-Hyperparameter Optimization
+and
 
-The slide must clearly communicate that there are TWO predictive tasks:
+Resolution Time Regression
 
-1. Assignment Group Classification
-2. Resolution Time Regression
+Technical label:
 
-Do not incorrectly describe resolution time as classification.
+CatBoost + Hyperparameter Optimization
 
-Do not introduce technologies that are not part of the final implementation.
+Do not introduce unrelated technologies.
 
-Do NOT add:
-    Random Forest
-    XGBoost
-    LightGBM
-    BERT
-    LLM
-    Transformer
-    RAG
-
-unless those technologies are genuinely part of the final implementation
-being presented.
-
-The current architecture shown here is:
-
-CATBOOST + HPO
-
+Do not mention Random Forest, XGBoost, LightGBM, BERT, LLM,
+Transformers or RAG unless they are actually part of the final
+implementation.
 
 ============================================================
 8. PHASE 3 — SEMANTIC SEARCH
@@ -329,11 +255,7 @@ Display:
 03
 SEMANTIC SEARCH
 
-Purpose:
-
-Find relevant historical incidents.
-
-Use a simple visual flow:
+Show:
 
 HISTORICAL INCIDENTS
         ↓
@@ -343,24 +265,20 @@ FAISS VECTOR INDEX
         ↓
 SIMILAR INCIDENT RETRIEVAL
 
-Technical labels:
+Small technical labels:
 
 Embeddings
 FAISS
 
-The audience should understand that the system does not rely only on
-the predictive model.
+Main message:
 
-It also searches historical incident knowledge for relevant precedents.
+Find relevant historical incidents.
 
-Do NOT call this:
+Do not call this "Semantic Memory".
 
-"Semantic Memory"
-
-The official phase name on the slide must remain:
+The phase name MUST remain:
 
 SEMANTIC SEARCH
-
 
 ============================================================
 9. PHASE 4 — HYBRID INFERENCE
@@ -371,7 +289,7 @@ Display:
 04
 HYBRID INFERENCE
 
-Show the conceptual combination:
+Show:
 
 PREDICTIVE OUTPUTS
         +
@@ -379,46 +297,34 @@ HISTORICAL PRECEDENTS
         ↓
 HYBRID RECOMMENDATION
 
-Use a visual merge/fusion representation rather than another large
-text block.
+Make the combination visually obvious.
 
-The key message:
-
-The final intelligence layer combines model predictions with
-relevant historical incidents.
-
-This is the point where the separate AI capabilities become
-an actionable incident recommendation.
-
+This is the final intelligence layer.
 
 ============================================================
-10. CONNECT THE FOUR PHASES
+10. PIPELINE CONNECTION
 ============================================================
 
-The phases must visually form ONE continuous pipeline:
+The center must visually communicate:
 
 SERVICE NOW INCIDENT
         ↓
-[01 DATA INTELLIGENCE]
+DATA INTELLIGENCE
         ↓
-[02 MODEL TRAINING]
+MODEL TRAINING
         ↓
-[03 SEMANTIC SEARCH]
+SEMANTIC SEARCH
         ↓
-[04 HYBRID INFERENCE]
+HYBRID INFERENCE
         ↓
 INTELLIGENCE OUTPUT
 
-Use clean arrows.
+Use clean arrows between phases.
 
-Do not make the arrows visually dominant.
-
-The four phase cards should feel like one integrated platform,
-not four unrelated boxes.
-
+The four phases should look like ONE integrated platform.
 
 ============================================================
-11. RIGHT COLUMN — INTELLIGENCE OUTPUT
+11. RIGHT — INTELLIGENCE OUTPUT
 ============================================================
 
 Heading:
@@ -427,704 +333,417 @@ INTELLIGENCE OUTPUT
 
 Create four compact output cards:
 
-01
 ASSIGNMENT GROUP
+Recommended routing team
 
-Recommended routing
-team
-
-02
 RESOLUTION TIME
+Estimated resolution profile
 
-Estimated resolution
-profile
-
-03
 HISTORICAL PRECEDENTS
+Relevant similar incidents
 
-Relevant similar
-incidents
-
-04
 CONFIDENCE + EXPLAINABILITY
+Supporting model intelligence
 
-Supporting model
-intelligence
+Keep these concise.
 
-Keep each card extremely concise.
+The right side should answer:
 
-The right panel should visually answer:
-
-"What does the user actually get from the platform?"
-
-Do not add unsupported KPIs.
-
+"What does Incident Classifier provide?"
 
 ============================================================
-12. FINAL TRANSFORMATION BAR
+12. BOTTOM TRANSFORMATION MESSAGE
 ============================================================
 
-Keep the existing bottom transformation bar.
-
-Use:
+Add a compact visual statement inside the CONTENT AREA:
 
 MANUAL TRIAGE
         →
 AI-ASSISTED INCIDENT INTELLIGENCE
 
-This should act as the visual conclusion of the slide.
+This should be the visual conclusion.
 
-It should not compete with the main pipeline.
+Do not add a footer below it.
 
+Do not add a page number.
 
-============================================================
-13. IMPORTANT — FIRST CITIZENS BRANDING
-============================================================
-
-THIS IS CRITICAL.
-
-The existing FIRST CITIZENS branding/logo in the
-BOTTOM-LEFT FOOTER MUST BE PRESERVED.
-
-Do not delete it.
-
-Do not recreate it.
-
-Do not redraw it.
-
-Do not replace it with text.
-
-Do not convert it into a different logo.
-
-Do not crop it.
-
-Do not stretch it.
-
-Do not distort it.
-
-Do not hide it behind another element.
-
-Do not reduce its readability.
-
-Do not move it unless absolutely necessary.
-
-Preserve the EXISTING logo/brand asset exactly as it appears
-in the current PowerPoint.
-
-Maintain:
-    • original aspect ratio
-    • sharpness
-    • adequate resolution
-    • full visibility
-    • proper alignment
-    • clear separation from other elements
-
-IMPORTANT:
-
-There must be ONLY ONE First Citizens logo/brand identity on the slide.
-
-DO NOT add another logo:
-    • top-right
-    • top-left
-    • center
-    • inside the solution panel
-    • inside the output panel
-    • anywhere else
-
-The existing bottom-left First Citizens branding is sufficient.
-
-Do not duplicate it.
-
+Do not add any organization name.
 
 ============================================================
-14. FIRST CITIZENS VISUAL LANGUAGE
+13. CRITICAL TEMPLATE / BRANDING RULE
 ============================================================
 
-The slide must feel like a professional internal
-FIRST CITIZENS BANK technology presentation.
+THIS IS THE MOST IMPORTANT INSTRUCTION.
 
-Use a restrained enterprise banking aesthetic:
+GENERATE CONTENT ONLY.
 
-PRIMARY:
-    Deep navy / corporate blue
+The existing PowerPoint template already contains all corporate
+branding.
 
-SECONDARY:
-    White
-    Very light grey
-    Neutral grey
+Therefore:
 
-ACCENT:
-    Restrained gold/yellow
+DO NOT:
+✗ add First Citizens logo
+✗ add First Citizens text
+✗ add FCI logo
+✗ add page number
+✗ add footer
+✗ add slide number
+✗ add corporate footer
+✗ add copyright
+✗ add confidentiality label
+✗ add header branding
+✗ add template elements
+✗ modify the slide master
+✗ modify background master elements
+✗ recreate any template object
 
-OPTIONAL:
-    Very subtle muted red only where it communicates risk,
-    such as SLA Risk.
+The generated slide must contain ONLY:
 
-Do not overuse the gold accent.
+• Incident Classifier title
+• Subtitle
+• Challenge content
+• AI solution pipeline
+• Intelligence output
+• Transformation message
 
-Use the gold accent primarily for:
-    • important transition
-    • selected/highlighted phase
-    • key takeaway
-    • subtle emphasis
+NOTHING ELSE.
+
+When I copy this slide's content into my existing presentation,
+the existing corporate template elements must remain untouched.
+
+Do not create a replacement background.
+
+Do not create a new branded footer.
+
+Do not attempt to reproduce the corporate template.
+
+============================================================
+14. IMPORTANT — COPYING SAFETY
+============================================================
+
+Design the slide so that it can safely be copied into an existing
+corporate PowerPoint template.
+
+Avoid full-slide background shapes that could cover the existing
+template.
+
+Avoid objects extending into the footer/template area.
+
+Keep all project content within the main content region.
+
+Leave a clean safe margin around the bottom and edges so that existing
+template elements remain visible.
+
+The slide should behave as a CONTENT LAYER rather than a complete
+branded presentation page.
+
+============================================================
+15. VISUAL STYLE
+============================================================
+
+Use a professional enterprise AI/ML visual style.
+
+Preferred palette:
+
+• Deep navy
+• Corporate blue
+• White
+• Light grey
+• Restrained gold/yellow accent
+
+However, keep the design subtle enough that it can naturally inherit
+the visual language of my existing corporate template.
+
+Do not create a separate competing brand identity.
 
 Avoid:
 
-    neon blue
-    neon green
-    cyberpunk
-    futuristic AI graphics
-    robots
-    generic AI brain illustrations
-    stock photos
-    excessive gradients
-    excessive glassmorphism
-    excessive shadows
-    cartoon graphics
-    decorative technology imagery
-
-This should look like:
-
-ENTERPRISE BANKING + AI/ML ARCHITECTURE
-
-not:
-
-STARTUP AI LANDING PAGE
-
+• Neon
+• Cyberpunk
+• Futuristic robots
+• Generic AI brain graphics
+• Stock images
+• Excessive gradients
+• Excessive shadows
+• Glassmorphism
+• Cartoon graphics
+• Decorative illustrations
 
 ============================================================
-15. CURRENT SLIDE — WHAT TO PRESERVE
+16. TYPOGRAPHY
 ============================================================
 
-Preserve the strongest aspects of the existing slide:
+Use a professional sans-serif font.
 
-• three-column structure
-• title area
-• left challenge panel
-• center solution pipeline
-• right intelligence-output panel
-• bottom transformation bar
-• First Citizens footer
-• professional blue/white/gold palette
-• clean icon-based cards
-
-Do NOT rebuild the slide from zero unless a specific existing element
-prevents the improved design from working.
-
-This is a REFINEMENT, not a total redesign.
-
-
-============================================================
-16. IMPROVE THE EXISTING CENTER CARDS
-============================================================
-
-The current center cards are visually good but the terminology is
-too fragmented.
-
-Replace the existing five-card concept with FOUR phase cards.
-
-FINAL CENTER:
-
-┌──────────────────┐
-│ 01               │
-│ DATA             │
-│ INTELLIGENCE     │
-│                  │
-│ Validate • Clean │
-│ Enrich • Prepare │
-└──────────────────┘
-          →
-┌──────────────────┐
-│ 02               │
-│ MODEL            │
-│ TRAINING         │
-│                  │
-│ Classification  │
-│ + Regression     │
-│ CatBoost + HPO   │
-└──────────────────┘
-          →
-┌──────────────────┐
-│ 03               │
-│ SEMANTIC         │
-│ SEARCH           │
-│                  │
-│ Embeddings       │
-│ + FAISS          │
-│ Historical       │
-│ Retrieval        │
-└──────────────────┘
-          →
-┌──────────────────┐
-│ 04               │
-│ HYBRID           │
-│ INFERENCE        │
-│                  │
-│ Predictions      │
-│ + Precedents     │
-│ → Recommendation │
-└──────────────────┘
-
-The cards must remain readable at presentation distance.
-
-
-============================================================
-17. VISUAL HIERARCHY
-============================================================
-
-The viewer's eye should naturally move:
-
-1. PROJECT TITLE
-2. THE CHALLENGE
-3. FOUR-PHASE PIPELINE
-4. INTELLIGENCE OUTPUT
-5. MANUAL → AI-ASSISTED TRANSFORMATION
-
-The CENTER should receive approximately 50–55% of the visual attention.
-
-The LEFT should establish the problem.
-
-The RIGHT should establish the outcome.
-
-Do not allow footer branding, icons, or decorative elements
-to overpower the architecture.
-
-
-============================================================
-18. TYPOGRAPHY
-============================================================
-
-Use a clean corporate sans-serif font such as:
+Preferred:
 
 Aptos
 Segoe UI
 Arial
 
-Prefer one font family throughout.
-
-Recommended hierarchy:
+Use clear hierarchy:
 
 TITLE:
-    28–34 pt
-    bold
+28–34 pt
 
 SECTION HEADINGS:
-    17–21 pt
-    bold
+17–21 pt
 
 PHASE TITLES:
-    14–18 pt
-    bold
+14–18 pt
 
 BODY:
-    10–13 pt
+10–13 pt
 
-FOOTER:
-    small but readable
-
-Do NOT solve overcrowding by making everything tiny.
+Do not shrink text excessively to fit content.
 
 If content does not fit:
 
-FIRST remove words.
-THEN simplify.
-ONLY THEN adjust spacing.
-
-Never create a slide that requires the audience to zoom in.
-
+1. Remove unnecessary words.
+2. Simplify.
+3. Improve spacing.
+4. Only then adjust font size.
 
 ============================================================
-19. ICON SYSTEM
+17. ICONS
 ============================================================
 
-Use one consistent enterprise line-icon style.
+Use one consistent professional line-icon style.
 
-Suggested icons:
+Suggested:
 
 Data Intelligence:
-    database / validation
+Database / validation
 
 Model Training:
-    model / branching / gear
+Model / branching / processing
 
 Semantic Search:
-    search / magnifier / indexed document
+Search / indexed document
 
 Hybrid Inference:
-    connected nodes / fusion
+Connected nodes / fusion
 
 Assignment Group:
-    team / target
+Team / target
 
 Resolution Time:
-    clock
+Clock
 
 Historical Precedents:
-    document + search
+Document / search
 
-Confidence / Explainability:
-    shield / verification
+Confidence:
+Shield / verification
 
-Do not use random emoji.
-
-Do not mix multiple icon styles.
-
+Do not use emoji.
 
 ============================================================
-20. COLOR-CODE THE ARCHITECTURE SUBTLY
+18. TECHNICAL SOURCE OF TRUTH
 ============================================================
 
-Use one primary blue family for the four phases.
-
-Use a subtle gold highlight for the most important AI/modeling
-element or current flow.
-
-Do not assign four unrelated colors to four phases.
-
-The entire pipeline should visually belong to one platform.
-
-Use muted red ONLY for risk-related elements such as:
-
-SLA Risk
-
-and keep it subtle.
-
-
-============================================================
-21. INFORMATION DENSITY
-============================================================
-
-The existing screenshots contain extensive technical detail.
-
-That information is valuable for documentation but should NOT all
-appear on the presentation slide.
-
-The slide should communicate architecture, not implementation code.
-
-Therefore:
-
-KEEP:
-    ServiceNow
-    Data Intelligence
-    Model Training
-    CatBoost
-    HPO
-    Classification
-    Regression
-    Semantic Search
-    Embeddings
-    FAISS
-    Hybrid Inference
-    Historical Precedents
-    Assignment Group
-    Resolution Time
-    Confidence / Explainability
-
-COMPRESS:
-    validation details
-    cleaning details
-    enrichment details
-    feature engineering details
-    NLP details
-    EDA details
-    dataset split details
-
-HIDE:
-    class names
-    function names
-    file names
-    implementation-specific Python details
-    individual preprocessing rules
-
-Those can be explained verbally if asked.
-
-
-============================================================
-22. TECHNICAL ACCURACY
-============================================================
-
-The underlying implementation represented by this slide is:
+The underlying Incident Classifier architecture is:
 
 PHASE 1 — DATA INTELLIGENCE
-    Data Validation
-    ML Readiness Assessment
-    Data Cleaning
-    External Enrichment
-    Feature Engineering
-    NLP Text Preprocessing
-    Exploratory Data Analysis
-    Train / Validation / Test Splitting
+• Data Validation
+• ML Readiness Assessment
+• Data Cleaning
+• External Enrichment
+• Feature Engineering
+• NLP Text Preprocessing
+• Exploratory Data Analysis
+• Train / Validation / Test Splitting
 
 PHASE 2 — MODEL TRAINING
-    CatBoost Classification
-    CatBoost Regression
-    Hyperparameter Optimization
+• CatBoost Classification
+• CatBoost Regression
+• Hyperparameter Optimization
 
 PHASE 3 — SEMANTIC SEARCH
-    Embedding Generation
-    FAISS Vector Index
-    Similar Incident Retrieval
+• Embedding Generation
+• FAISS Vector Index
+• Similar Incident Retrieval
 
 PHASE 4 — HYBRID INFERENCE
-    Hybrid Recommendation Engine
+• Hybrid Recommendation Engine
 
-Do not change this architecture merely to make the slide
-sound more impressive.
+Represent these accurately.
+
+Do not invent additional architecture.
+
+============================================================
+19. WHAT TO SHOW VS WHAT NOT TO SHOW
+============================================================
+
+SHOW:
+
+ServiceNow
+Data Intelligence
+Model Training
+CatBoost
+HPO
+Assignment Group Classification
+Resolution Time Regression
+Semantic Search
+Embeddings
+FAISS
+Historical Precedents
+Hybrid Inference
+Hybrid Recommendation
+Confidence / Explainability
+
+COMPRESS:
+
+Data validation details
+Cleaning details
+Enrichment details
+Feature engineering details
+NLP details
+EDA details
+Dataset splitting details
+
+DO NOT SHOW:
+
+Python filenames
+Class names
+Function names
+Implementation code
+Long technical descriptions
+12 individual pipeline stages
+Unsupported technologies
+Unsupported metrics
+
+============================================================
+20. NO UNSUPPORTED CLAIMS
+============================================================
+
+Do not write:
+
+"100% accurate"
+
+"Guaranteed SLA improvement"
+
+"Fully autonomous routing"
+
+"Production deployed"
+
+"Real-time production system"
+
+"Guaranteed resolution reduction"
+
+or any other unsupported performance/deployment claim.
+
+Keep the slide technically defensible.
+
+============================================================
+21. FINAL VISUAL STORY
+============================================================
+
+The final slide should visually read:
+
+                INCIDENT CLASSIFIER
+
+                    THE CHALLENGE
+                         ↓
+                Manual Incident Triage
+                         ↓
+      ┌────────────────────────────────────┐
+      │       AI-POWERED SOLUTION          │
+      │                                    │
+      │  DATA INTELLIGENCE                 │
+      │          ↓                         │
+      │  MODEL TRAINING                    │
+      │          ↓                         │
+      │  SEMANTIC SEARCH                   │
+      │          ↓                         │
+      │  HYBRID INFERENCE                 │
+      └────────────────────────────────────┘
+                         ↓
+                INTELLIGENCE OUTPUT
+
+        Assignment Group
+        Resolution Time
+        Historical Precedents
+        Confidence / Explainability
+
+                MANUAL TRIAGE
+                       →
+          AI-ASSISTED INCIDENT INTELLIGENCE
 
 
 ============================================================
-23. DO NOT INVENT CLAIMS
+22. FINAL QUALITY CHECK
 ============================================================
 
-Never add:
+Before finishing, verify:
 
-    100% accuracy
-    guaranteed SLA improvement
-    guaranteed resolution reduction
-    autonomous routing
-    production deployment
-    real-time production automation
-    cloud deployment
-    LLM capabilities
-    RAG capabilities
-    unsupported performance metrics
+✓ Project name is EXACTLY:
+  INCIDENT CLASSIFIER
 
-unless those facts are explicitly present in the actual project.
+✓ Only ONE slide is generated.
 
-Technical credibility is more important than impressive wording.
+✓ Only project content is generated.
 
+✓ No logo is generated.
 
-============================================================
-24. MAKE THE SLIDE EASY TO PRESENT VERBALLY
-============================================================
+✓ No First Citizens text is generated.
 
-The slide should allow me to explain the entire project using this
-simple narrative:
+✓ No footer is generated.
 
-"The problem starts with manual ServiceNow incident triage.
+✓ No page number is generated.
 
-The platform first prepares and enriches the incident data through
-the Data Intelligence phase.
+✓ No slide number is generated.
 
-The Model Training phase then predicts both the appropriate
-assignment group and the expected resolution time.
+✓ No template elements are generated.
 
-In parallel, Semantic Search uses embeddings and FAISS to retrieve
-relevant historical incidents.
+✓ No background element covers the existing template.
 
-Finally, Hybrid Inference combines the predictive outputs with those
-historical precedents to provide a more informed incident
-recommendation.
+✓ Existing corporate template elements can remain untouched.
 
-So the platform moves incident handling from manual triage toward
-AI-assisted incident intelligence."
+✓ Exactly FOUR pipeline phases are present.
 
-The slide itself should NOT contain this paragraph.
+✓ Phase names are EXACTLY:
 
-The visual should make this explanation obvious.
+  DATA INTELLIGENCE
+  MODEL TRAINING
+  SEMANTIC SEARCH
+  HYBRID INFERENCE
 
+✓ Assignment Group Classification is shown.
 
-============================================================
-25. ALIGNMENT AND SPACING
-============================================================
+✓ Resolution Time Regression is shown.
 
-Use a strict grid.
+✓ CatBoost + HPO is shown.
 
-Ensure:
+✓ Embeddings + FAISS are shown.
 
-• all cards have consistent width
-• all cards have consistent height where appropriate
-• all icons are aligned
-• arrows are centered
-• headings share the same baseline
-• margins are consistent
-• left/center/right panels have clear separation
-• footer does not collide with content
-• no text touches card boundaries
-• no element is accidentally cropped
+✓ Historical incident retrieval is shown.
 
-Use generous whitespace.
+✓ Hybrid Inference combines predictions and historical precedents.
 
-Whitespace is preferable to additional text.
+✓ Final intelligence outputs are clearly visible.
 
+✓ Slide is readable from presentation distance.
 
-============================================================
-26. ACCESSIBILITY / PRESENTATION DISTANCE
-============================================================
+✓ No unnecessary paragraphs.
 
-Check the slide as if it were projected in a conference room.
+✓ No tiny text.
 
-Someone sitting several meters away should immediately see:
+✓ No unsupported metrics.
 
-    CHALLENGE
-    ↓
-    DATA
-    ↓
-    MODELS
-    ↓
-    SEARCH
-    ↓
-    HYBRID
-    ↓
-    OUTPUT
+✓ No invented technologies.
 
-Do not depend on tiny labels for the main story.
+✓ No visual clutter.
 
-Use contrast sufficient for projection.
+✓ Professional enterprise AI/ML appearance.
 
-Avoid light-grey text on white backgrounds.
+MOST IMPORTANT:
 
-Make the four phase titles especially readable.
+GENERATE ONLY THE INCIDENT CLASSIFIER PROJECT CONTENT.
 
+DO NOT GENERATE OR MODIFY ANY CORPORATE TEMPLATE,
+LOGO, FOOTER, PAGE NUMBER, SLIDE NUMBER OR BRANDING.
 
-============================================================
-27. FINAL VISUAL BLUEPRINT
-============================================================
-
-The final composition should approximately follow:
-
-┌─────────────────────────────────────────────────────────────────────────┐
-│  SERVICE NOW INCIDENT INTELLIGENCE PLATFORM                             │
-│  AI-powered incident triage, prediction and historical intelligence    │
-├────────────────┬──────────────────────────────────────┬─────────────────┤
-│                │                                      │                 │
-│ THE CHALLENGE  │        AI-POWERED SOLUTION           │ INTELLIGENCE    │
-│                │                                      │ OUTPUT          │
-│ ServiceNow     │  FROM MANUAL TRIAGE → AI-ASSISTED   │                 │
-│ Incident       │       INCIDENT INTELLIGENCE          │ Assignment      │
-│      ↓         │                                      │ Group           │
-│ Manual Reading │  01 → 02 → 03 → 04                  │                 │
-│      ↓         │                                      │ Resolution      │
-│ Manual Triage  │ DATA → MODEL → SEARCH → HYBRID      │ Time            │
-│ + Routing      │                                      │                 │
-│                │  Data Intelligence                   │ Historical      │
-│ BUSINESS       │  Model Training                      │ Precedents     │
-│ IMPACT         │  Semantic Search                     │                 │
-│                │  Hybrid Inference                    │ Confidence +   │
-│ • Assignment   │                                      │ Explainability  │
-│ • Resolution   │                                      │                 │
-│ • SLA Risk     │                                      │                 │
-│ • Knowledge    │                                      │                 │
-│   Loss         │                                      │                 │
-├────────────────┴──────────────────────────────────────┴─────────────────┤
-│  MANUAL TRIAGE  ─────────────────→  AI-ASSISTED INCIDENT INTELLIGENCE  │
-│  [EXISTING FIRST CITIZENS FOOTER/LOGO — PRESERVE EXACTLY]              │
-└─────────────────────────────────────────────────────────────────────────┘
-
-
-============================================================
-28. FINAL QA — DO THIS BEFORE FINISHING
-============================================================
-
-Perform a final visual and technical audit.
-
-CHECK 1:
-Is the problem understandable in under 5 seconds?
-
-CHECK 2:
-Is the solution understandable in under 5 seconds?
-
-CHECK 3:
-Are there exactly FOUR architecture phases?
-
-CHECK 4:
-Are the phase names EXACTLY:
-
-    DATA INTELLIGENCE
-    MODEL TRAINING
-    SEMANTIC SEARCH
-    HYBRID INFERENCE
-
-CHECK 5:
-Is CatBoost + HPO clearly represented?
-
-CHECK 6:
-Are BOTH predictive tasks visible?
-
-    Assignment Group Classification
-    Resolution Time Regression
-
-CHECK 7:
-Are Embeddings + FAISS clearly represented?
-
-CHECK 8:
-Is historical incident retrieval visible?
-
-CHECK 9:
-Is Hybrid Inference clearly shown as combining
-predictions + historical precedents?
-
-CHECK 10:
-Are final outputs clearly visible?
-
-    Assignment Group
-    Resolution Time
-    Historical Precedents
-    Confidence / Explainability
-
-CHECK 11:
-Is the existing First Citizens logo at bottom-left
-preserved without visibility loss?
-
-CHECK 12:
-Is there NO additional First Citizens logo anywhere else?
-
-CHECK 13:
-Is the slide free from unsupported claims?
-
-CHECK 14:
-Is there enough whitespace?
-
-CHECK 15:
-Is all important text readable from presentation distance?
-
-CHECK 16:
-Does the slide look like an enterprise banking presentation
-rather than an AI startup advertisement?
-
-CHECK 17:
-Can I explain the entire project naturally using this slide
-without needing another architecture diagram?
-
-If any answer is NO, fix the slide before finalizing.
-
-
-============================================================
-29. MOST IMPORTANT DESIGN PRINCIPLE
-============================================================
-
-DO NOT TRY TO SHOW EVERYTHING.
-
-SHOW THE ARCHITECTURE.
-
-The detailed 12-stage implementation belongs in technical documentation.
-
-This slide's job is to communicate:
-
-    WHY
-      ↓
-    WHAT
-      ↓
-    HOW
-      ↓
-    OUTPUT
-
-in one glance.
-
-The final slide should feel:
-
-    SIMPLE ON THE SURFACE
-    TECHNICALLY DEEP UNDERNEATH
-    ENTERPRISE-GRADE
-    FIRST CITIZENS APPROPRIATE
-    INTERN PRESENTATION READY
-
-Make the minimum number of visual elements necessary to tell
-the complete story.
-
-DO NOT add decorative elements merely to fill empty space.
-
-DO NOT redesign unnecessarily.
-
-POLISH THE EXISTING SLIDE INTO A HIGH-END ENTERPRISE AI/ML
-ARCHITECTURE SLIDE.
+THE EXISTING POWERPOINT TEMPLATE MUST REMAIN THE OWNER OF
+ALL BRANDING AND TEMPLATE ELEMENTS.
