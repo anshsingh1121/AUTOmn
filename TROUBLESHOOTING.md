@@ -1,116 +1,127 @@
-MASTER PROMPT — CREATE ONE NEW PROJECT SLIDE
+Create ONE SINGLE, COMPLETE PowerPoint slide for my internship presentation.
 
-Create ONE COMPLETELY NEW POWERPOINT SLIDE for my internship presentation.
-
-PROJECT:
+PROJECT NAME:
 IMT Reconciliation & Update Automation
 
-IMPORTANT CONTEXT:
-I already have an existing PowerPoint presentation containing my First Citizens internship presentation, template, theme, and branding.
+IMPORTANT:
+I am asking you to GENERATE THE SLIDE ITSELF.
+Do NOT ask me to upload an existing PowerPoint presentation.
+Do NOT ask for the source deck.
+Do NOT modify or reference any existing presentation file.
 
-I DO NOT want you to edit, redesign, overwrite, or modify any existing slide.
+I will manually copy this generated slide into my existing internship presentation later.
 
-Instead:
+Therefore, create a standalone, fully editable PowerPoint slide that visually fits a professional First Citizens corporate internship presentation.
 
-→ ADD ONE BRAND-NEW SLIDE to the existing presentation.
-→ Keep ALL existing slides exactly as they are.
-→ Do not modify any existing slide.
-→ Do not modify the existing slide master.
-→ Do not modify existing presentation-wide branding.
-→ Do not disturb the existing First Citizens logo.
-→ The new slide should visually belong to the same presentation and naturally match its existing First Citizens corporate theme.
+DO NOT create or add:
+- First Citizens logo
+- FCI logo
+- any company logo
+- any company symbol
+- watermark
+- page number
+- footer
+- header branding
+- decorative corporate symbols
+- stock images
+- unrelated icons
 
-The existing First Citizens logo/branding should NOT be recreated manually.
-If the presentation's existing layout/theme automatically provides the logo on the new slide, preserve it exactly.
-If it does not automatically appear, DO NOT manually add a new logo unless it is already part of the presentation's existing template/master.
+The slide must contain ONLY the project content.
 
-DO NOT add any additional company logo, symbol, watermark, page number, decorative branding or unrelated graphics.
-
-==================================================
-PRIMARY OBJECTIVE
-==================================================
-
-Design ONE polished, premium corporate slide that explains the COMPLETE project at a high level.
-
-The slide must communicate:
-
-PROBLEM
-↓
-SOLUTION
-↓
-AUTOMATED PIPELINE
-↓
-OUTPUTS
-↓
-SINGLE APPLICATION / BUSINESS VALUE
-
-The audience should understand the project within approximately 20–30 seconds.
-
-This is an internship project presentation, NOT a technical architecture document.
-
-Keep the slide visually strong, concise and presentation-friendly.
+When I copy this slide into my existing presentation, nothing from this slide should overlap, replace, or interfere with the existing FCI logo or other template elements.
 
 ==================================================
-SLIDE TITLE
+SLIDE OBJECTIVE
+==================================================
+
+This is ONE project slide in a 10-minute internship presentation.
+
+The slide must tell the complete story of the project at a high level:
+
+MANUAL MONTHLY PROCESS
+        ↓
+PYTHON-BASED AUTOMATION
+        ↓
+VALIDATION + RECONCILIATION
+        ↓
+BUSINESS RULES
+        ↓
+AUTOMATED OUTPUT
+        ↓
+SINGLE APPLICATION
+
+The audience should understand the project within 20–30 seconds.
+
+Do NOT turn this into a software architecture/documentation slide.
+
+Do NOT show code.
+
+Do NOT show Python function names.
+
+Do NOT show libraries.
+
+Do NOT show file paths.
+
+Do NOT show implementation-level details.
+
+Focus on:
+WHAT WAS THE PROBLEM?
+WHAT DID I BUILD?
+HOW DOES IT WORK?
+WHAT DOES IT PRODUCE?
+WHY IS IT BETTER?
+
+==================================================
+TITLE
 ==================================================
 
 Use exactly:
 
 IMT Reconciliation & Update Automation
 
-Place the title prominently at the top, using the same typography and visual treatment as the existing presentation.
-
-Do not add a long subtitle.
+Make this the strongest textual element at the top.
 
 ==================================================
-1. PROBLEM
+PROBLEM
 ==================================================
 
-Create a compact PROBLEM section near the top.
+Create a compact "PROBLEM" section.
 
-Use this wording:
+Use this exact statement:
 
 "Every month, updating the Master YTD requires downloading the ServiceNow monthly report and manually comparing rows and columns — a time-consuming, complex and error-prone process."
 
-Do not display this as a large paragraph.
+Keep it compact.
 
-Use a compact card/banner structure:
-
-PROBLEM
-
-Every month, updating the Master YTD requires downloading the ServiceNow monthly report and manually comparing rows and columns — a time-consuming, complex and error-prone process.
-
-Immediately connect this to the solution.
+Do NOT make it a large paragraph.
 
 ==================================================
-2. SOLUTION
+SOLUTION
 ==================================================
 
-Create a visually clear SOLUTION statement immediately following the problem.
+Immediately connect the problem to the solution.
 
 Use:
 
-"SOLUTION — A Python-based automation that performs the complete reconciliation and update workflow and packages the solution into a single application for portable, user-friendly execution by non-technical users."
+"SOLUTION — A Python-based automation that performs the complete reconciliation and update workflow, then packages the complete solution into a single application for portable, user-friendly execution by non-technical users."
 
-Keep this concise.
-
-The visual narrative should clearly communicate:
+Make the transition visually obvious:
 
 MANUAL & ERROR-PRONE
-        →
+                →
 AUTOMATED & STANDARDIZED
 
-Do not use oversized decorative arrows.
+Keep this subtle and professional.
 
 ==================================================
-3. MAIN VISUAL — AUTOMATED PIPELINE
+MAIN VISUAL — AUTOMATED PIPELINE
 ==================================================
 
-The main visual element of the slide must be the end-to-end automation pipeline.
+The MAIN visual element of the slide must be the complete automation pipeline.
 
-Use native editable PowerPoint shapes and connectors.
+Use native editable PowerPoint shapes.
 
-Do NOT create the pipeline as a single image.
+Do NOT create the pipeline as one image.
 
 Do NOT use a screenshot.
 
@@ -118,9 +129,7 @@ Do NOT use Mermaid.
 
 Do NOT flatten the diagram.
 
-Every major stage must remain independently editable.
-
-Use this exact high-level flow:
+The pipeline must be:
 
 INPUTS
 →
@@ -136,17 +145,15 @@ OUTPUT WRITER
 →
 OUTPUTS
 
-Prefer a clean horizontal flow across the central portion of the slide.
+Prefer a clean horizontal left-to-right layout.
 
-If required for readability, use a slightly stepped layout, but maintain a clear left-to-right progression.
-
-The pipeline should be visually dominant.
+Use compact cards with clean connectors.
 
 ==================================================
-4. INPUTS
+INPUTS
 ==================================================
 
-Show three compact input cards:
+Show three input cards:
 
 MASTER YTD
 (.xlsm / .xlsx)
@@ -157,14 +164,12 @@ SERVICENOW MONTHLY REPORT
 IC LOOKUP
 (Excel sheet)
 
-These feed into:
+These feed into DATA LOADER.
 
-DATA LOADER
-
-Do not add any additional input source.
+Do not add other inputs.
 
 ==================================================
-5. DATA LOADER
+DATA LOADER
 ==================================================
 
 Heading:
@@ -175,12 +180,10 @@ Supporting text:
 
 "Loads and standardizes Master YTD, ServiceNow report and IC Lookup data."
 
-Do NOT show Python function names.
-
-Do not show implementation-level code.
+Keep it concise.
 
 ==================================================
-6. VALIDATOR
+VALIDATOR
 ==================================================
 
 Heading:
@@ -191,25 +194,23 @@ Supporting text:
 
 "Validates required columns, Number fields and IC lookup data before processing."
 
-Keep it compact.
-
-The purpose is simply to communicate that input data is checked before reconciliation.
+Keep it concise.
 
 ==================================================
-7. RECONCILER
+RECONCILER
 ==================================================
 
 Heading:
 
 RECONCILER
 
-This should be one of the visually important stages.
+Make this one of the most visually important stages.
 
 Show:
 
 MATCH BY NUMBER
 
-Then clearly display the three reconciliation outcomes:
+Then show the three actual reconciliation outcomes:
 
 UPDATED
 Existing record matched and updated
@@ -220,38 +221,38 @@ Not present in Master YTD → created as new
 HISTORICAL
 Not present in current ServiceNow report → retained
 
-Use the terminology exactly:
+The words:
 
 UPDATED
 NEW
 HISTORICAL
 
-A compact representation such as:
+must be clearly visible.
+
+A compact visual structure is preferred:
 
 MATCH BY NUMBER
-      ↓
+        ↓
 UPDATED | NEW | HISTORICAL
 
-is preferred.
-
-Do not over-explain the reconciliation algorithm.
-
 ==================================================
-8. BUSINESS RULES
+BUSINESS RULES
 ==================================================
 
 Heading:
 
 BUSINESS RULES
 
-Show the four important rules:
+Show only the important rules:
 
 • IC Determination
 • Region Lookup
 • Bank / SVB Determination
 • Duration Calculation
 
-Where useful, show the logic very briefly:
+Keep each extremely concise.
+
+Where useful:
 
 IC:
 IC → Proposed By for Priority 3 → blank
@@ -267,21 +268,19 @@ Applicable dates/timestamps → Duration
 
 Do not make this section text-heavy.
 
-The audience only needs to understand that standardized business logic is applied after reconciliation.
-
 ==================================================
-9. OUTPUT WRITER
+OUTPUT WRITER
 ==================================================
 
 Heading:
 
 OUTPUT WRITER
 
-Supporting statement:
+Supporting text:
 
 "Updates the existing Excel template while preserving workbook structure, formulas and reporting format."
 
-Show a compact list:
+Show:
 
 • Write updated data
 • Preserve workbook structure
@@ -289,18 +288,10 @@ Show a compact list:
 • Save final output
 • Generate audit information
 
-Do not focus on implementation libraries.
-
-Do not show code.
-
-If the actual technical terminology needs to be retained, the heading may be:
-
-OUTPUT WRITER (COM)
-
-But prioritize what it accomplishes rather than the technology used.
+Do not focus on implementation technology.
 
 ==================================================
-10. OUTPUTS
+OUTPUTS
 ==================================================
 
 Show three final output cards:
@@ -314,40 +305,28 @@ RECONCILIATION REPORT
 AUDIT LOG
 (.json)
 
-Make the flow visually obvious:
-
-OUTPUT WRITER
-      ↓
-UPDATED MASTER YTD
-RECONCILIATION REPORT
-AUDIT LOG
+Clearly show these as the final products of the automation.
 
 ==================================================
-11. SINGLE APPLICATION / PACKAGING
+SINGLE APPLICATION
 ==================================================
 
-This is an important part of the project.
+This is a major part of the project and must be visible.
 
-The Python solution was not left as a collection of scripts.
-
-The complete codebase and dependencies were packaged into a single application to make it easier for non-technical users to run.
-
-Create a compact callout near the lower portion of the slide:
+Create a compact but visually strong callout:
 
 SINGLE APPLICATION
 
 "Complete codebase + dependencies packaged into one portable application"
 
-Then show four concise benefits:
+Then show:
 
 PORTABLE
 PLATFORM-INDEPENDENT
 USER-FRIENDLY
 NON-TECHNICAL USER READY
 
-Do not make this larger than the main pipeline.
-
-The visual message should be:
+The message should be:
 
 Python Codebase
 +
@@ -357,13 +336,13 @@ Automation Workflow
         ↓
 SINGLE APPLICATION
 
-Do not show PyInstaller or other packaging implementation details unless absolutely necessary.
+Do not mention PyInstaller or other implementation details.
 
 ==================================================
-12. BUSINESS VALUE
+BUSINESS VALUE
 ==================================================
 
-At the bottom of the content area, include a compact value strip:
+Add a small final value strip:
 
 AUTOMATED MONTHLY RECONCILIATION
 REDUCED MANUAL EFFORT
@@ -372,190 +351,11 @@ AUDITABLE & REPEATABLE OUTPUT
 
 Do not add numerical claims.
 
-Do not invent percentage improvements.
-
 ==================================================
-RECOMMENDED STORY
+DESIRED VISUAL STRUCTURE
 ==================================================
 
-The slide should visually communicate this:
-
-        MANUAL MONTHLY PROCESS
-
-Download ServiceNow Report
-        ↓
-Compare Rows / Columns
-        ↓
-Reconcile Master YTD
-        ↓
-Apply Business Rules
-        ↓
-Update Workbook
-        ↓
-Risk of Manual Errors
-
-                 ↓
-
-        PYTHON AUTOMATION
-
-Master YTD + ServiceNow + IC Lookup
-        ↓
-Data Loader
-        ↓
-Validator
-        ↓
-Reconciler
-        ↓
-Business Rules
-        ↓
-Output Writer
-        ↓
-Updated Master + Report + Audit
-
-                 ↓
-
-        SINGLE APPLICATION
-
-Portable | Platform-independent | User-friendly
-                 ↓
-        Non-technical Users
-
-Do NOT literally reproduce this ASCII diagram.
-
-Use it only as the conceptual structure.
-
-==================================================
-VISUAL DESIGN
-==================================================
-
-The new slide must match the visual language of the existing First Citizens internship presentation.
-
-Use the existing presentation as the design reference for:
-
-• typography
-• colors
-• spacing
-• background
-• section headings
-• card treatment
-• line weight
-• visual hierarchy
-
-The slide should feel as if it was designed as part of the same presentation from the beginning.
-
-Use:
-
-• clean corporate styling
-• minimal design
-• professional blue/white visual language consistent with the template
-• subtle accents
-• clean editable shapes
-• precise alignment
-• generous whitespace
-• strong hierarchy
-
-Avoid:
-
-• flashy colors
-• gradients
-• excessive shadows
-• cartoon graphics
-• stock images
-• decorative icons
-• AI-generated illustrations
-• unnecessary symbols
-• excessive arrows
-• visual clutter
-
-The PIPELINE should be the primary visual.
-
-The PROBLEM → SOLUTION transition should be the primary narrative.
-
-The SINGLE APPLICATION callout should be secondary.
-
-==================================================
-IMPORTANT — DO NOT OVER-TECHNICALIZE
-==================================================
-
-This is ONE project slide in an internship presentation.
-
-Do NOT include:
-
-• Python code
-• function names
-• class names
-• file paths
-• package names
-• library names
-• source-code snippets
-• detailed implementation architecture
-• excessive technical terminology
-
-Do not turn the slide into a developer documentation page.
-
-The audience needs to understand:
-
-WHAT WAS THE PROBLEM?
-WHAT DID I BUILD?
-HOW DOES IT WORK?
-WHAT DOES IT PRODUCE?
-WHY IS IT BETTER?
-
-==================================================
-EXACT PROJECT TERMINOLOGY
-==================================================
-
-Preserve these terms:
-
-IMT Reconciliation & Update Automation
-
-Master YTD
-
-ServiceNow Monthly Report
-
-IC Lookup
-
-DATA LOADER
-
-VALIDATOR
-
-RECONCILER
-
-UPDATED
-
-NEW
-
-HISTORICAL
-
-BUSINESS RULES
-
-IC Determination
-
-Region Lookup
-
-Bank / SVB Determination
-
-Duration Calculation
-
-OUTPUT WRITER
-
-Updated Master YTD
-
-Reconciliation Report
-
-Audit Log
-
-Single Application
-
-Do NOT rename these into artificial AI/ML terminology.
-
-This is an automation/reconciliation project and should be represented accurately.
-
-==================================================
-LAYOUT
-==================================================
-
-Use approximately this hierarchy:
+Use this as the conceptual layout:
 
 --------------------------------------------------
 
@@ -567,197 +367,234 @@ ServiceNow monthly report and manually comparing rows and columns —
 a time-consuming, complex and error-prone process.
 
 [ SOLUTION ]
-Python-based end-to-end automation → Single Application
+Python-based end-to-end automation
+→ Single Application
 
-              AUTOMATED WORKFLOW
+                 AUTOMATED WORKFLOW
 
-[INPUTS]
+INPUTS
 Master YTD | ServiceNow Monthly Report | IC Lookup
+                         ↓
+                  DATA LOADER
+                         ↓
+                   VALIDATOR
+                         ↓
+                  RECONCILER
+                  Match by Number
+             UPDATED | NEW | HISTORICAL
+                         ↓
+                 BUSINESS RULES
+          IC | Region | Bank/SVB | Duration
+                         ↓
+                  OUTPUT WRITER
+                         ↓
+                    OUTPUTS
+      Master YTD | Reconciliation | Audit Log
 
-                     ↓
+                 SINGLE APPLICATION
+       Portable | Platform-independent
+         User-friendly | Non-technical
 
-[DATA LOADER]
-                     ↓
-[VALIDATOR]
-                     ↓
-[RECONCILER]
-MATCH BY NUMBER
-UPDATED | NEW | HISTORICAL
-                     ↓
-[BUSINESS RULES]
-IC | Region | Bank/SVB | Duration
-                     ↓
-[OUTPUT WRITER]
-                     ↓
-[OUTPUTS]
-Updated Master YTD | Reconciliation Report | Audit Log
-
-       [ SINGLE APPLICATION ]
-Portable | Platform-independent | User-friendly
-                     ↓
-             Non-technical Users
-
-[Automated] [Reduced Manual Effort] [Consistent] [Auditable]
+[ Automated ] [ Less Manual Effort ]
+[ Consistent ] [ Auditable ]
 
 --------------------------------------------------
 
-Optimize the exact positioning based on the dimensions and visual structure of the existing presentation.
+Do NOT literally use this ASCII layout.
 
-Do not blindly follow the ASCII layout if it produces an overcrowded slide.
-
-==================================================
-NEW SLIDE REQUIREMENT
-==================================================
-
-Again:
-
-THIS MUST BE A NEW SLIDE.
-
-Do NOT edit the content of any existing slide.
-
-Do NOT replace an existing slide.
-
-Do NOT redesign an existing slide.
-
-Do NOT modify existing slide objects.
-
-Do NOT modify the existing presentation's master/theme.
-
-Add this project as a completely new slide while maintaining visual consistency with the presentation.
-
-If the presentation already has a standard project-slide layout, use that visual language as the reference but create the new project content independently.
+Use it only as the content and hierarchy reference.
 
 ==================================================
-LOGO / BRANDING REQUIREMENT
+DESIGN STYLE
 ==================================================
 
-Do NOT manually add any First Citizens logo.
+Design it as a premium corporate internship presentation slide.
 
-Do NOT add any other company logo.
+Use a style appropriate for a First Citizens corporate presentation:
 
-Do NOT add symbols representing First Citizens.
+- clean
+- professional
+- minimal
+- structured
+- sophisticated
+- blue/white corporate visual language
+- subtle accent colors
+- strong typography hierarchy
+- generous whitespace
+- precise alignment
+- clean rectangular/rounded cards
+- thin professional connectors
 
-Do NOT add decorative branding.
+Do NOT use flashy colors.
 
-If the existing PowerPoint theme/master automatically places the First Citizens logo on the newly created slide, leave it untouched.
+Do NOT use gradients unless absolutely necessary.
 
-The existing logo position and appearance must remain exactly consistent with the rest of the presentation.
+Do NOT use cartoon graphics.
+
+Do NOT use stock images.
+
+Do NOT use decorative illustrations.
+
+Do NOT use excessive icons.
+
+Do NOT make it look like a generic AI-generated infographic.
+
+The slide should look like a professionally designed enterprise presentation.
+
+==================================================
+CRITICAL CONTENT BALANCE
+==================================================
+
+The slide must NOT become overcrowded.
+
+If space is limited:
+
+1. Keep the title.
+2. Keep the Problem.
+3. Keep the Solution.
+4. Keep the complete pipeline.
+5. Keep UPDATED / NEW / HISTORICAL.
+6. Keep the four Business Rules.
+7. Keep the outputs.
+8. Keep Single Application.
+9. Keep Business Value.
+
+Reduce explanatory text before reducing readability.
+
+Do NOT use tiny fonts simply to fit more information.
 
 ==================================================
 EDITABILITY
 ==================================================
 
-All newly created content must be editable.
+Everything must be editable in PowerPoint.
 
 Use native PowerPoint:
 
-• Text boxes
-• Rectangles
-• Rounded rectangles
-• Lines
-• Connectors
-• Arrows
+- text boxes
+- rectangles
+- rounded rectangles
+- lines
+- connectors
+- arrows
 
-Do not create one large image containing the entire slide.
+Do NOT create the slide as one flattened image.
 
 ==================================================
-FINAL QUALITY CHECK
+MOST IMPORTANT DESIGN PRINCIPLE
 ==================================================
 
-Before finalizing the new slide, verify:
+This slide should visually communicate this transformation:
 
-✓ Exactly ONE new slide has been added.
+BEFORE
 
-✓ No existing slide has been modified.
+Manual monthly reconciliation
+↓
+Download ServiceNow report
+↓
+Compare rows and columns
+↓
+Update Master YTD
+↓
+Manual effort + complexity + error risk
 
-✓ Existing presentation theme remains intact.
+AFTER
 
-✓ Existing First Citizens branding remains intact.
+Python automation
+↓
+Load
+↓
+Validate
+↓
+Reconcile by Number
+↓
+Apply Business Rules
+↓
+Write Outputs
+↓
+Single Portable Application
+↓
+Non-technical User Friendly
 
-✓ No additional logo has been introduced.
+The audience should immediately understand:
 
-✓ No page number has been introduced.
+"I automated a repetitive monthly reconciliation process and turned the complete Python workflow into a portable application that can be used by non-technical users."
 
-✓ No watermark has been introduced.
+==================================================
+FINAL CHECK
+==================================================
 
-✓ Project title is exactly:
-"IMT Reconciliation & Update Automation"
+Before producing the slide, verify:
 
-✓ Problem statement clearly explains the monthly manual Master YTD + ServiceNow comparison process.
+✓ Exactly ONE slide.
 
-✓ Python-based automation is clearly presented as the solution.
+✓ Standalone slide.
 
-✓ Complete pipeline is visible:
+✓ No request for an existing PPTX.
 
-Inputs
-→ Data Loader
-→ Validator
-→ Reconciler
-→ Business Rules
-→ Output Writer
-→ Outputs
+✓ No existing presentation is modified.
 
-✓ Reconciler clearly shows:
+✓ No First Citizens logo is added.
 
-UPDATED
-NEW
-HISTORICAL
+✓ No company logo is added.
 
-✓ "Match by Number" is clearly communicated.
+✓ No page number.
 
-✓ Business Rules include:
+✓ No watermark.
 
-IC Determination
-Region Lookup
-Bank / SVB Determination
-Duration Calculation
+✓ No footer.
 
-✓ Outputs include:
+✓ No unnecessary symbols.
 
-Updated Master YTD
-Reconciliation Report
-Audit Log
+✓ Project name is exactly:
+IMT Reconciliation & Update Automation
+
+✓ Problem is clearly explained.
+
+✓ Python automation is clearly presented.
+
+✓ Complete pipeline is visible.
+
+✓ Master YTD, ServiceNow Monthly Report and IC Lookup are shown as inputs.
+
+✓ Data Loader is shown.
+
+✓ Validator is shown.
+
+✓ Reconciler is shown.
+
+✓ Match by Number is shown.
+
+✓ UPDATED / NEW / HISTORICAL are shown.
+
+✓ Business Rules are shown.
+
+✓ IC, Region, Bank/SVB and Duration are represented.
+
+✓ Output Writer is shown.
+
+✓ Updated Master YTD, Reconciliation Report and Audit Log are shown.
 
 ✓ Single Application packaging is clearly communicated.
 
-✓ Portable, platform-independent and user-friendly benefits are visible.
+✓ Portable, platform-independent and user-friendly benefits are shown.
 
-✓ Non-technical-user usability is clearly communicated.
+✓ Non-technical users are explicitly addressed.
 
-✓ No unsupported numerical claims are added.
+✓ Business value is concise.
 
-✓ No unnecessary implementation details are included.
+✓ No excessive technical detail.
 
-✓ All newly created shapes/text are editable.
+✓ No invented metrics.
 
-✓ No overlapping objects.
+✓ All elements are editable.
 
-✓ No tiny unreadable text.
+✓ Slide is visually balanced.
 
-✓ Adequate whitespace.
+✓ Slide is readable during presentation.
 
-✓ Strong visual hierarchy.
+✓ Slide looks like a premium enterprise internship presentation.
 
-✓ The slide looks like a natural part of the existing First Citizens internship presentation.
+DO NOT PROVIDE AN EXPLANATION OF THE SLIDE.
 
-MOST IMPORTANT:
-
-The final slide should tell ONE clear story:
-
-MANUAL MONTHLY RECONCILIATION
-        ↓
-PYTHON-BASED AUTOMATION
-        ↓
-LOAD + VALIDATE
-        ↓
-RECONCILE
-        ↓
-APPLY BUSINESS RULES
-        ↓
-UPDATE + REPORT + AUDIT
-        ↓
-SINGLE PORTABLE APPLICATION
-        ↓
-LESS MANUAL EFFORT + CONSISTENT + AUDITABLE
-
-Create ONLY this ONE NEW PROJECT SLIDE.
+GENERATE THE FINAL SINGLE POWERPOINT SLIDE ONLY.
