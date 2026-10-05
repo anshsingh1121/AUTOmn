@@ -1,298 +1,545 @@
-Create ONE NEW presentation slide for my internship project.
+Create ONE COMPLETELY NEW PowerPoint slide for my internship presentation.
 
-PROJECT TITLE:
-“HAM – Asset-CI Alignment Audit Workflow”
+DO NOT use, copy, edit, modify, or recreate any existing slide.
 
-REFERENCE / EXISTING PRESENTATION STYLE:
-Use the attached/reference slide and the existing presentation as the visual reference.
+I am NOT providing a reference slide intentionally.
+
+You must independently design the slide from the detailed requirements below and create a polished, presentation-ready corporate slide suitable for a First Citizens India internship presentation.
+
+============================================================
+PROJECT
+============================================================
+
+Project:
+HAM – Asset-CI Alignment Audit Workflow
+
+HAM refers to Hardware Asset Management.
+
+This project is a ServiceNow-based automation workflow that audits the alignment between Hardware Assets and their corresponding Configuration Items (CIs), identifies misalignments, prepares an audit report, groups records by responsible owners, and sends personalized follow-up emails.
+
+This is one project within my internship journey and the slide will be presented to managers/directors and other professional stakeholders.
+
+The slide therefore needs to communicate:
+WHAT WAS THE PROBLEM?
+WHAT WAS THE SOLUTION?
+HOW DOES THE AUTOMATION WORK?
+WHAT DOES IT PRODUCE?
+
+All of this must fit on ONE slide.
+
+============================================================
+CORE STORY OF THE SLIDE
+============================================================
+
+Build the slide around this simple narrative:
+
+PROBLEM
+↓
+AUTOMATED SOLUTION
+↓
+ASSET–CI AUDIT PIPELINE
+↓
+ACTIONABLE OUTPUT
+
+The audience should understand the project in approximately 5–8 seconds.
+
+The slide should NOT feel like technical documentation.
+
+It should feel like a polished corporate project showcase.
+
+============================================================
+BRAND / VISUAL IDENTITY
+============================================================
+
+The presentation belongs to:
+
+First Citizens India
+
+Use a professional First Citizens India corporate visual language.
 
 IMPORTANT:
-- Create a completely NEW slide.
-- Do NOT edit, overwrite, redesign, or modify any existing slide.
-- Maintain the exact visual language of the existing presentation/template.
-- Preserve the existing dark theme, typography, font hierarchy, spacing, alignment style, subtle accent treatment, and professional enterprise aesthetic.
-- Do NOT add, remove, resize, recolor, or disturb any existing presentation-level elements such as company logo, footer, page number, master-slide elements, header elements, or template components.
-- The output should look as if it was naturally created as another slide in the same presentation.
-- Do not introduce a completely different visual style.
+Do NOT ask for or depend on a reference slide.
 
-PRIMARY OBJECTIVE:
-Create a SINGLE-SLIDE project overview that communicates the entire HAM project in one visual story:
+Instead, independently follow these design principles:
 
-PROBLEM → SOLUTION → AUTOMATED PIPELINE → OUTCOME
+BACKGROUND:
+- Clean white or very subtle off-white background
+- Bright, uncluttered canvas
+- No dark background
+- No dark dashboard
+- No black/charcoal full-slide background
+- No futuristic gradients
 
-The audience should understand the project within 5–8 seconds without reading a large amount of text.
+PRIMARY COLOR:
+- Deep corporate navy / slate-blue for major headings and important text
+- Use this consistently for title, section headings and major labels
 
---------------------------------------------------
-1. PROBLEM — WHY THIS PROJECT WAS NEEDED
---------------------------------------------------
+SECONDARY COLOR:
+- Medium muted blue for supporting elements, connectors, icons, or secondary text
+
+BRAND ACCENT:
+- Restrained First Citizens-style red may be used sparingly for emphasis
+- Red should NEVER dominate the slide
+- Do not use neon red
+
+NEUTRAL COLORS:
+- Dark gray for body text
+- Very light gray for subtle dividers, containers, or backgrounds
+
+OVERALL COLOR RATIO:
+Mostly white space + navy/blue typography + very limited red accent.
+
+TYPOGRAPHY:
+- Clean professional sans-serif typography
+- Strong bold title
+- Clear section headings
+- Readable medium-weight body text
+- No futuristic fonts
+- No decorative fonts
+- No excessive bolding
+
+VISUAL CHARACTER:
+- Corporate
+- Professional
+- Clean
+- Minimal
+- Structured
+- Sophisticated
+- Executive-friendly
+- Modern but not futuristic
+
+============================================================
+ABSOLUTELY DO NOT USE
+============================================================
+
+Do NOT create:
+
+- Dark-tech theme
+- Dark blue dashboard
+- Black background
+- Neon colors
+- Glowing elements
+- Cybersecurity aesthetic
+- AI futuristic aesthetic
+- Gaming-style cards
+- 3D illustrations
+- Glassmorphism
+- Heavy gradients
+- Excessive rounded cards
+- Huge icons
+- Decorative technology graphics
+- Stock photographs
+- Generic AI-generated infographic styling
+- Excessive visual effects
+
+The slide must look like a corporate banking/financial-services internship presentation.
+
+============================================================
+SLIDE COMPOSITION
+============================================================
+
+Use a clean hierarchy:
+
+TOP
+→ Project Title
+
+MIDDLE
+→ Problem + Solution
+
+MAIN AREA
+→ Automated Pipeline
+
+BOTTOM
+→ Outcome / Business Value
+
+Use generous whitespace.
+
+Do not try to fill every inch of the slide.
+
+============================================================
+1. TITLE
+============================================================
+
+Title:
+
+HAM – Asset-CI Alignment Audit Workflow
+
+Optional short subtitle:
+
+Automated audit, owner grouping and personalized follow-up
+
+Only include the subtitle if it improves the composition.
+
+The title should be the strongest textual element on the slide.
+
+Use a professional navy/blue title treatment.
+
+Do not create a huge decorative title.
+
+============================================================
+2. PROBLEM
+============================================================
 
 Create a compact section titled:
 
-“Problem”
+PROBLEM
 
-Do NOT use a paragraph.
+The problem statement should be concise.
 
-Use only 3 concise points:
+Use these three points:
 
 • Asset and CI records can become misaligned
 • Manual audits require repetitive record-level analysis
 • Identifying owners and following up is time-consuming
 
-Visually represent this as an “audit / misalignment” problem using a subtle enterprise-style icon or visual cue if it fits the existing theme.
+Do NOT use a paragraph.
 
-The problem section should visually communicate:
+Visually communicate:
 
-Asset–CI data inconsistency
-        ↓
-Manual identification
-        ↓
+Asset–CI mismatch
++
+Manual analysis
++
 Manual follow-up
 
-Keep this section compact and secondary to the solution/pipeline.
+Use a very simple audit / warning / mismatch line icon if appropriate.
 
---------------------------------------------------
-2. SOLUTION — WHAT I AUTOMATED
---------------------------------------------------
+The Problem section should occupy relatively little space.
 
-Create a strong central/focal section titled:
+============================================================
+3. SOLUTION
+============================================================
 
-“Solution”
+Create a visually stronger section titled:
 
-Use this exact main statement:
+SOLUTION
 
-“Automated Asset–CI Alignment Audit”
+Main statement:
 
-Under it, add the concise supporting flow:
+Automated Asset–CI Alignment Audit
 
-“Detect → Analyze → Report → Notify”
+Supporting phrase:
 
-This should be the visual bridge between the problem and the pipeline.
+Detect → Analyze → Report → Notify
 
-The solution should visually stand out slightly more than the Problem section, while still matching the existing presentation theme.
+The solution should visually connect the problem to the pipeline.
 
-Do NOT add a long explanation.
+Do not make this a giant colored card.
 
---------------------------------------------------
-3. AUTOMATED PIPELINE — HOW IT WORKS
---------------------------------------------------
+Use clean typography and a subtle visual treatment such as a light-gray/very-light-blue container, divider, or accent line.
 
-Create a clean enterprise workflow titled:
+============================================================
+4. AUTOMATED PIPELINE
+============================================================
 
-“Automated Pipeline”
+This is the MAIN visual element of the slide.
 
-Use the following EXACT sequence and terminology:
+Section title:
+
+AUTOMATED PIPELINE
+
+Show the following complete workflow:
 
 ServiceNow
-↓
+→
 Fetch Asset–CI Data
-↓
+→
 Validate Asset–CI Alignment
-↓
+→
 Identify Misalignments & Patterns
-↓
+→
 Generate Audit Report
-↓
+→
 Group Records by Owners
-↓
+→
 Send Personalized Emails
 
-IMPORTANT:
-Do NOT simply place these as a long vertical text list like the current reference slide.
+These are the exact conceptual stages.
 
-Convert them into a visually engaging connected workflow using:
-- Compact cards/nodes
-- Thin connectors/arrows
-- Clear directional flow
-- Consistent spacing
-- Minimal icons where useful
+Do not remove important stages.
 
-Prefer a HORIZONTAL or SLIGHTLY STEPPED pipeline rather than a long vertical pipeline.
+Do not convert the pipeline into a paragraph.
 
-The workflow should visually read from:
+============================================================
+PIPELINE DESIGN
+============================================================
 
-SERVICE NOW
-     →
-DATA FETCH
-     →
-VALIDATION
-     →
-MISALIGNMENT DETECTION
-     →
-AUDIT REPORT
-     →
-OWNER GROUPING
-     →
-PERSONALIZED EMAIL
+Prefer a clean horizontal process flow across the slide.
 
-The complete seven-stage workflow must remain readable.
+However, if seven stages become too small to read, intelligently use a two-row or stepped workflow.
 
-Do not abbreviate away the meaning of any important stage.
+Possible structure:
 
---------------------------------------------------
-4. OUTPUT / IMPACT
---------------------------------------------------
+ServiceNow
+   →
+Fetch Data
+   →
+Validate Alignment
+   →
+Identify Misalignments
+   →
+Generate Report
+   →
+Group by Owners
+   →
+Send Emails
 
-At the end of the pipeline, create a small “Outcome” or “Output” area.
+Every stage should have:
 
-Use concise labels:
+- Short stage label
+- Optional one-line supporting descriptor
+- Simple line-style icon only if useful
+- Clear directional connector
 
-“Structured Audit Report”
-“Owner-wise Records”
-“Personalized Follow-up”
+Keep the cards/containers lightweight.
 
-Optionally include:
+They should NOT resemble application UI panels.
 
-“Reduced Manual Audit Effort”
+Use thin borders or subtle light-gray backgrounds if containers are required.
 
-Do not create a large separate section. It should visually appear as the natural result of the automated pipeline.
+Use navy/blue for the primary visual flow.
 
---------------------------------------------------
-5. OVERALL SLIDE COMPOSITION
---------------------------------------------------
+Use the First Citizens-style red accent sparingly for one important emphasis point, not throughout the pipeline.
 
-Use the following visual hierarchy:
+============================================================
+PIPELINE SUPPORTING LABELS
+============================================================
 
-                 HAM – Asset-CI Alignment Audit Workflow
+If there is enough space, use very short descriptors:
 
-       PROBLEM                    SOLUTION
-   Asset–CI mismatch       Automated Asset–CI Audit
-   Manual analysis         Detect → Analyze → Report → Notify
-   Manual follow-up
-                                  ↓
-                         AUTOMATED PIPELINE
-                                  ↓
+ServiceNow
+Source records
 
- ServiceNow → Fetch → Validate → Identify → Report → Group → Notify
-                                  ↓
-                              OUTCOME
-              Audit Report | Owner-wise Records | Follow-up
+Fetch Asset–CI Data
+Load audit scope
 
-Do NOT literally reproduce this ASCII layout.
+Validate Asset–CI Alignment
+Check relationships
 
-Use it only as the conceptual layout.
+Identify Misalignments & Patterns
+Detect exceptions
 
-The slide should feel balanced, modern, clean, and presentation-ready.
+Generate Audit Report
+Structure findings
 
---------------------------------------------------
-6. VISUAL PRIORITY
---------------------------------------------------
+Group Records by Owners
+Prepare follow-up
 
-The visual priority should be:
+Send Personalized Emails
+Notify owners
 
-1. Project title
-2. Automated pipeline
-3. Solution
-4. Problem
-5. Outcome
+These supporting descriptions are optional.
 
-The pipeline should occupy the largest portion of the slide because it explains what was actually automated.
+If they make the slide crowded, remove them.
 
-The Problem section should be concise.
+Readability is more important than including every descriptor.
 
-The Solution should act as the central bridge.
+============================================================
+5. OUTCOME
+============================================================
 
-The Outcome should be compact.
+At the bottom, create a concise section:
 
---------------------------------------------------
-7. DESIGN REQUIREMENTS
---------------------------------------------------
+OUTCOME
 
-Match the existing presentation:
+Show three or four short outputs:
 
-- Dark background
-- White/light typography
-- Existing accent color(s) only
-- Professional enterprise aesthetic
-- Clean thin lines
-- Subtle borders
-- Minimal rounded cards where appropriate
+Structured Audit Report
+Owner-wise Records
+Personalized Follow-up
+Reduced Manual Audit Effort
+
+These should look like outcomes of the pipeline, not another large content block.
+
+Use small icons only if they improve visual scanning.
+
+============================================================
+6. VISUAL STORY
+============================================================
+
+The finished slide should visually communicate:
+
+                PROBLEM
+       Asset–CI misalignment
+                ↓
+              SOLUTION
+    Automated Asset–CI Audit
+                ↓
+       AUTOMATED PIPELINE
+                ↓
+       ACTIONABLE OUTPUT
+
+The viewer should immediately understand:
+
+“An Asset–CI audit that previously required manual analysis and follow-up has been structured into an automated ServiceNow workflow.”
+
+============================================================
+7. CORPORATE PRESENTATION QUALITY
+============================================================
+
+This slide is part of an internship presentation.
+
+Therefore prioritize:
+
+1. Clarity
+2. Professional appearance
+3. Visual hierarchy
+4. Concise content
+5. Consistent branding
+6. Easy presentation narration
+
+Do NOT try to demonstrate technical complexity through excessive text.
+
+The technical complexity should be communicated through the workflow itself.
+
+============================================================
+8. SPACING AND LAYOUT
+============================================================
+
+Use a widescreen 16:9 presentation layout.
+
+Maintain:
+
+- Large margins
 - Strong alignment
 - Consistent spacing
-- Clear hierarchy
-- Plenty of negative space
+- Clear section separation
+- Adequate whitespace
+- Balanced visual weight
 
-Avoid:
+Do not overcrowd the slide.
 
-- Bright unnecessary colors
-- Large illustrations
-- Stock images
-- 3D graphics
-- Cartoon graphics
-- Excessive icons
-- Excessive gradients
-- Decorative clutter
-- Long paragraphs
-- Dense technical text
-- Generic AI infographic styling
+Do not make the pipeline so small that it becomes unreadable.
 
-Use simple enterprise/ServiceNow-style icons only when they improve comprehension.
+If content does not fit, reduce text rather than reducing readability.
 
---------------------------------------------------
-8. CONTENT TO EXCLUDE
---------------------------------------------------
+============================================================
+9. ICONOGRAPHY
+============================================================
 
-Do NOT include:
+Use only simple professional line icons where they genuinely help:
 
-- Code
-- API endpoints
-- Python libraries
-- Model details
-- Implementation-level technical details
-- Future scope
-- References
-- Detailed architecture
-- Separate “Technologies Used” section
-- Unnecessary metrics
-- Long explanations
+- ServiceNow / system source
+- Data fetch
+- Validation/check
+- Misalignment detection
+- Report
+- Owners/users
+- Email
 
-This is a project overview slide, not a technical documentation slide.
+Icons must be:
 
---------------------------------------------------
-9. FINAL PRESENTATION STORY
---------------------------------------------------
+- Small
+- Simple
+- Consistent
+- Corporate
 
-The slide must allow me to explain the project naturally in this sequence:
+Do not use colorful cartoon icons.
 
-“Asset and CI records can become misaligned, making manual auditing and follow-up repetitive. I automated this through a ServiceNow-based workflow that fetches and validates Asset–CI data, identifies misalignments and patterns, generates an audit report, groups records by owner, and sends personalized follow-up emails.”
+Do not use glowing icons.
 
-The visual design should reinforce exactly this story:
+Do not make icons the focus of the slide.
 
-MANUAL AUDIT PROBLEM
-        ↓
-AUTOMATED SOLUTION
-        ↓
-SERVICE NOW DATA
-        ↓
-VALIDATION
-        ↓
-MISALIGNMENT DETECTION
-        ↓
-AUDIT REPORT
-        ↓
-OWNER-WISE FOLLOW-UP
-        ↓
-PERSONALIZED EMAILS
+============================================================
+10. BRANDING ELEMENTS
+============================================================
 
---------------------------------------------------
-10. FINAL QUALITY CHECK
---------------------------------------------------
+Do NOT independently create or invent a First Citizens logo.
 
-Before finalizing the slide:
+Do NOT add a large company logo to the slide.
 
-- Ensure everything fits on ONE slide.
-- Ensure no text overlaps.
-- Ensure the seven pipeline stages are readable.
-- Ensure the slide does not look crowded.
-- Ensure the pipeline is visually dominant.
-- Ensure Problem, Solution, Pipeline, and Outcome are immediately distinguishable.
-- Ensure the slide follows the existing presentation theme.
-- Ensure no existing template/master elements are altered.
-- Ensure no company logo, footer, page number, or existing presentation element is recreated or replaced.
-- Ensure the result looks like a professionally designed internship presentation slide rather than an AI-generated infographic.
+Do NOT add unnecessary company branding.
+
+This is a project-content slide, not a title slide.
+
+If the PowerPoint master/template automatically contains branding, footer, page number, or other presentation-level elements, leave those elements untouched.
+
+The new slide should contain ONLY the project content.
+
+============================================================
+11. IMPORTANT CONTENT ACCURACY
+============================================================
+
+Do not invent:
+
+- Performance percentages
+- Time savings numbers
+- Number of records
+- Number of users
+- Accuracy metrics
+- ROI
+- Business KPIs
+- Technical components not mentioned here
+
+Only communicate the actual workflow.
+
+Do not claim that the workflow uses AI/ML unless explicitly stated.
+
+This project is primarily an automation/audit workflow.
+
+============================================================
+12. FINAL DESIGN DIRECTION
+============================================================
+
+Think:
+
+“Corporate banking internship project showcase”
+
+NOT:
+
+“AI product dashboard”
+
+The visual feeling should be:
+
+Clean white canvas
++
+Deep navy corporate typography
++
+Subtle blue accents
++
+Minimal restrained red
++
+Professional process visualization
++
+Generous whitespace
++
+Strong hierarchy
+
+The final slide should feel sophisticated enough for a manager/director presentation.
+
+============================================================
+13. FINAL QUALITY CHECK
+============================================================
+
+Before finalizing, independently evaluate the generated slide against these questions:
+
+• Does it look like a professional First Citizens India corporate slide?
+• Is the background clean and light?
+• Is navy/blue the dominant visual language?
+• Is red used only as a restrained accent?
+• Is the slide free from futuristic/dark-tech styling?
+• Can the problem be understood immediately?
+• Is the solution obvious?
+• Is the complete seven-stage pipeline readable?
+• Are the outcomes clearly visible?
+• Is there enough whitespace?
+• Is the slide visually balanced?
+• Is the text concise?
+• Can I explain the entire project from this slide in approximately 45–60 seconds?
+• Does the slide look like a corporate internship presentation rather than an AI-generated infographic?
+
+If the answer to any of these is NO, redesign the slide before finalizing.
 
 FINAL OUTPUT:
-Generate only the new slide for:
 
-“HAM – Asset-CI Alignment Audit Workflow”
+Generate ONE completely new slide titled:
 
-Make it polished, concise, visual, enterprise-grade, and presentation-ready.
+HAM – Asset-CI Alignment Audit Workflow
+
+Create the slide independently from this specification.
+
+Do NOT request a reference slide.
+Do NOT use an existing slide as the visual source.
+Do NOT edit an existing slide.
+
+Design the complete slide yourself using the corporate visual system and project information specified above.
