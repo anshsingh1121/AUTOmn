@@ -1,749 +1,829 @@
-MASTER PROMPT — GENERATE ONLY THE INCIDENT CLASSIFIER SLIDE
-============================================================
+MASTER PROMPT — CREATE ONE FINAL INTERNSHIP PRESENTATION SLIDE
 
-Act as a senior enterprise AI/ML architect and PowerPoint presentation
-designer.
+You are editing my EXISTING PowerPoint presentation.
 
-I need ONE SINGLE POWERPOINT SLIDE for my internship presentation.
+Create ONLY ONE slide for the following project:
 
-PROJECT NAME:
-INCIDENT CLASSIFIER
+IMT Reconciliation & Update Automation
+
+This is a project I developed to automate the monthly Master YTD reconciliation and update process.
 
 IMPORTANT:
-I already have a corporate PowerPoint template containing:
-• First Citizens branding
-• First Citizens logo
-• Footer
-• Page number
-• Slide master elements
-• Corporate template styling
+Do NOT create a new presentation.
+Do NOT redesign the presentation template.
+Do NOT modify the slide master.
+Do NOT modify the existing background.
+Do NOT modify existing theme elements.
+Do NOT move, resize, recolor, replace, or disturb the existing First Citizens logo at the bottom-left.
+Do NOT add another First Citizens logo.
+Do NOT add any company logo.
+Do NOT add any additional branding.
+Do NOT add page numbers.
+Do NOT add watermarks.
+Do NOT add decorative corporate symbols.
+Do NOT add unnecessary icons.
+Do NOT add stock images.
+Do NOT add unrelated graphics.
 
-DO NOT CREATE ANY OF THESE.
+The existing presentation already contains the correct First Citizens corporate template and logo. Treat all existing template elements as LOCKED and untouched.
 
-DO NOT MODIFY ANY OF THESE.
+Only use the available content area of the existing slide.
 
-DO NOT RECREATE ANY OF THESE.
+The final result must look like it naturally belongs to the existing internship presentation.
 
-DO NOT ADD ANY LOGO.
+==================================================
+CORE OBJECTIVE
+==================================================
 
-DO NOT ADD ANY PAGE NUMBER.
+Create a SINGLE high-quality executive/technical overview slide that communicates the complete project in approximately 20–30 seconds.
 
-DO NOT ADD ANY FOOTER.
+The story must be immediately understandable:
 
-DO NOT ADD "First Citizens Bank" text.
+MANUAL MONTHLY PROCESS
+        ↓
+PYTHON-BASED AUTOMATION
+        ↓
+VALIDATION + RECONCILIATION
+        ↓
+BUSINESS RULES
+        ↓
+AUTOMATED OUTPUT
+        ↓
+SINGLE USER-FRIENDLY APPLICATION
 
-DO NOT add any branding element.
+The slide should communicate that this was NOT merely a Python script.
 
-DO NOT touch the slide master.
+It was an end-to-end automation solution that:
 
-DO NOT alter the existing template/background.
+• removes repetitive monthly manual work
+• automates ServiceNow-to-Master YTD reconciliation
+• applies business rules consistently
+• generates the required outputs
+• packages the complete codebase and dependencies into a single application
+• makes the solution portable, platform-independent and usable by non-technical users
 
-The output from you must contain ONLY the CONTENT OF THE INCIDENT
-CLASSIFIER PROJECT SLIDE.
+==================================================
+SLIDE TITLE
+==================================================
 
-When this slide is copied into my existing presentation, my original
-template elements must remain completely untouched.
+Use exactly:
 
-The slide should therefore be designed as a CONTENT-ONLY slide that
-fits naturally inside my existing corporate template.
+IMT Reconciliation & Update Automation
 
-============================================================
-1. OBJECTIVE
-============================================================
+Do not add a subtitle directly under the title unless necessary for visual balance.
 
-Create a single, highly polished slide that communicates the complete
-Incident Classifier project:
+==================================================
+SECTION 1 — PROBLEM STATEMENT
+==================================================
 
-PROBLEM
-    ↓
-SOLUTION
-    ↓
-END-TO-END AI PIPELINE
-    ↓
-INTELLIGENCE OUTPUT
+Place a compact PROBLEM section near the top of the slide.
 
-The slide must be understandable within approximately 10 seconds.
+Use this exact meaning, but format it as polished presentation text:
 
-It should look like a high-quality enterprise AI/ML architecture slide,
-not like technical documentation.
+"Every month, updating the Master YTD requires downloading the ServiceNow monthly report and manually comparing rows and columns — a time-consuming, complex and error-prone process."
 
-============================================================
-2. SLIDE TITLE
-============================================================
+Keep it concise and highly readable.
+
+Do NOT display this as a large paragraph.
 
 Use:
 
-INCIDENT CLASSIFIER
+PROBLEM
 
-Subtitle:
+followed by the statement in a compact text/card area.
 
-AI-powered ServiceNow incident triage, prediction and historical
-intelligence
+Immediately communicate the solution underneath or beside it:
 
-Do NOT add any organization name or branding.
+"SOLUTION — A Python-based automation that performs the complete reconciliation and update workflow, packaged as a single application for portable, user-friendly execution by non-technical users."
 
-============================================================
-3. OVERALL LAYOUT
-============================================================
+The Problem and Solution should visually form a clear transition:
 
-Use a clean three-section layout:
+Manual & Error-Prone
+        →
+Automated & Standardized
 
-LEFT:
-THE CHALLENGE
+Do NOT use large decorative arrows.
 
-CENTER:
-AI-POWERED SOLUTION
+==================================================
+SECTION 2 — MAIN AUTOMATION PIPELINE
+==================================================
 
-RIGHT:
-INTELLIGENCE OUTPUT
+The central and largest portion of the slide must contain the actual end-to-end pipeline.
 
-The CENTER should receive the greatest visual emphasis.
+IMPORTANT:
+Use the SAME terminology used in the actual project architecture.
 
-Use a clean enterprise layout with strong whitespace.
+Do NOT replace the terminology with generic AI/software terminology.
 
-Do not overcrowd the slide.
+The pipeline must be:
 
-============================================================
-4. LEFT — THE CHALLENGE
-============================================================
+INPUTS
+↓
+DATA LOADER
+↓
+VALIDATOR
+↓
+RECONCILER
+↓
+BUSINESS RULES
+↓
+OUTPUT WRITER
+↓
+OUTPUTS
 
-Heading:
+Prefer a clean horizontal pipeline if it fits naturally within the template.
 
-THE CHALLENGE
+If the available content area is too narrow, use a compact left-to-right stepped flow.
 
-Show the incident journey:
+Do NOT use a tall architecture diagram that consumes the entire slide vertically.
 
-SERVICE NOW INCIDENT
-        ↓
-MANUAL READING
-        ↓
-MANUAL TRIAGE + ROUTING
+The pipeline should look like a business automation workflow, not a software engineering class diagram.
 
-Then show:
+==================================================
+INPUTS
+==================================================
 
-BUSINESS IMPACT
+Show three compact input cards feeding the DATA LOADER:
 
-• Incorrect Assignment
-• Delayed Resolution
-• SLA Risk
-• Knowledge Loss
+MASTER YTD
+(.xlsm / .xlsx)
 
-Use short labels and simple professional icons.
+SERVICENOW MONTHLY REPORT
+(.xlsx / .csv)
 
-Do not use unsupported numerical claims.
+IC LOOKUP
+(Excel sheet)
 
-Do not write large paragraphs.
+Use these exact concepts.
+
+Do not introduce additional input files.
+
+Visually distinguish these as INPUTS rather than processing stages.
+
+==================================================
+STAGE 1 — DATA LOADER
+==================================================
+
+Use the exact heading:
+
+DATA LOADER
+
+Under it, use a concise description:
+
+"Loads and standardizes Master YTD, ServiceNow report and IC Lookup data."
+
+Do NOT show Python function names such as:
+
+load_master_tracker()
+load_servicenow()
+load_ic_lookup()
+
+Those are implementation details and are unnecessary for the presentation.
+
+The audience should understand WHAT this stage does, not the function names.
+
+==================================================
+STAGE 2 — VALIDATOR
+==================================================
+
+Use the exact heading:
+
+VALIDATOR
+
+Use concise supporting text:
+
+"Validates required columns, Number fields and IC lookup data before processing."
 
 The visual message should be:
 
-Manual incident understanding and routing can lead to
-misrouting, delay, SLA risk and loss of historical knowledge.
+INPUT QUALITY CHECK
+→
+VALID DATA ENTERS RECONCILIATION
 
-============================================================
-5. CENTER — AI-POWERED SOLUTION
-============================================================
+Do not overpopulate this box.
 
-Heading:
+==================================================
+STAGE 3 — RECONCILER
+==================================================
 
-AI-POWERED SOLUTION
+This is one of the CORE stages of the project.
 
-Small descriptor:
+Use the exact heading:
 
-Four-phase enterprise ML pipeline
+RECONCILER
 
-The central architecture MUST contain exactly FOUR phases.
+Clearly communicate that records are reconciled using the incident Number.
 
-Use these EXACT names:
+Use this compact logic:
 
-01 — DATA INTELLIGENCE
+MATCH BY NUMBER
 
-02 — MODEL TRAINING
+Then show three outcomes:
 
-03 — SEMANTIC SEARCH
+UPDATED
+Existing record matched and updated
 
-04 — HYBRID INFERENCE
+NEW
+Not present in Master YTD → created as new
 
-Do not rename these phases.
+HISTORICAL
+Not present in current ServiceNow report → retained
 
-Do not use:
-• Feature Intelligence
-• Predictive AI
-• Semantic Memory
-• Hybrid Intelligence
+The terminology UPDATED / NEW / HISTORICAL must be clearly visible.
 
-The four phases must appear as a connected left-to-right pipeline.
+A concise secondary statement may be:
 
-============================================================
-6. PHASE 1 — DATA INTELLIGENCE
-============================================================
+"Matched by Number → Update / Create / Retain"
 
-Display:
+This stage should be visually prominent because it represents the central reconciliation logic.
 
-01
-DATA INTELLIGENCE
+Do NOT show Python implementation details.
 
-Purpose:
+==================================================
+STAGE 4 — BUSINESS RULES
+==================================================
 
-Prepare reliable, ML-ready incident data.
+Use the exact heading:
 
-Represent the underlying implementation compactly:
+BUSINESS RULES
 
-Validate → Clean → Enrich → Engineer → Prepare
+Show the key business rules implemented by the automation.
 
-Small supporting keywords:
+Use these four items:
 
-Validation
-ML Readiness
-Cleaning
-Enrichment
-Feature Engineering
-NLP
-EDA
-Zero-Leakage Split
+• IC Determination
+• Region Lookup
+• Bank / SVB Determination
+• Duration Calculation
 
-Do not show all eight underlying stages as separate large boxes.
+Where useful, communicate the actual rule logic compactly:
 
-The audience only needs to understand that raw ServiceNow data is
-converted into reliable ML-ready data.
+IC Determination
+IC → Proposed By for Priority 3 → blank
 
-============================================================
-7. PHASE 2 — MODEL TRAINING
-============================================================
+Region Lookup
+IC → Region
 
-Display:
+Bank / SVB
+Assignment Group → Bank / SVB
 
-02
-MODEL TRAINING
+Duration
+Calculate duration from applicable dates/timestamps
 
-Show TWO predictive branches:
+Do not turn these into lengthy explanations.
 
-                MODEL TRAINING
-                       │
-             ┌─────────┴─────────┐
-             ↓                   ↓
-     ASSIGNMENT GROUP      RESOLUTION TIME
-      CLASSIFICATION          REGRESSION
-             │                   │
-             └─────────┬─────────┘
-                       ↓
-                  CATBOOST + HPO
+The audience should understand that the reconciled records are then enriched/transformed according to established business rules.
 
-Clearly show:
+==================================================
+STAGE 5 — OUTPUT WRITER
+==================================================
 
-Assignment Group Classification
+Use the exact heading:
 
-and
+OUTPUT WRITER
 
-Resolution Time Regression
+Use this concise description:
 
-Technical label:
+"Updates the existing Excel template while preserving workbook structure, formulas and reporting format."
 
-CatBoost + Hyperparameter Optimization
+Show the key responsibilities:
 
-Do not introduce unrelated technologies.
+• Write updated data
+• Preserve workbook structure
+• Preserve formulas / tables
+• Update required sheets
+• Save final outputs
+• Generate audit information
 
-Do not mention Random Forest, XGBoost, LightGBM, BERT, LLM,
-Transformers or RAG unless they are actually part of the final
-implementation.
+IMPORTANT:
 
-============================================================
-8. PHASE 3 — SEMANTIC SEARCH
-============================================================
+The actual implementation uses Excel/COM automation.
 
-Display:
+Do NOT make "COM" the visual focus.
 
-03
-SEMANTIC SEARCH
+If technically necessary, retain the project terminology:
 
-Show:
+OUTPUT WRITER (COM)
 
-HISTORICAL INCIDENTS
+But make the business function the primary message, not the implementation technology.
+
+Do NOT show library names such as openpyxl, pandas, pywin32, etc.
+
+==================================================
+SECTION 3 — OUTPUTS
+==================================================
+
+At the end of the pipeline, show three clean output cards:
+
+UPDATED MASTER YTD
+(.xlsm)
+
+RECONCILIATION REPORT
+(.xlsx)
+
+AUDIT LOG
+(.json)
+
+Make it visually obvious that these are generated automatically by the pipeline.
+
+Do not introduce other output types.
+
+==================================================
+SECTION 4 — APPLICATION PACKAGING
+==================================================
+
+This is an important part of the project and must be visible, but it should NOT compete with the main pipeline.
+
+Create a compact callout near the bottom/right of the pipeline:
+
+SINGLE APPLICATION
+
+"Complete codebase + dependencies packaged into one portable application"
+
+Then show four short benefits:
+
+Portable
+Platform-independent
+User-friendly
+For non-technical users
+
+The message should communicate:
+
+Python scripts
++
+Dependencies
++
+Configuration
++
+Automation workflow
         ↓
-EMBEDDING GENERATION
-        ↓
-FAISS VECTOR INDEX
-        ↓
-SIMILAR INCIDENT RETRIEVAL
+SINGLE APPLICATION
 
-Small technical labels:
+The purpose is to show that the project was taken beyond development scripts and converted into a practical application that can be used without requiring users to manually manage the Python environment.
 
-Embeddings
-FAISS
+Do NOT show packaging implementation details such as PyInstaller unless absolutely necessary.
 
-Main message:
+The audience only needs to understand the outcome:
+a single, portable and user-friendly application.
 
-Find relevant historical incidents.
+==================================================
+SECTION 5 — BUSINESS VALUE
+==================================================
 
-Do not call this "Semantic Memory".
+At the bottom of the content area, create a very compact VALUE strip.
 
-The phase name MUST remain:
+Use four short outcomes:
 
-SEMANTIC SEARCH
+AUTOMATED MONTHLY RECONCILIATION
+REDUCED MANUAL EFFORT
+CONSISTENT & ACCURATE PROCESS
+AUDITABLE & REPEATABLE OUTPUT
 
-============================================================
-9. PHASE 4 — HYBRID INFERENCE
-============================================================
+Do not invent numerical improvement percentages.
 
-Display:
+Do not claim specific time savings unless those numbers already exist in the presentation.
 
-04
-HYBRID INFERENCE
+Do not use words such as "100% accurate" or "zero errors."
 
-Show:
+==================================================
+RECOMMENDED VISUAL HIERARCHY
+==================================================
 
-PREDICTIVE OUTPUTS
-        +
-HISTORICAL PRECEDENTS
-        ↓
-HYBRID RECOMMENDATION
+The slide should visually follow this structure:
 
-Make the combination visually obvious.
+------------------------------------------------------------
 
-This is the final intelligence layer.
+IMT Reconciliation & Update Automation
 
-============================================================
-10. PIPELINE CONNECTION
-============================================================
+[ PROBLEM ]
+Every month, updating the Master YTD requires downloading the
+ServiceNow monthly report and manually comparing rows and columns —
+a time-consuming, complex and error-prone process.
 
-The center must visually communicate:
+[ SOLUTION ]
+Python-based end-to-end automation → packaged as a single application
+for portable, user-friendly execution by non-technical users.
 
-SERVICE NOW INCIDENT
-        ↓
-DATA INTELLIGENCE
-        ↓
-MODEL TRAINING
-        ↓
-SEMANTIC SEARCH
-        ↓
-HYBRID INFERENCE
-        ↓
-INTELLIGENCE OUTPUT
+                 AUTOMATED WORKFLOW
 
-Use clean arrows between phases.
+[ INPUTS ]
+Master YTD     ServiceNow Report     IC Lookup
+       \              |                 /
+        \             |                /
+              [ DATA LOADER ]
+                     ↓
+              [ VALIDATOR ]
+                     ↓
+              [ RECONCILER ]
+          Match by Number
+       ┌────────┬────────┬──────────┐
+     UPDATED     NEW    HISTORICAL
+       └────────┴────────┴──────────┘
+                     ↓
+            [ BUSINESS RULES ]
+       IC | Region | Bank/SVB | Duration
+                     ↓
+             [ OUTPUT WRITER ]
+                     ↓
+       ┌────────────┼──────────────┐
+ Updated Master   Reconciliation   Audit
+     YTD             Report         Log
 
-The four phases should look like ONE integrated platform.
+          [ SINGLE APPLICATION ]
+     Portable | Platform-independent
+       User-friendly | Non-technical
 
-============================================================
-11. RIGHT — INTELLIGENCE OUTPUT
-============================================================
+[ AUTOMATED ] [ LESS MANUAL EFFORT ] [ CONSISTENT ] [ AUDITABLE ]
 
-Heading:
+------------------------------------------------------------
 
-INTELLIGENCE OUTPUT
+Do NOT reproduce this literal ASCII layout on the slide.
+Use it only as the conceptual design.
 
-Create four compact output cards:
+Optimize the exact placement based on the existing PowerPoint template.
 
-ASSIGNMENT GROUP
-Recommended routing team
+==================================================
+VISUAL DESIGN REQUIREMENTS
+==================================================
 
-RESOLUTION TIME
-Estimated resolution profile
+The slide must feel like a premium corporate internship presentation.
 
-HISTORICAL PRECEDENTS
-Relevant similar incidents
+Use the existing First Citizens presentation theme as the source of truth for:
 
-CONFIDENCE + EXPLAINABILITY
-Supporting model intelligence
+• typography
+• background
+• spacing
+• color palette
+• visual hierarchy
+• section treatment
+• overall style
 
-Keep these concise.
+Do NOT introduce a completely new visual style.
 
-The right side should answer:
+Use subtle corporate blue accents only if they already fit the existing template.
 
-"What does Incident Classifier provide?"
+Use clean rectangular/rounded cards for the pipeline.
 
-============================================================
-12. BOTTOM TRANSFORMATION MESSAGE
-============================================================
+Use thin professional connectors.
 
-Add a compact visual statement inside the CONTENT AREA:
+Use consistent card dimensions.
 
-MANUAL TRIAGE
-        →
-AI-ASSISTED INCIDENT INTELLIGENCE
+Use consistent typography.
 
-This should be the visual conclusion.
+Use strong alignment.
 
-Do not add a footer below it.
+Use generous whitespace.
 
-Do not add a page number.
+Use visual hierarchy rather than excessive graphics.
 
-Do not add any organization name.
+The pipeline should be the HERO visual element.
 
-============================================================
-13. CRITICAL TEMPLATE / BRANDING RULE
-============================================================
+The Problem/Solution should be the HERO narrative.
 
-THIS IS THE MOST IMPORTANT INSTRUCTION.
+The packaging and business-value sections should be secondary.
 
-GENERATE CONTENT ONLY.
+==================================================
+STRICT TEMPLATE PROTECTION
+==================================================
 
-The existing PowerPoint template already contains all corporate
-branding.
+THIS IS EXTREMELY IMPORTANT.
+
+The existing PowerPoint template is already correct.
+
+Treat every existing template object as LOCKED.
+
+Specifically:
+
+DO NOT MOVE the First Citizens logo.
+DO NOT RESIZE the First Citizens logo.
+DO NOT CROP the First Citizens logo.
+DO NOT RECOLOR the First Citizens logo.
+DO NOT REPLACE the First Citizens logo.
+DO NOT COVER the First Citizens logo.
+DO NOT PLACE ANY OBJECT ON TOP OF THE LOGO.
+DO NOT ADD ANOTHER LOGO.
+DO NOT ADD A LOGO INSIDE THE PROJECT DIAGRAM.
+DO NOT ADD A LOGO IN THE HEADER.
+DO NOT ADD A LOGO IN THE FOOTER.
+
+Do not create additional footer elements.
+
+Do not alter the existing presentation dimensions.
+
+Do not change slide orientation.
+
+Do not change the slide master.
+
+Do not change the background.
+
+Do not change the existing template layout.
+
+Only populate/design the project content within the safe content region.
+
+If there is insufficient space, REDUCE SECONDARY CONTENT rather than modifying the template.
+
+==================================================
+EDITABILITY REQUIREMENT
+==================================================
+
+Everything newly created must remain editable in PowerPoint.
+
+Use:
+
+• native PowerPoint text boxes
+• native PowerPoint rectangles/rounded rectangles
+• native PowerPoint connectors/arrows
+• native PowerPoint lines
+
+Do NOT create the complete slide as a single image.
+
+Do NOT create the pipeline as one flattened graphic.
+
+Do NOT use a screenshot.
+
+Do NOT use Mermaid.
+
+Do NOT use an exported diagram image.
+
+Every major pipeline stage must be independently editable.
+
+==================================================
+CONTENT DENSITY
+==================================================
+
+This is a 10-minute internship presentation.
+
+The slide is ONE PROJECT among multiple projects.
 
 Therefore:
 
-DO NOT:
-✗ add First Citizens logo
-✗ add First Citizens text
-✗ add FCI logo
-✗ add page number
-✗ add footer
-✗ add slide number
-✗ add corporate footer
-✗ add copyright
-✗ add confidentiality label
-✗ add header branding
-✗ add template elements
-✗ modify the slide master
-✗ modify background master elements
-✗ recreate any template object
+DO NOT explain the complete codebase.
 
-The generated slide must contain ONLY:
+DO NOT show classes.
 
-• Incident Classifier title
-• Subtitle
-• Challenge content
-• AI solution pipeline
-• Intelligence output
-• Transformation message
+DO NOT show Python functions.
 
-NOTHING ELSE.
+DO NOT show file paths.
 
-When I copy this slide's content into my existing presentation,
-the existing corporate template elements must remain untouched.
+DO NOT show package names.
 
-Do not create a replacement background.
+DO NOT show technical implementation code.
 
-Do not create a new branded footer.
+DO NOT show model/library names.
 
-Do not attempt to reproduce the corporate template.
+DO NOT show excessive technical details.
 
-============================================================
-14. IMPORTANT — COPYING SAFETY
-============================================================
+The slide should communicate:
 
-Design the slide so that it can safely be copied into an existing
-corporate PowerPoint template.
+WHAT WAS THE PROBLEM?
+WHAT DID I BUILD?
+HOW DOES IT WORK?
+WHAT DOES IT PRODUCE?
+WHY IS IT USEFUL?
 
-Avoid full-slide background shapes that could cover the existing
-template.
+That is enough.
 
-Avoid objects extending into the footer/template area.
+==================================================
+TERMINOLOGY — DO NOT CHANGE
+==================================================
 
-Keep all project content within the main content region.
+Use these project terms exactly:
 
-Leave a clean safe margin around the bottom and edges so that existing
-template elements remain visible.
+IMT Reconciliation & Update Automation
 
-The slide should behave as a CONTENT LAYER rather than a complete
-branded presentation page.
+Master YTD
 
-============================================================
-15. VISUAL STYLE
-============================================================
+ServiceNow Monthly Report
 
-Use a professional enterprise AI/ML visual style.
+IC Lookup
 
-Preferred palette:
+DATA LOADER
 
-• Deep navy
-• Corporate blue
-• White
-• Light grey
-• Restrained gold/yellow accent
+VALIDATOR
 
-However, keep the design subtle enough that it can naturally inherit
-the visual language of my existing corporate template.
+RECONCILER
 
-Do not create a separate competing brand identity.
+UPDATED
+
+NEW
+
+HISTORICAL
+
+BUSINESS RULES
+
+IC Determination
+
+Region Lookup
+
+Bank / SVB Determination
+
+Duration Calculation
+
+OUTPUT WRITER
+
+Updated Master YTD
+
+Reconciliation Report
+
+Audit Log
+
+Single Application
+
+Do not replace these with generic alternatives such as:
+
+"Data Processing Engine"
+"AI Engine"
+"Intelligence Layer"
+"Decision Engine"
+"Data Transformation Layer"
+
+This project should be represented accurately, not artificially made to sound like an AI system.
+
+==================================================
+IMPORTANT NARRATIVE
+==================================================
+
+The slide must make this progression immediately obvious:
+
+BEFORE
+
+Monthly manual process:
+Download ServiceNow report
+→ Compare rows/columns
+→ Reconcile with Master YTD
+→ Apply business rules
+→ Update workbook
+→ Risk of manual errors
+
+AFTER
+
+Automated Python solution:
+Load
+→ Validate
+→ Reconcile
+→ Apply business rules
+→ Write outputs
+→ Package as a single application
+
+This "BEFORE → AFTER" transformation is the main story of the project.
+
+==================================================
+DESIGN PRIORITY
+==================================================
+
+Prioritize the following in order:
+
+1. Project title
+2. Problem statement
+3. Python automation solution
+4. Complete pipeline
+5. Reconciliation outcomes
+6. Business rules
+7. Outputs
+8. Single Application packaging
+9. Business value
+
+If space becomes limited:
+
+FIRST remove explanatory sentences.
+
+THEN shorten secondary descriptions.
+
+THEN simplify business-value text.
+
+DO NOT remove the core pipeline.
+
+DO NOT remove UPDATED / NEW / HISTORICAL.
+
+DO NOT remove the Single Application message.
+
+DO NOT reduce the slide to tiny unreadable text.
+
+==================================================
+READABILITY REQUIREMENT
+==================================================
+
+The slide must be readable when projected in a meeting room.
 
 Avoid:
 
-• Neon
-• Cyberpunk
-• Futuristic robots
-• Generic AI brain graphics
-• Stock images
-• Excessive gradients
-• Excessive shadows
-• Glassmorphism
-• Cartoon graphics
-• Decorative illustrations
+• tiny fonts
+• dense paragraphs
+• excessive text
+• overlapping boxes
+• excessive arrows
+• complicated branching
+• unnecessary icons
+• visual noise
 
-============================================================
-16. TYPOGRAPHY
-============================================================
+A person seeing the slide for the first time should understand the project at a high level within approximately 10 seconds.
 
-Use a professional sans-serif font.
+==================================================
+FINAL QUALITY CHECK
+==================================================
 
-Preferred:
+Before finalizing, perform a complete visual and content check.
 
-Aptos
-Segoe UI
-Arial
+Verify:
 
-Use clear hierarchy:
+✓ Exactly ONE slide has been created/modified.
 
-TITLE:
-28–34 pt
+✓ Existing presentation template remains unchanged.
 
-SECTION HEADINGS:
-17–21 pt
+✓ Existing First Citizens logo at bottom-left remains exactly where it was.
 
-PHASE TITLES:
-14–18 pt
+✓ No additional logo has been introduced.
 
-BODY:
-10–13 pt
+✓ No page number has been introduced.
 
-Do not shrink text excessively to fit content.
+✓ No watermark has been introduced.
 
-If content does not fit:
+✓ No unrelated symbols have been introduced.
 
-1. Remove unnecessary words.
-2. Simplify.
-3. Improve spacing.
-4. Only then adjust font size.
+✓ Project title is exactly:
+"IMT Reconciliation & Update Automation"
 
-============================================================
-17. ICONS
-============================================================
+✓ Problem clearly communicates the monthly manual Master YTD + ServiceNow reconciliation issue.
 
-Use one consistent professional line-icon style.
+✓ Solution clearly communicates Python-based automation.
 
-Suggested:
+✓ Complete pipeline is visible:
 
-Data Intelligence:
-Database / validation
+Inputs
+→ Data Loader
+→ Validator
+→ Reconciler
+→ Business Rules
+→ Output Writer
+→ Outputs
 
-Model Training:
-Model / branching / processing
+✓ Reconciler clearly shows:
 
-Semantic Search:
-Search / indexed document
+UPDATED
+NEW
+HISTORICAL
 
-Hybrid Inference:
-Connected nodes / fusion
+✓ Matching by Number is clearly communicated.
 
-Assignment Group:
-Team / target
+✓ Business Rules clearly include:
 
-Resolution Time:
-Clock
+IC Determination
+Region Lookup
+Bank / SVB Determination
+Duration Calculation
 
-Historical Precedents:
-Document / search
+✓ Outputs clearly include:
 
-Confidence:
-Shield / verification
+Updated Master YTD
+Reconciliation Report
+Audit Log
 
-Do not use emoji.
+✓ Single Application packaging is clearly communicated.
 
-============================================================
-18. TECHNICAL SOURCE OF TRUTH
-============================================================
+✓ Portable, platform-independent and user-friendly nature is communicated.
 
-The underlying Incident Classifier architecture is:
+✓ Non-technical-user usability is communicated.
 
-PHASE 1 — DATA INTELLIGENCE
-• Data Validation
-• ML Readiness Assessment
-• Data Cleaning
-• External Enrichment
-• Feature Engineering
-• NLP Text Preprocessing
-• Exploratory Data Analysis
-• Train / Validation / Test Splitting
+✓ No unsupported numerical business claims have been added.
 
-PHASE 2 — MODEL TRAINING
-• CatBoost Classification
-• CatBoost Regression
-• Hyperparameter Optimization
+✓ No unnecessary implementation details have been added.
 
-PHASE 3 — SEMANTIC SEARCH
-• Embedding Generation
-• FAISS Vector Index
-• Similar Incident Retrieval
-
-PHASE 4 — HYBRID INFERENCE
-• Hybrid Recommendation Engine
+✓ All newly created objects are editable.
 
-Represent these accurately.
-
-Do not invent additional architecture.
+✓ All connectors are properly aligned.
 
-============================================================
-19. WHAT TO SHOW VS WHAT NOT TO SHOW
-============================================================
+✓ No objects overlap.
 
-SHOW:
+✓ No content enters the existing footer/logo area.
 
-ServiceNow
-Data Intelligence
-Model Training
-CatBoost
-HPO
-Assignment Group Classification
-Resolution Time Regression
-Semantic Search
-Embeddings
-FAISS
-Historical Precedents
-Hybrid Inference
-Hybrid Recommendation
-Confidence / Explainability
+✓ Slide has sufficient whitespace.
 
-COMPRESS:
+✓ Typography is presentation-readable.
 
-Data validation details
-Cleaning details
-Enrichment details
-Feature engineering details
-NLP details
-EDA details
-Dataset splitting details
+✓ Visual hierarchy is clear.
 
-DO NOT SHOW:
+✓ The slide looks like part of a professional First Citizens internship presentation.
 
-Python filenames
-Class names
-Function names
-Implementation code
-Long technical descriptions
-12 individual pipeline stages
-Unsupported technologies
-Unsupported metrics
-
-============================================================
-20. NO UNSUPPORTED CLAIMS
-============================================================
-
-Do not write:
-
-"100% accurate"
-
-"Guaranteed SLA improvement"
-
-"Fully autonomous routing"
-
-"Production deployed"
-
-"Real-time production system"
-
-"Guaranteed resolution reduction"
-
-or any other unsupported performance/deployment claim.
-
-Keep the slide technically defensible.
-
-============================================================
-21. FINAL VISUAL STORY
-============================================================
-
-The final slide should visually read:
-
-                INCIDENT CLASSIFIER
-
-                    THE CHALLENGE
-                         ↓
-                Manual Incident Triage
-                         ↓
-      ┌────────────────────────────────────┐
-      │       AI-POWERED SOLUTION          │
-      │                                    │
-      │  DATA INTELLIGENCE                 │
-      │          ↓                         │
-      │  MODEL TRAINING                    │
-      │          ↓                         │
-      │  SEMANTIC SEARCH                   │
-      │          ↓                         │
-      │  HYBRID INFERENCE                 │
-      └────────────────────────────────────┘
-                         ↓
-                INTELLIGENCE OUTPUT
-
-        Assignment Group
-        Resolution Time
-        Historical Precedents
-        Confidence / Explainability
-
-                MANUAL TRIAGE
-                       →
-          AI-ASSISTED INCIDENT INTELLIGENCE
-
-
-============================================================
-22. FINAL QUALITY CHECK
-============================================================
-
-Before finishing, verify:
-
-✓ Project name is EXACTLY:
-  INCIDENT CLASSIFIER
-
-✓ Only ONE slide is generated.
-
-✓ Only project content is generated.
-
-✓ No logo is generated.
-
-✓ No First Citizens text is generated.
-
-✓ No footer is generated.
-
-✓ No page number is generated.
-
-✓ No slide number is generated.
-
-✓ No template elements are generated.
-
-✓ No background element covers the existing template.
-
-✓ Existing corporate template elements can remain untouched.
-
-✓ Exactly FOUR pipeline phases are present.
-
-✓ Phase names are EXACTLY:
-
-  DATA INTELLIGENCE
-  MODEL TRAINING
-  SEMANTIC SEARCH
-  HYBRID INFERENCE
-
-✓ Assignment Group Classification is shown.
-
-✓ Resolution Time Regression is shown.
-
-✓ CatBoost + HPO is shown.
-
-✓ Embeddings + FAISS are shown.
-
-✓ Historical incident retrieval is shown.
-
-✓ Hybrid Inference combines predictions and historical precedents.
-
-✓ Final intelligence outputs are clearly visible.
-
-✓ Slide is readable from presentation distance.
-
-✓ No unnecessary paragraphs.
-
-✓ No tiny text.
-
-✓ No unsupported metrics.
-
-✓ No invented technologies.
-
-✓ No visual clutter.
-
-✓ Professional enterprise AI/ML appearance.
+✓ The slide communicates the COMPLETE PROJECT without becoming technically cluttered.
 
 MOST IMPORTANT:
 
-GENERATE ONLY THE INCIDENT CLASSIFIER PROJECT CONTENT.
+Do not optimize this slide for showing how much technical information can fit onto it.
 
-DO NOT GENERATE OR MODIFY ANY CORPORATE TEMPLATE,
-LOGO, FOOTER, PAGE NUMBER, SLIDE NUMBER OR BRANDING.
+Optimize it for showing the complete transformation:
 
-THE EXISTING POWERPOINT TEMPLATE MUST REMAIN THE OWNER OF
-ALL BRANDING AND TEMPLATE ELEMENTS.
+MANUAL MONTHLY RECONCILIATION
+        ↓
+PYTHON AUTOMATION
+        ↓
+VALIDATE + RECONCILE
+        ↓
+APPLY BUSINESS RULES
+        ↓
+UPDATE MASTER + REPORT + AUDIT
+        ↓
+SINGLE PORTABLE APPLICATION
+        ↓
+LESS MANUAL EFFORT + CONSISTENT + AUDITABLE PROCESS
+
+Create ONLY this final single slide.
