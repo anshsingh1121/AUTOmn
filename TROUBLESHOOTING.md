@@ -1,309 +1,552 @@
 CREATE ONE COMPLETELY NEW FINAL POWERPOINT SLIDE FOR MY INTERNSHIP PRESENTATION.
 
-SLIDE PURPOSE:
-This is the FINAL “Learnings & Takeaways” slide of my First Citizens India internship presentation.
+SLIDE TITLE:
+KEY LEARNINGS & FUTURE ROADMAP
 
-The slide should close the presentation on a thoughtful, professional and memorable note.
+This is the FINAL slide of my First Citizens India internship presentation.
 
-IMPORTANT:
-I am NOT providing a reference slide.
+The purpose of this slide is to close the presentation by showing:
 
-Design the slide independently using the detailed requirements below.
+1. What I learned during the internship
+2. How I developed professionally and technically
+3. What I want to focus on next
+4. How I plan to take my current project work toward real-world,
+   production-ready solutions
+
+This must be ONE polished, concise, professional corporate slide.
+
+============================================================
+IMPORTANT — CREATE A COMPLETELY NEW SLIDE
+============================================================
 
 Do NOT edit, overwrite, redesign, or modify any existing slide.
 
-============================================================
-SLIDE TITLE
-============================================================
+I am intentionally NOT providing a reference slide.
 
-Use:
+Independently design this slide using the complete specification below.
 
-KEY LEARNINGS & TAKEAWAYS
-
-The title should be prominent, professional and consistent with a
-corporate internship presentation.
-
-Optional small subtitle:
-
-“Beyond projects, an experience in continuous learning and growth”
-
-Use the subtitle only if it improves the visual composition.
+The slide must look like a natural final slide of a professional
+First Citizens India internship presentation.
 
 ============================================================
-CORE MESSAGE
+CORE STORY
 ============================================================
 
-The slide should communicate that the internship was not only about
-technical projects, but also about developing the mindset, listening,
-collaboration and practical understanding required to grow as a
-professional.
+The slide should communicate this progression:
 
-The four key takeaways are:
+LEARN
+  ↓
+LISTEN
+  ↓
+COLLABORATE
+  ↓
+GROW
+  ↓
+CONTRIBUTE
+  ↓
+BUILD
+  ↓
+DOCUMENT
+  ↓
+PRODUCTIONIZE
 
-1. LEARN TO LEARN
-2. BE A GOOD LISTENER
-3. TEAMWORK & COLLABORATION
-4. EXPANDED TECHNICAL, THEORETICAL & PRACTICAL KNOWLEDGE
+The overall message should be:
 
-These four ideas are the central content of the slide.
+“The internship helped me grow not only technically, but also in how I
+learn, listen, collaborate and contribute — with a clear roadmap toward
+deeper real-world engineering and production-ready solutions.”
+
+Do NOT display this entire sentence as a paragraph.
+
+Communicate it through the visual structure.
 
 ============================================================
-1. LEARN TO LEARN
+OVERALL SLIDE STRUCTURE
 ============================================================
 
-Use the heading:
+Divide the slide into TWO clearly distinguishable areas:
+
+LEFT / MAIN AREA:
+KEY LEARNINGS
+
+RIGHT / SECONDARY AREA:
+FUTURE ROADMAP
+
+Recommended visual balance:
+
+KEY LEARNINGS
+≈ 60–65% of slide
+
+FUTURE ROADMAP
+≈ 35–40% of slide
+
+The Learnings section should remain the dominant part because this is
+the conclusion of my internship journey.
+
+The Future Roadmap should be compact, forward-looking and visually
+connected.
+
+Do NOT make the slide look like two unrelated sections.
+
+They should feel like:
+
+WHAT I LEARNED
+        ↓
+WHERE I GO NEXT
+
+============================================================
+SECTION 1 — KEY LEARNINGS
+============================================================
+
+Create a section titled:
+
+KEY LEARNINGS
+
+Present FOUR learning themes.
+
+Use a clean 2 × 2 visual arrangement or another equally balanced
+professional composition.
+
+Each learning should contain:
+
+• Small simple line icon
+• Short heading
+• One concise supporting statement
+
+Do NOT use paragraphs.
+
+------------------------------------------------------------
+01 — LEARN TO LEARN
+------------------------------------------------------------
+
+HEADING:
 
 LEARN TO LEARN
 
-Supporting statement:
+SUPPORTING STATEMENT:
 
 “Learned to learn — from anyone and everyone.”
 
 The idea should communicate:
-- Staying open to learning
+- Openness to learning
 - Learning from people at every level
 - Being receptive to different perspectives
-- Continuous self-improvement
+- Continuous improvement
 
-Keep the supporting text concise.
+Keep the wording exactly or very close to the above.
 
-Do NOT turn this into a paragraph.
+------------------------------------------------------------
+02 — BE A GOOD LISTENER
+------------------------------------------------------------
 
-============================================================
-2. BE A GOOD LISTENER
-============================================================
-
-Use the heading:
+HEADING:
 
 BE A GOOD LISTENER
 
-Supporting statement:
+SUPPORTING STATEMENT:
 
 “Listening first leads to better understanding, better questions and
 better decisions.”
 
-Keep this concise and professional.
+The focus is on active listening and understanding before responding
+or acting.
 
-The emphasis should be on active listening and understanding before
-responding or acting.
+Keep it concise.
 
-============================================================
-3. TEAMWORK & COLLABORATION
-============================================================
+------------------------------------------------------------
+03 — TEAMWORK & COLLABORATION
+------------------------------------------------------------
 
-Use the heading:
+HEADING:
 
 TEAMWORK & COLLABORATION
 
-Supporting statement:
+SUPPORTING STATEMENT:
 
 “Strong outcomes come from communication, collaboration and shared
 ownership.”
 
-The visual should subtly communicate people working together.
+The idea should communicate that meaningful outcomes come from
+working effectively with others.
 
-Do not make it look like a generic corporate stock illustration.
+------------------------------------------------------------
+04 — TECHNICAL, THEORETICAL & PRACTICAL GROWTH
+------------------------------------------------------------
 
-============================================================
-4. TECHNICAL, THEORETICAL & PRACTICAL GROWTH
-============================================================
-
-Use the heading:
+HEADING:
 
 TECHNICAL, THEORETICAL & PRACTICAL GROWTH
 
-Supporting statement:
+SUPPORTING STATEMENT:
 
 “Enhanced my technical, theoretical and practical knowledge base
 through real-world problem solving.”
 
-This should communicate that the internship connected:
-Theory → Technology → Practical Application
+The visual idea should subtly connect:
+
+THEORY
++
+TECHNOLOGY
++
+PRACTICAL APPLICATION
+
+Do not make this section overly technical.
+
+============================================================
+SECTION 2 — FUTURE ROADMAP
+============================================================
+
+Create a section titled:
+
+FUTURE ROADMAP
+
+The roadmap should show FOUR concise stages:
+
+01 → LEARN & CONTRIBUTE
+02 → CLOUD, DOCKER & DEPLOYMENT
+03 → DOCUMENT & ENABLE
+04 → PRODUCTIONIZE
+
+Use a subtle directional progression.
+
+The roadmap should visually communicate continuous professional and
+technical growth.
+
+============================================================
+ROADMAP 01 — LEARN & CONTRIBUTE
+============================================================
+
+HEADING:
+
+LEARN & CONTRIBUTE
+
+SUPPORTING STATEMENT:
+
+“Continue learning and contribute more actively to real-time projects.”
+
+The focus should be:
+
+- More real-world exposure
+- Greater ownership
+- Deeper involvement in live/real-time projects
+- Continued learning through practical experience
 
 Keep it concise.
 
 ============================================================
-VISUAL STRUCTURE
+ROADMAP 02 — CLOUD, DOCKER & DEPLOYMENT
 ============================================================
 
-Create a balanced four-part composition.
+HEADING:
 
-Preferred structure:
+CLOUD, DOCKER & DEPLOYMENT
 
-                 KEY LEARNINGS & TAKEAWAYS
-                         |
-        -----------------------------------------
-        |                  |                    |
-   LEARN TO LEARN    BE A GOOD LISTENER   TEAMWORK &
-                                           COLLABORATION
-        |
-        -----------------------------------------
-                         |
-        TECHNICAL • THEORETICAL • PRACTICAL
-                    KNOWLEDGE
+SUPPORTING STATEMENT:
 
-However, do NOT literally reproduce this layout.
+“Deepen Cloud & AWS expertise through hands-on Docker, image building
+and real-time deployment.”
 
-Use your own professional design judgment.
+This should represent practical technical growth.
 
-A strong option is four clean visual blocks/cards arranged in a
-2 × 2 grid, with each block containing:
+Visually communicate:
 
-• Small simple line icon
-• Learning heading
-• One concise supporting statement
+CLOUD / AWS
+      +
+DOCKER / CONTAINERIZATION
+      +
+IMAGE BUILDING
+      +
+DEPLOYMENT
 
-The four blocks should feel connected as parts of ONE internship
-journey rather than four unrelated boxes.
+Do NOT list a large number of AWS services.
 
-============================================================
-VISUAL HIERARCHY
-============================================================
+Do NOT turn this into a technical certification roadmap.
 
-Priority:
+The emphasis is on HANDS-ON EXPERIENCE.
 
-1. Slide title
-2. Four learning themes
-3. Supporting statements
-4. Small visual/icon elements
+IMPORTANT:
 
-Do not allow the icons to dominate the slide.
+Do NOT claim that I am already an AWS/Docker expert.
 
-The text should remain the main communication mechanism.
+Do NOT claim that production cloud deployment has already been
+completed.
+
+This is a future learning and implementation goal.
 
 ============================================================
-VISUAL STYLE
+ROADMAP 03 — DOCUMENT & ENABLE
+============================================================
+
+HEADING:
+
+DOCUMENT & ENABLE
+
+SUPPORTING STATEMENT:
+
+“Document solutions end-to-end through technical documentation and
+user guides.”
+
+The goal is to ensure that solutions are:
+
+Understandable
+→ Maintainable
+→ Usable
+→ Easier for others to adopt
+
+Make sure BOTH are represented:
+
+TECHNICAL DOCUMENTATION
+
+AND
+
+USER GUIDE
+
+Do not create a large documentation checklist.
+
+============================================================
+ROADMAP 04 — PRODUCTIONIZE
+============================================================
+
+HEADING:
+
+PRODUCTIONIZE CHANGE MANAGEMENT AUTOMATION
+
+SUPPORTING STATEMENT:
+
+“Take the Change Management Audit Automation project toward
+production readiness.”
+
+This is a FUTURE ROADMAP item.
+
+CRITICAL:
+
+Do NOT state:
+
+“Change Management Audit Automation is production-ready.”
+
+Do NOT imply that the project is already deployed to production.
+
+Instead communicate the future objective:
+
+“Make the Change Management Audit Automation project
+production-ready.”
+
+If space permits, visually represent the journey as:
+
+HARDEN
+→
+TEST
+→
+DOCUMENT
+→
+DEPLOY
+→
+OPERATE
+
+Keep this progression subtle and compact.
+
+Do not turn it into another large section.
+
+============================================================
+FUTURE ROADMAP VISUAL STORY
+============================================================
+
+The roadmap should feel like one continuous progression:
+
+LEARN & CONTRIBUTE
+        ↓
+CLOUD, DOCKER & DEPLOYMENT
+        ↓
+DOCUMENT & ENABLE
+        ↓
+PRODUCTIONIZE
+
+Conceptually:
+
+Learn more
+   →
+Contribute more
+   →
+Build stronger cloud/container/deployment skills
+   →
+Document and enable others
+   →
+Take solutions toward production
+
+Do NOT use a huge timeline.
+
+Use a clean, elegant directional flow.
+
+============================================================
+VISUAL DESIGN
 ============================================================
 
 The presentation is a First Citizens India corporate internship deck.
 
-Independently use a polished corporate visual language:
+Since no reference slide is being provided, independently use a
+professional First Citizens-style corporate visual language.
 
 BACKGROUND:
-- Clean white / very light neutral
+
+- Clean white or very light neutral
 - Spacious
 - Minimal
+- No dark background
 
-PRIMARY:
-- Deep navy / corporate blue typography
+PRIMARY COLOR:
+
+- Deep corporate navy / blue
 
 SECONDARY:
+
 - Muted blue / gray
 
 ACCENT:
-- Very restrained First Citizens-style red where appropriate
 
-Use the accent color sparingly.
+- Very restrained red accent
 
-The slide should feel:
+Use red sparingly for emphasis only.
+
+TYPOGRAPHY:
+
+- Clean professional sans-serif
+- Strong title
+- Clear section headings
+- Readable body text
+- Consistent hierarchy
+
+OVERALL FEEL:
 
 - Professional
-- Warm
-- Reflective
-- Sophisticated
-- Clean
 - Corporate
+- Reflective
+- Confident
 - Human
+- Sophisticated
 - Minimal
-
-It should NOT feel like a technical dashboard.
+- Modern
 
 ============================================================
 DO NOT USE
 ============================================================
 
-Absolutely avoid:
+Absolutely DO NOT use:
 
 - Dark backgrounds
+- Dark-tech aesthetics
 - Neon colors
-- Futuristic AI styling
+- Futuristic AI graphics
 - Cybersecurity styling
-- Dashboard aesthetics
+- Dashboard layouts
 - 3D graphics
 - Stock photographs
 - Cartoon illustrations
-- Excessive icons
+- Motivational-poster aesthetics
+- Generic corporate handshake images
 - Heavy gradients
+- Glowing effects
+- Excessive cards
 - Excessive borders
-- Large decorative graphics
-- Inspirational poster clichés
-- Generic “corporate handshake” imagery
-- Excessive text
+- Oversized icons
+- Decorative clutter
+- Long paragraphs
+- Generic inspirational quotes
 
-Do not make it look like a motivational poster.
-
-It should remain a professional internship presentation slide.
+This should feel like a professional internship conclusion,
+NOT a motivational poster.
 
 ============================================================
 ICONOGRAPHY
 ============================================================
 
-Use simple, elegant line icons if appropriate:
+Use small, simple, consistent line icons only where they genuinely
+improve visual scanning.
+
+Suggested concepts:
 
 LEARN TO LEARN:
-Book / lightbulb / open learning symbol
+Book / learning / lightbulb
 
 GOOD LISTENER:
-Ear / listening / conversation symbol
+Ear / conversation
 
 TEAMWORK:
-Connected people / collaboration symbol
+Connected people / collaboration
 
 KNOWLEDGE GROWTH:
-Book + technology / layered knowledge / growth symbol
+Book + technology / growth
 
-Keep all icons visually consistent.
+LEARN & CONTRIBUTE:
+Person + project / contribution
 
-Use the same restrained corporate color palette.
+CLOUD, DOCKER & DEPLOYMENT:
+Cloud + container / deployment
 
-Do not use colorful cartoon icons.
+DOCUMENT & ENABLE:
+Document / guide
 
-============================================================
-KEY VISUAL CONCEPT
-============================================================
+PRODUCTIONIZE:
+Gear / deployment / check
 
-If appropriate, subtly connect the four learnings using a very light
-visual progression:
+All icons should use the same visual style.
 
-MINDSET
-   →
-LISTENING
-   →
-COLLABORATION
-   →
-GROWTH
+Keep them subtle.
 
-This should be subtle.
-
-Do not turn the slide into a complex diagram.
+Do not let icons dominate the slide.
 
 ============================================================
-CLOSING MESSAGE
+CONTENT DENSITY
 ============================================================
 
-At the bottom, if space permits, include ONE short closing statement:
+This is the FINAL slide of a 10-minute internship presentation.
 
-“An internship is not just about what you build — it is about how you
-learn, listen, collaborate and grow.”
+It must be readable from presentation distance.
 
-This should be visually subtle and serve as the closing thought of the
-presentation.
+For each learning and roadmap item use:
 
-Do NOT add another large section around it.
+HEADING
++
+ONE SHORT SUPPORTING STATEMENT
 
-If the slide becomes crowded, remove the closing statement rather than
-shrinking the main content.
+Do NOT use long paragraphs.
+
+Do NOT reduce font size just to fit content.
+
+If the slide becomes crowded:
+
+1. Reduce supporting text
+2. Reduce decorative elements
+3. Increase whitespace
+
+Do NOT make the text tiny.
 
 ============================================================
-COPY / PASTE SAFETY — CRITICAL
+OPTIONAL CLOSING STATEMENT
 ============================================================
 
-This slide will be COPIED INTO MY ORIGINAL FIRST CITIZENS INDIA
+If space permits, add ONE subtle closing line at the bottom:
+
+“From learning through experience to creating solutions ready for
+real-world impact.”
+
+This should be small and elegant.
+
+Do NOT make it look like a motivational quote.
+
+If it makes the slide crowded, omit it.
+
+============================================================
+CRITICAL COPY / PASTE SAFETY
+============================================================
+
+THIS SLIDE WILL BE COPIED INTO MY ORIGINAL FIRST CITIZENS INDIA
 INTERNSHIP POWERPOINT.
 
-Therefore, create ONLY the project/presentation CONTENT.
+Therefore, generate ONLY the PROJECT/PRESENTATION CONTENT LAYER.
 
-DO NOT recreate or modify:
+The ORIGINAL PRESENTATION TEMPLATE MUST REMAIN UNTOUCHED.
+
+DO NOT recreate, modify or embed:
 
 - First Citizens India logo
 - Existing page number
@@ -311,135 +554,153 @@ DO NOT recreate or modify:
 - “Internal” marking
 - Existing master-slide background
 - Existing header
-- Existing template elements
 - Existing presentation-level branding
+- Existing master/layout structure
 
-DO NOT create a duplicate logo.
+DO NOT create:
 
-DO NOT create a duplicate page number.
+- Duplicate First Citizens logo
+- Duplicate page number
+- Duplicate footer
+- Duplicate Internal label
+- New PowerPoint theme
+- Custom master slide
+- Full-slide branded background
+- Flattened full-slide image
 
-DO NOT create a footer.
+============================================================
+SAFE CONTENT AREA
+============================================================
 
-DO NOT create an “Internal” label.
+Treat the slide as TWO layers:
 
-DO NOT create a new PowerPoint theme.
+LAYER 1 — EXISTING PRESENTATION TEMPLATE
 
-DO NOT create a custom master slide.
+This belongs to my original PowerPoint and includes:
 
-DO NOT create a full-slide image.
+- Logo
+- Footer
+- Page number
+- Internal marking
+- Master background
+- Header
+- Branding
 
-DO NOT create a full-slide background containing branding.
+DO NOT CREATE OR MODIFY THIS LAYER.
 
-Keep the content inside the safe central content area.
+LAYER 2 — NEW PROJECT CONTENT
 
-Leave the normal:
-- logo/header region
-- footer region
-- page-number region
+This is the ONLY layer you are responsible for creating:
 
-clear of project objects.
+- Slide title
+- Key learnings
+- Future roadmap
+- Supporting text
+- Simple icons
+- Connectors
+- Shapes
+
+Keep ALL generated content inside the safe central content region.
+
+Leave clear space around:
+
+- Logo/header area
+- Footer area
+- Bottom-right page-number area
+
+The slide must therefore be safe to copy into the original
+presentation without disturbing any existing structure.
 
 ============================================================
 EDITABILITY
 ============================================================
 
-All content must remain editable PowerPoint objects.
+All generated content must remain editable PowerPoint objects.
 
 Use:
 
-- Editable text boxes
-- Editable shapes
-- Editable lines
-- Editable icons where possible
+- Text boxes
+- Shapes
+- Lines
+- Arrows
+- Simple editable icons
 
 Do NOT flatten the slide into a single image.
-
-============================================================
-CONTENT DENSITY
-============================================================
-
-This is the final slide of a 10-minute internship presentation.
-
-It must be immediately readable.
-
-Do NOT write long descriptions.
-
-Each learning should contain:
-
-HEADING
-+
-ONE SHORT SUPPORTING STATEMENT
-
-Maximum:
-2 lines of supporting text per learning where possible.
-
-Prioritize whitespace.
-
-============================================================
-TONE
-============================================================
-
-The tone should be:
-
-Reflective but confident.
-
-Professional but personal.
-
-Positive but not exaggerated.
-
-Avoid clichés such as:
-
-“Dream big”
-“Believe in yourself”
-“Never give up”
-“Success is a journey”
-
-This is an internship presentation, so the learning should feel
-genuine and grounded in professional experience.
 
 ============================================================
 FINAL SLIDE STORY
 ============================================================
 
-The audience should leave with the impression that the internship
-helped me grow in four dimensions:
+The final slide should visually tell this story:
 
-MINDSET
-→ Learning from everyone
+WHAT I LEARNED
+        ↓
+HOW I GREW
+        ↓
+HOW I WILL CONTRIBUTE
+        ↓
+WHAT I WILL BUILD NEXT
+        ↓
+HOW I WILL TAKE MY WORK TO PRODUCTION
 
-COMMUNICATION
-→ Listening before responding
+Specifically:
 
-COLLABORATION
-→ Working effectively with others
-
-KNOWLEDGE
-→ Connecting technical, theoretical and practical understanding
-
-The slide should communicate professional growth rather than simply
-listing generic skills.
+Learn from everyone
+        →
+Listen and understand
+        →
+Collaborate effectively
+        →
+Strengthen technical + theoretical + practical knowledge
+        →
+Contribute more to real-time projects
+        →
+Build hands-on Cloud / AWS / Docker / deployment skills
+        →
+Document and enable others
+        →
+Make Change Management Audit Automation production-ready
 
 ============================================================
 FINAL QUALITY CHECK
 ============================================================
 
-Before finalizing, verify:
+Before finalizing the slide, verify ALL of the following:
 
 ✓ One completely new slide
-✓ Clean corporate presentation design
+✓ Final internship presentation slide
+✓ Clear KEY LEARNINGS section
+✓ Clear FUTURE ROADMAP section
+✓ Four learning themes included
+✓ Four roadmap stages included
+✓ “Learn from anyone and everyone” included
+✓ Good listening included
+✓ Teamwork and collaboration included
+✓ Technical + theoretical + practical growth included
+✓ Real-time project contribution included
+✓ Cloud learning included
+✓ AWS learning included
+✓ Hands-on Docker included
+✓ Image/container building included
+✓ Deployment included as a future hands-on goal
+✓ Technical documentation included
+✓ User guide included
+✓ Change Management Audit Automation productionization included
+✓ Productionization is clearly a FUTURE goal
+✓ No unsupported claim that the project is already production-ready
+✓ Clean corporate appearance
 ✓ White/light background
 ✓ Navy/blue primary typography
-✓ Minimal restrained accent color
-✓ Four clear learning themes
+✓ Restrained accent color
+✓ Strong whitespace
+✓ Excellent visual hierarchy
 ✓ Minimal text
-✓ Strong visual hierarchy
 ✓ Professional and reflective tone
-✓ No generic motivational-poster appearance
+✓ No motivational-poster appearance
 ✓ No dark-tech/dashboard styling
-✓ No unnecessary graphics
-✓ No clutter
-✓ Plenty of whitespace
-✓ All text readable at presentation distance
+✓ No invented metrics
+✓ No unsupported claims
+✓ All content readable at presentation distance
 ✓ All objects editable
 ✓ No First Citizens logo recreated
 ✓ No page number recreated
@@ -447,7 +708,7 @@ Before finalizing, verify:
 ✓ No Internal label recreated
 ✓ No master/template recreated
 ✓ No existing presentation structure disturbed
-✓ Safe to copy into my original First Citizens presentation
+✓ Safe to copy into the original First Citizens presentation
 
 ============================================================
 FINAL INSTRUCTION
@@ -455,31 +716,55 @@ FINAL INSTRUCTION
 
 Generate ONE polished final slide titled:
 
-KEY LEARNINGS & TAKEAWAYS
+KEY LEARNINGS & FUTURE ROADMAP
 
-The four primary takeaways must be:
+The slide must contain the four KEY LEARNINGS:
 
-1. Learn to Learn
+1. LEARN TO LEARN
    “Learned to learn — from anyone and everyone.”
 
-2. Be a Good Listener
-   “Listening first leads to better understanding, better questions
-   and better decisions.”
+2. BE A GOOD LISTENER
+   “Listening first leads to better understanding, better questions and
+   better decisions.”
 
-3. Teamwork & Collaboration
+3. TEAMWORK & COLLABORATION
    “Strong outcomes come from communication, collaboration and shared
    ownership.”
 
-4. Technical, Theoretical & Practical Growth
+4. TECHNICAL, THEORETICAL & PRACTICAL GROWTH
    “Enhanced my technical, theoretical and practical knowledge base
    through real-world problem solving.”
 
-Create a visually elegant closing slide that feels like the natural
-final chapter of a professional First Citizens India internship
-presentation.
+And the four FUTURE ROADMAP stages:
+
+1. LEARN & CONTRIBUTE
+   “Continue learning and contribute more actively to real-time
+   projects.”
+
+2. CLOUD, DOCKER & DEPLOYMENT
+   “Deepen Cloud & AWS expertise through hands-on Docker, image
+   building and real-time deployment.”
+
+3. DOCUMENT & ENABLE
+   “Document solutions end-to-end through technical documentation and
+   user guides.”
+
+4. PRODUCTIONIZE CHANGE MANAGEMENT AUTOMATION
+   “Take the Change Management Audit Automation project toward
+   production readiness.”
+
+Where appropriate, show:
+
+Harden → Test → Document → Deploy → Operate
+
+as a subtle visual sub-flow under the productionization roadmap item.
+
+The final slide should feel like a mature closing statement about:
+
+LEARNING + GROWTH + CONTRIBUTION + FUTURE ENGINEERING IMPACT.
 
 Generate ONLY the editable slide content.
 
-Do not recreate or interfere with any existing First Citizens
-presentation template, logo, footer, page number or master-slide
-elements.
+Do NOT recreate or interfere with any existing First Citizens
+presentation template, logo, footer, page number, Internal marking,
+background, or master-slide elements.
