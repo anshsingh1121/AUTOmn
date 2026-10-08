@@ -1,545 +1,296 @@
-STOP using the current redesigned project-slide template.
+I want you to make ONE VERY LIMITED EDIT to my existing internship presentation.
 
-The current redesign has moved away from the visual direction I wanted.
+IMPORTANT:
+DO NOT redesign the presentation.
+DO NOT change the existing slide theme.
+DO NOT change any completed project slides.
+DO NOT change typography, colors, logos, footer, page numbers, layouts, icons, animations, or branding.
+DO NOT move, resize, delete, or rewrite existing content unless absolutely necessary to make room for the requested addition.
 
-I am providing the ORIGINAL
-"HAM – Asset-CI Alignment Audit Workflow"
-slide as the definitive visual reference.
+ONLY update the EXISTING "FUTURE ROADMAP / FURTHER ROADMAP / LEARNINGS & FURTHER ROADMAP" section/slide.
 
-THIS ORIGINAL HAM SLIDE IS THE GOLD STANDARD.
+The goal is to add TWO IMPORTANT FUTURE PROJECT / INITIATIVE HIGHLIGHTS based on the reference material I am providing.
 
-I do NOT want you to redesign this reference slide.
+==================================================
+CORE DESIGN INTENT
+==================================================
 
-Instead, study exactly WHY it works and apply its DESIGN LANGUAGE
-to the other project slides.
+These two items should NOT look like ordinary bullet points.
 
-========================================================
-CRITICAL DISTINCTION
-========================================================
+They are important future initiatives and should visually stand out as
+TWO HIGHLIGHTED ROADMAP ITEMS.
 
-I want:
+However, they must still look like a natural part of the existing
+presentation.
 
-VISUAL CONSISTENCY
+Think:
+
+"important future directions"
 
 NOT:
 
-IDENTICAL TEMPLATE REPETITION.
+"two more random bullets."
 
-Do NOT make every project slide a collection of identical rounded
-cards with tiny icons in the corners.
+Use the existing presentation's visual language and accent colors.
 
-Do NOT mechanically duplicate the same card geometry across every
-slide.
+Use subtle icons and visual emphasis if the existing roadmap slide
+already uses them.
 
-The slides should clearly belong to the same presentation, while
-each project should retain a natural composition appropriate to
-its workflow.
+Do NOT introduce a completely new design system.
 
-========================================================
-USE THE ORIGINAL HAM SLIDE AS THE CANONICAL REFERENCE
-========================================================
+==================================================
+FUTURE INITIATIVE 1
+==================================================
 
-Preserve and replicate these design characteristics:
+Add a prominent roadmap item around:
 
-1. CLEAN TITLE AREA
+DATA CERTIFICATION KPI & PERFORMANCE ANALYTICS
 
-Large project title at top left.
+The reference material shows a broader data-certification workflow
+covering metrics such as:
 
-Short understated subtitle directly underneath.
+• Certification Completion
+• Daily Closure Rate
+• On-Time Completion
+• Average Completion Time
+• Discrepancy Rate
+• Data Accuracy / Pass Rate
+• Rejection / Rework Rate
+• Aging / Backlog
+• Productivity per Certifier
+• Last-Minute Closure
+• Exception Resolution Time
+• SLA Achievement
 
-No unnecessary badge competing with the title.
+Do NOT put all of these metrics on the presentation.
 
-Do not add category pills unless they genuinely improve the slide.
+Condense the idea into a professional roadmap statement.
 
---------------------------------------------------------
+Preferred wording:
 
-2. PROBLEM → SOLUTION STORY
+"Build deeper expertise in Data Certification analytics and KPI-driven
+operational reporting"
 
-Follow the composition of the original HAM slide.
+Supporting idea, if space permits:
 
-LEFT:
-PROBLEM
+"Track certification performance, discrepancies, SLA adherence,
+productivity and exception trends to enable clearer operational
+insights."
 
-CENTER:
-simple directional arrow
+Keep it concise.
 
-RIGHT:
-SOLUTION
+The emphasis should be on learning and contributing to a real
+business-facing analytics / operational reporting initiative.
 
-Do NOT turn Problem and Solution into two mechanically identical
-cards.
+Use a subtle analytics/chart/dashboard-related icon if appropriate.
 
-The Problem should feel diagnostic and restrained.
+==================================================
+FUTURE INITIATIVE 2
+==================================================
 
-The Solution should feel stronger and more affirmative.
+Add another prominent roadmap item around:
 
-Use the visual relationship:
+INFRASTRUCTURE OPERATIONS AUTOMATION
 
-PROBLEM  →  SOLUTION
+The reference material describes an opportunity to bring infrastructure
+operations together across areas such as:
 
-to tell the story.
+• Cloud infrastructure
+• Kubernetes
+• OpenShift
+• Applications
+• Databases
+• Monitoring
+• Reporting
+• ServiceNow activities
+• Automation
+• Access control
+• Activity tracking
+• Auditability
 
-Keep Problem concise:
-approximately 2–3 bullets.
+The goal is to reduce fragmented manual execution and bring recurring
+infrastructure operations into a more centralized, controlled and
+automated workflow.
 
-Keep Solution concise:
-one strong solution statement plus, where useful, a very short
-high-level flow.
+Preferred wording:
 
-For example:
+"Explore Infrastructure Operations Automation and centralized
+operational workflows"
 
-Detect → Analyze → Report → Notify
+Supporting idea, if space permits:
 
---------------------------------------------------------
+"Gain hands-on exposure to automating infrastructure tasks across
+cloud, Kubernetes/OpenShift, applications, monitoring and ServiceNow."
 
-3. LARGE, MEANINGFUL PIPELINE ICONS
+Use a subtle infrastructure / cloud / automation icon if appropriate.
 
-THIS IS VERY IMPORTANT.
+==================================================
+HOW THESE TWO ITEMS SHOULD APPEAR
+==================================================
 
-Use the icon treatment from the ORIGINAL HAM slide.
+Make these two initiatives visually more prominent than ordinary
+learning bullets.
 
-Pipeline icons should be large enough to function as meaningful
-visual anchors.
+Recommended hierarchy:
 
-Do NOT reduce them to tiny decorative icons placed in card corners.
+FUTURE ROADMAP
 
-The icon should sit naturally above or near the pipeline-stage
-title and visually represent that stage.
+[ EXISTING LEARNING / SKILL DEVELOPMENT CONTENT ]
 
-Use one consistent professional line-icon family.
+                ↓
 
-Examples:
+IMPORTANT FUTURE INITIATIVES
 
-database → ServiceNow/data
-download/import → fetch
-check → validation
-warning → exception/misalignment
-document → report
-people → owners
-envelope → notification
+[ 01 ] DATA CERTIFICATION
+      KPI & PERFORMANCE ANALYTICS
 
-The icons should make the workflow understandable even before
-the audience reads all the text.
+      Deeper exposure to certification analytics,
+      operational KPIs and data-driven reporting.
 
---------------------------------------------------------
+[ 02 ] INFRASTRUCTURE OPERATIONS
+      AUTOMATION
 
-4. SIMPLE PIPELINE CARDS
+      Explore centralized automation across infrastructure,
+      cloud, Kubernetes/OpenShift and ServiceNow workflows.
 
-Use restrained rectangular process stages similar to the original
-HAM slide.
+The exact layout should be determined by the existing slide.
 
-Avoid excessive:
-• rounded corners
-• shadows
-• pill shapes
-• layered borders
-• decorative badges
-• card-within-card styling
+Do NOT force this exact layout if it conflicts with the current
+design.
 
-Each pipeline stage should contain only:
+==================================================
+CONNECT WITH MY EXISTING ROADMAP
+==================================================
 
-STEP NUMBER
-ICON
-SHORT STAGE TITLE
-SHORT SUPPORTING DESCRIPTION
+The existing roadmap already contains themes such as:
 
-Example:
+• Learning and contributing to more real-time projects
+• Making the Change Management Audit Automation project
+  production-ready
+• Technical documentation + user guide documentation
+• Going deeper into Cloud / AWS
+• Hands-on image building and deployment
+• Getting hands-on with Docker
 
-03
+DO NOT REMOVE THESE.
 
-[validation icon]
+DO NOT REWRITE THESE unnecessarily.
 
-VALIDATE ASSET-CI
-ALIGNMENT
+Instead, organize the roadmap so there is a clear progression:
 
-Check relationships
+LEARN
+→ BUILD
+→ PRODUCTIONIZE
+→ EXPAND INTO REAL-TIME INITIATIVES
 
-Keep the visual hierarchy simple.
+The two new initiatives should appear as important future
+opportunities within that progression.
 
---------------------------------------------------------
+==================================================
+IMPORTANT: HUMAN PRESENTATION DESIGN
+==================================================
 
-5. ONE NATURAL FOCAL STAGE
+The roadmap must NOT become a wall of text.
 
-Every project may have ONE important pipeline stage visually
-emphasized.
+Use short phrases.
 
-Follow the original HAM approach.
+Use whitespace.
 
-For example:
+Use one meaningful icon per major initiative.
 
-HAM:
-IDENTIFY MISALIGNMENTS & PATTERNS
+Use visual hierarchy rather than excessive boxes.
 
-Use:
-• accent-colour border
-• meaningful stronger icon
-• subtle colour difference
+Do not add:
+• generic AI illustrations
+• robot graphics
+• decorative 3D objects
+• excessive rounded cards
+• unnecessary badges
+• excessive arrows
+• large paragraphs
+• generic "AI-generated" visuals
 
-DO NOT add artificial labels such as:
+The result should feel like a professional employee/intern showing
+their genuine development roadmap to management.
 
-KEY STEP
-CORE STAGE
-ONE PRIMARY FOCUS
+It should communicate:
 
-The design itself should tell the audience what is important.
+"I have completed meaningful work, I know what I want to improve,
+and I have identified concrete areas where I can contribute next."
 
-SHOW importance.
+==================================================
+VISUAL PRIORITY
+==================================================
 
-Do not LABEL importance.
+The two new initiatives should be noticeable immediately when the
+roadmap slide is viewed.
 
---------------------------------------------------------
+But they must NOT overpower the slide.
 
-6. SIMPLE CONNECTORS
+Use a subtle visual treatment such as:
 
-Use small, clean arrows between pipeline stages.
+• slightly stronger heading
+• small numbered marker
+• thin accent line
+• meaningful icon
+• subtle highlight/background
+• clean separation from general learning items
 
-The arrows should establish sequence without dominating the slide.
+Use the SAME visual language already present in the deck.
 
-Avoid heavy connectors, thick arrows or excessive flowchart
-graphics.
+==================================================
+DO NOT ALTER ANYTHING ELSE
+==================================================
 
---------------------------------------------------------
+This is critical.
 
-7. OUTCOME SECTION
+DO NOT:
+- edit project slides
+- edit Incident Classifier
+- edit IMT Reconciliation & Update Automation
+- edit HAM
+- edit Change Management Audit Automation
+- edit introduction
+- edit internship overview
+- edit conclusion
+- change corporate branding
+- change First Citizens India logo
+- change footer
+- change "Internal"
+- change page numbers
+- change slide dimensions
+- change master theme
+- change existing colors
+- change existing fonts
+- change existing icons
 
-Use the original HAM slide's bottom treatment as the reference.
+ONLY modify the existing Future Roadmap / Learnings & Further
+Roadmap slide.
 
-Use the label:
+Before making the change, identify the existing roadmap slide and
+preserve its current design.
 
-OUTCOME
+==================================================
+FINAL QUALITY CHECK
+==================================================
 
-rather than forcing everything to say OUTPUT.
+After editing, verify:
 
-The outcome area should communicate what the project ultimately
-delivers or improves.
+1. The two new initiatives are clearly visible.
+2. They look like IMPORTANT FUTURE INITIATIVES, not ordinary bullets.
+3. Existing roadmap content remains intact.
+4. No other slide has changed.
+5. No branding has changed.
+6. No content overlaps.
+7. No text is too small to read during a presentation.
+8. The slide still has generous whitespace.
+9. The two initiatives are concise enough for a 10-minute internship
+   presentation.
+10. The overall slide still feels human-designed, professional and
+    management-ready.
 
-Use:
+Most importantly:
 
-LARGE SIMPLE ICON
-+
-SHORT OUTCOME LABEL
+DO NOT "improve" anything outside the Future Roadmap slide.
 
-Examples:
-
-[report]
-Structured Audit Report
-
-[people]
-Owner-wise Records
-
-[email]
-Personalized Follow-up
-
-[clock]
-Reduced Manual Audit Effort
-
-Do NOT put each outcome inside another separate rounded card.
-
-Allow the outcomes to sit naturally in one clean horizontal band.
-
-This should feel open and spacious.
-
-========================================================
-APPLY THIS LANGUAGE TO EACH PROJECT
-========================================================
-
-INCIDENT CLASSIFIER
-
-Use approximately:
-
-PROBLEM → SOLUTION
-
-AUTOMATED PIPELINE:
-
-ServiceNow Incident
-→ Prepare Data
-→ ML Prediction
-→ Semantic Search
-→ Hybrid Recommendation
-
-Use meaningful large icons:
-
-incident/ticket
-data/database
-prediction/target
-search
-relationship/recommendation
-
-Visually emphasize:
-
-ML PREDICTION
-
-without adding a "KEY STEP" or "CORE STAGE" label.
-
-OUTCOME:
-
-Assignment Group
-Resolution Profile
-Historical Precedents
-Confidence & Explainability
-
-Use the gold/blue accent already associated with this project.
-
---------------------------------------------------------
-
-IMT RECONCILIATION & UPDATE AUTOMATION
-
-PROBLEM → SOLUTION
-
-AUTOMATED PIPELINE:
-
-Input Files
-→ Load Data
-→ Validate
-→ Reconcile
-→ Apply Rules
-→ Generate Outputs
-
-Use large meaningful icons:
-
-files
-import/database
-validation/check
-matching/link
-rules/sliders
-report/output
-
-Visually emphasize:
-
-RECONCILE
-
-without adding any explanatory badge.
-
-OUTCOME:
-
-Updated Master YTD
-Reconciliation Report
-Audit Log
-Reduced Manual Effort
-
-Use the restrained green/teal accent already associated with
-this project.
-
---------------------------------------------------------
-
-HAM – ASSET-CI ALIGNMENT AUDIT WORKFLOW
-
-DO NOT REDESIGN THIS SLIDE.
-
-This is the canonical reference.
-
-Preserve its original composition as closely as possible.
-
-Its visual focal point remains:
-
-IDENTIFY MISALIGNMENTS & PATTERNS
-
-Its pipeline remains:
-
-ServiceNow
-→ Fetch Asset-CI Data
-→ Validate Asset-CI Alignment
-→ Identify Misalignments & Patterns
-→ Generate Audit Report
-→ Group Records by Owners
-→ Send Personalized Emails
-
-OUTCOME:
-
-Structured Audit Report
-Owner-wise Records
-Personalized Follow-up
-Reduced Manual Audit Effort
-
---------------------------------------------------------
-
-CHANGE MANAGEMENT AUDIT AUTOMATION
-
-Use the same DESIGN LANGUAGE, not an identical template.
-
-PROBLEM → SOLUTION
-
-AUTOMATED PIPELINE:
-
-Change Requests
-→ Fetch Data
-→ Select Audit
-→ Control Rules
-→ Inspect Evidence
-→ Local OCR
-→ Audit Results
-→ Excel QAR
-
-Use large meaningful icons:
-
-change/document
-database/fetch
-selection/check
-control/shield
-evidence/document
-OCR
-audit/check
-Excel/report
-
-Visually emphasize:
-
-CONTROL RULES
-
-Do not add "KEY STEP".
-
-Keep the clarification:
-
-"Standard template check applies to Standard Changes only"
-
-as a very small contextual annotation near the relevant control
-stage.
-
-Do not make that clarification a major visual component.
-
-OUTCOME:
-
-Structured Excel QAR
-Control-wise Results
-Evidence-backed Findings
-Traceable Audit Output
-
-========================================================
-ICONOGRAPHY RULE
-========================================================
-
-The icons in the ORIGINAL HAM slide are part of the desired design.
-
-DO NOT remove them.
-
-DO NOT shrink them into tiny decorative symbols.
-
-They should be:
-
-• visible
-• meaningful
-• line-based
-• professional
-• project-specific
-• visually consistent
-
-The pipeline should almost be understandable from the icons alone.
-
-However, do not add icons everywhere.
-
-Use them primarily for:
-
-PIPELINE STAGES
-and
-OUTCOMES.
-
-Problem/Solution may use very restrained visual treatment and do
-not require decorative icons if the slide is cleaner without them.
-
-========================================================
-HUMAN-DESIGNED FEEL
-========================================================
-
-The original HAM slide feels human because it does NOT treat every
-piece of information identically.
-
-Preserve that principle.
-
-Allow:
-
-• different visual weights
-• meaningful whitespace
-• one focal process stage
-• larger icons
-• restrained asymmetry
-• different Problem and Solution treatments
-• open Outcome area
-
-Do NOT create a UI-dashboard aesthetic.
-
-These are PRESENTATION SLIDES.
-
-They should not look like:
-• software dashboards
-• website cards
-• SaaS UI components
-• AI-generated card grids
-
-They should look like professionally designed PowerPoint slides.
-
-========================================================
-DECORATION PHILOSOPHY
-========================================================
-
-Use decoration only when it communicates meaning.
-
-GOOD:
-
-large meaningful icon
-thin accent line
-subtle highlight
-simple arrow
-one highlighted stage
-section divider
-carefully positioned whitespace
-
-BAD:
-
-unnecessary pill
-tiny decorative icon
-random rounded rectangle
-repeated badges
-excessive shadows
-floating decorative geometry
-generic AI graphics
-
-========================================================
-DO NOT TOUCH BRANDING
-========================================================
-
-Preserve exactly:
-
-First Citizens India logo
-Internal marking
-slide numbers
-corporate footer
-slide dimensions
-master/theme elements
-
-Do not distort or recreate branding.
-
-========================================================
-FINAL VISUAL TEST
-========================================================
-
-Compare every redesigned project slide against the ORIGINAL HAM
-slide.
-
-Ask:
-
-"Could these slides naturally exist beside the original HAM slide?"
-
-If NO, revise them.
-
-Then ask:
-
-"Did I simply clone the HAM layout?"
-
-If YES, introduce project-specific composition while retaining the
-same visual language.
-
-The target is:
-
-ORIGINAL HAM CLEANNESS
-+
-LARGE MEANINGFUL ICONOGRAPHY
-+
-PROJECT-SPECIFIC STORY
-+
-CONSISTENT CORPORATE DESIGN
-+
-HUMAN PRESENTATION DESIGN
-
-Do not make the slides more complicated than the original HAM
-reference.
-
-When uncertain, choose SIMPLICITY.
+This is an ADDITIVE EDIT ONLY.
