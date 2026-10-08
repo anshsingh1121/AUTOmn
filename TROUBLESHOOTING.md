@@ -1,438 +1,738 @@
-I want you to redesign and polish the FOUR PROJECT SLIDES in my PowerPoint presentation.
-
-The four project slides are:
-
-1. Incident Classifier
-2. IMT Reconciliation & Update Automation
-3. HAM – Asset-CI Alignment Audit Workflow
-4. Change Management Audit Automation
+I want you to perform ONE FINAL PROFESSIONAL ART-DIRECTION PASS on my presentation.
 
 IMPORTANT:
+The presentation is already designed and the content/structure is finalized.
 
-I do NOT want four completely identical slides.
+DO NOT redesign it from scratch.
 
-I want them to feel like they belong to the SAME professional presentation while still having their OWN visual identity.
+DO NOT change the project content unnecessarily.
 
-Use the existing HAM – Asset-CI Alignment Audit Workflow slide as the PRIMARY DESIGN REFERENCE.
+DO NOT introduce a new template.
 
-The HAM slide currently has the best balance of:
-• clean layout
-• readability
-• visual hierarchy
-• icons
-• process flow
-• whitespace
-• highlighting
-• enterprise professionalism
+Instead, refine the existing slides so they look like they were personally designed and polished by an experienced human presentation designer.
 
-Use it as the DESIGN BENCHMARK.
+The final objective is:
 
-Do NOT simply copy the HAM slide.
+PREMIUM + MODERN + CORPORATE + HUMAN + TECHNICAL
 
-Instead, extract its visual language and apply that language intelligently to the other three projects.
+I want the audience to feel:
 
-==================================================
-CORE DESIGN PRINCIPLE
-==================================================
+"This is a well-thought-out presentation created by someone who actually understands and built these projects."
 
-Think:
+I do NOT want it to feel like:
 
-SAME DESIGN SYSTEM
+"An AI generated a PowerPoint using a repeated card template."
+
+============================================================
+CURRENT STATE
+============================================================
+
+The four project slides currently have a strong and consistent structure:
+
+• Project title
+• Subtitle
+• Problem
+• Solution
+• Automated Pipeline
+• Output
+
+Keep this structure.
+
+The HAM – Asset-CI Alignment Audit Workflow slide is still the PRIMARY visual reference because it has the strongest process storytelling.
+
+However, the current four slides have become slightly too mechanically identical.
+
+Your job is to preserve their consistency while introducing subtle human-designed variation.
+
+============================================================
+MOST IMPORTANT DESIGN PRINCIPLE
+============================================================
+
+DO NOT MAKE THE FOUR SLIDES IDENTICAL.
+
+Instead:
+
+SAME DESIGN LANGUAGE
 +
-PROJECT-SPECIFIC VISUAL STORY
+DIFFERENT VISUAL PERSONALITY
 
-The four slides should clearly look like they were designed by the same designer.
+They should feel like four chapters of the same presentation, not four copies of one template.
 
-However, each slide should have unique visual decorators, icons, highlights and accent treatments that reinforce what that project actually does.
+============================================================
+REMOVE THE "AI-GENERATED TEMPLATE" FEEL
+============================================================
 
-Do NOT make the slides feel like duplicated templates.
+Identify and reduce anything that makes the slides look mechanically generated.
 
-==================================================
-COMMON INFORMATION STRUCTURE
-==================================================
+Specifically:
 
-All four slides should use the same high-level storytelling structure:
+1. REMOVE or greatly soften the large rounded rectangular OUTER BORDER around each project slide.
 
-PROJECT TITLE
-Short project subtitle
+The outer border currently makes the slides feel like they were generated from a fixed template.
 
-PROBLEM
-↓
-SOLUTION
-↓
-AUTOMATED PIPELINE
-↓
-OUTPUT
+Replace it with a much more subtle framing approach:
 
-These section names should be consistent across all four slides.
+• clean whitespace
+• a thin title accent
+• subtle section accents
+• restrained project colour
 
-Do not randomly change terminology between slides.
+Do NOT replace the border with another large decorative frame.
 
-Use:
+The slide should breathe.
 
-PROBLEM
-SOLUTION
-AUTOMATED PIPELINE
-OUTPUT
+------------------------------------------------------------
 
-However, the visual treatment inside these sections may differ based on the project.
+2. REMOVE the repeated:
 
-==================================================
-USE VISUAL DECORATORS INTELLIGENTLY
-==================================================
+"ONE PRIMARY FOCUS"
 
-This is VERY IMPORTANT.
+label.
 
-I want the slides to be visually attractive through meaningful decorators, NOT through excessive decoration.
+It feels like a design-template annotation rather than natural presentation design.
 
-Use elements such as:
+Instead, communicate the focal point visually.
 
-• clean line icons
-• project-specific icons
-• numbered circles
-• subtle accent bars
-• highlighted pipeline stages
-• small callout labels
-• directional arrows
-• small connector lines
-• subtle background shapes
-• light geometric patterns
-• status indicators
-• output icons
-• small emphasis tags
-• visual separators
-• subtle highlighted keywords
+------------------------------------------------------------
 
-Every decorator must serve a communication purpose.
+3. DO NOT make every pipeline card visually identical.
 
-Do NOT add decoration merely because there is empty space.
+Maintain a common card language, but create hierarchy.
 
-The visual should help the audience understand the project faster.
+The important stage should naturally receive:
 
-==================================================
-HAM SLIDE AS DESIGN REFERENCE
-==================================================
-
-Study the existing HAM slide carefully.
-
-Replicate its qualities:
-
-• strong title hierarchy
-• clean Problem/Solution cards
-• highly readable pipeline
-• numbered process stages
-• simple line icons
-• restrained colour usage
-• clear arrows
-• subtle highlighted stage
-• strong bottom Output area
-• generous whitespace
-• enterprise/corporate aesthetic
-
-The HAM slide should be treated as the GOLD STANDARD for cleanliness.
-
-==================================================
-PROJECT-SPECIFIC VISUAL IDENTITY
-==================================================
-
-INCIDENT CLASSIFIER:
-
-Visual theme:
-AI / ML / Incident Intelligence
-
-Possible visual language:
-• AI/network icon
-• database icon
-• prediction/target icon
-• search icon
-• graph/connection icon
-• semantic-search visual
-• highlighted prediction stage
-• subtle AI/data accent
-
-The audience should immediately understand:
-
-ServiceNow Incident
-→ Data
-→ ML Prediction
-→ Historical Intelligence
-→ Recommendation
-
-Do not make it look like a generic AI presentation.
-
---------------------------------------------------
-
-IMT RECONCILIATION & UPDATE AUTOMATION:
-
-Visual theme:
-Automation / Reconciliation / Data Processing
-
-Possible visual language:
-• Excel/document icon
-• download/import icon
-• validation/check icon
-• link/reconciliation icon
-• business-rule sliders
-• output/report icon
-• highlighted reconciliation stage
-• subtle automation accent
-
-The audience should immediately understand:
-
-Inputs
-→ Load
-→ Validate
-→ Reconcile
-→ Apply Rules
-→ Update
-→ Report
-
-The reconciliation stage should be visually prominent because it is the core intelligence/action of the workflow.
-
---------------------------------------------------
-
-HAM – ASSET-CI ALIGNMENT AUDIT:
-
-Visual theme:
-Audit / Asset-CI Relationship / Exceptions / Ownership
-
-Keep the current design largely intact because it is the strongest reference.
-
-Use:
-• database/asset icons
-• relationship/link icons
-• validation/check icons
-• warning/exception icon
-• report icon
-• owner/group icon
-• email icon
-
-The "Identify Misalignments" stage can remain subtly highlighted because it represents the key audit action.
-
---------------------------------------------------
-
-CHANGE MANAGEMENT AUDIT AUTOMATION:
-
-Visual theme:
-Change Control / Audit / Evidence / Compliance
-
-Possible visual language:
-• ServiceNow/change icon
-• control/shield icon
-• checklist icon
-• document/evidence icon
-• OCR/image icon
-• audit result icon
-• Excel/QAR icon
-• highlighted control-rule stage
-
-The audience should immediately understand:
-
-Change Request
-→ Data
-→ Audit Selection
-→ Control Rules
-→ Evidence
-→ OCR
-→ Results
-→ QAR
-
-==================================================
-HIGHLIGHTING
-==================================================
-
-Use highlighting strategically.
-
-Each slide should have ONE clear visual focal point.
-
-For example:
-
-Incident Classifier:
-Highlight the ML prediction / hybrid inference stage.
-
-IMT:
-Highlight reconciliation.
-
-HAM:
-Highlight misalignment detection.
-
-Change Management:
-Highlight audit/control rules.
-
-The highlighted element can use:
-• slightly stronger accent colour
+• slightly stronger accent
+• stronger icon
 • subtle tinted background
-• thicker border
-• small glow/contrast
-• accent icon
+• stronger border
+• small integrated accent marker
 
-Do NOT highlight everything.
+Other stages should remain quieter.
 
-If everything is highlighted, nothing is important.
+This should feel intentional rather than formulaic.
 
-==================================================
-ICONS
-==================================================
+------------------------------------------------------------
 
-Use a consistent icon family across the presentation.
+4. Do not use identical decoration everywhere.
 
-Icons should be:
-• simple
-• professional
-• line-based
-• minimal
-• readable at presentation distance
+A human designer does not decorate every section equally.
 
-Avoid:
-• cartoon icons
-• 3D icons
-• glossy icons
-• childish graphics
-• overly futuristic AI graphics
-• random mixed icon styles
+Some elements should be visually quiet.
 
-The icon should reinforce the meaning of the step.
+Some should be prominent.
 
-==================================================
-COLOUR
-==================================================
+Whitespace should be allowed.
 
-Maintain the existing First Citizens corporate visual identity.
+============================================================
+HUMAN-DESIGNED VISUAL HIERARCHY
+============================================================
 
-Base:
-• white / very light background
-• dark navy typography
-• muted grey supporting text
-• corporate blue accents
+Every slide should have ONE clear visual focal point.
 
-Allow each project a subtle secondary accent.
-
-Do not turn the slides into colourful marketing slides.
-
-The overall appearance should remain:
-
-ENTERPRISE
-CLEAN
-PREMIUM
-TECHNICAL
-PROFESSIONAL
-
-==================================================
-LAYOUT
-==================================================
-
-Maintain the overall layout discipline of the HAM slide.
-
-The viewer should naturally scan:
+The viewer's eye should naturally move:
 
 TITLE
 ↓
-PROBLEM + SOLUTION
+PROBLEM / SOLUTION
 ↓
-PIPELINE
+KEY PIPELINE STAGE
 ↓
 OUTPUT
 
-Keep sufficient whitespace around every component.
+Do not make every component equally loud.
 
-Use alignment guides and consistent margins.
+Create hierarchy through:
 
-All cards should have:
-• consistent internal padding
-• consistent border treatment
-• consistent corner treatment
-• consistent title positioning
+• scale
+• weight
+• colour
+• whitespace
+• iconography
+• position
+• subtle contrast
 
-But individual cards may contain different icons or accent treatments when useful.
+NOT through excessive decoration.
 
-==================================================
-CONTENT DENSITY
-==================================================
+============================================================
+PROJECT-SPECIFIC FOCAL POINTS
+============================================================
 
-Do NOT cram technical details into the slides.
+Use these as the visual storytelling anchors.
 
-These are presentation slides.
+------------------------------------------------------------
+INCIDENT CLASSIFIER
+------------------------------------------------------------
 
-Prefer:
+Primary idea:
 
-"Validate Asset-CI Alignment"
+AI-assisted incident intelligence.
 
-over:
+The visual focal point should be:
 
-"Perform validation of all relevant Asset and Configuration Item relationship attributes retrieved from ServiceNow before identifying inconsistencies."
+ML PREDICTION
 
-Shorten wording aggressively while preserving technical meaning.
+or the transition:
 
-Use visual communication wherever possible.
+INCIDENT DATA → ML PREDICTION → HISTORICAL INTELLIGENCE
 
-==================================================
-NO GENERIC AI REDESIGN
-==================================================
+Use subtle AI/data visual cues:
 
-Do NOT redesign these slides using generic PowerPoint AI aesthetics.
+• model icon
+• prediction/target icon
+• semantic search icon
+• data/network connection
 
-Do not create:
-• giant gradient backgrounds
-• giant floating circles
-• unnecessary 3D graphics
-• futuristic neon graphics
-• excessive glassmorphism
-• oversized illustrations
-• decorative stock imagery
+Do NOT use futuristic AI imagery.
 
-The existing presentation already has a strong corporate visual identity.
+Do NOT use neural-network stock graphics.
 
-Enhance it rather than replacing it.
+Make it look like a real enterprise ML system.
 
-==================================================
-BRANDING
-==================================================
+The ML Prediction stage should feel slightly more important than the other stages.
 
-DO NOT modify:
+------------------------------------------------------------
+IMT RECONCILIATION & UPDATE AUTOMATION
+------------------------------------------------------------
+
+Primary idea:
+
+Automated reconciliation replacing repetitive manual comparison.
+
+The visual focal point should be:
+
+RECONCILE
+
+Use meaningful visual cues:
+
+• document/spreadsheet
+• validation
+• matching/linking
+• business rules
+• output/report
+
+The reconciliation stage should be visually prominent.
+
+The slide should visually communicate:
+
+INPUTS
+→
+VALIDATION
+→
+RECONCILIATION
+→
+BUSINESS RULES
+→
+OUTPUT
+
+Do not overload the slide with spreadsheet imagery.
+
+------------------------------------------------------------
+HAM – ASSET-CI ALIGNMENT AUDIT
+------------------------------------------------------------
+
+Treat this slide as the GOLD STANDARD.
+
+Do not significantly redesign it.
+
+Keep its strong visual simplicity.
+
+Its focal point should remain:
+
+FIND MISALIGNMENTS
+
+Use:
+
+• relationship icon
+• validation icon
+• warning/exception icon
+• report icon
+• owner icon
+• notification icon
+
+The exception/misalignment stage can have the strongest accent.
+
+Do not add unnecessary graphics to this slide.
+
+Its simplicity is a strength.
+
+------------------------------------------------------------
+CHANGE MANAGEMENT AUDIT AUTOMATION
+------------------------------------------------------------
+
+Primary idea:
+
+Structured change-control auditing.
+
+The visual focal point should be:
+
+CONTROL RULES
+
+Use meaningful visual cues:
+
+• change request
+• checklist
+• control/shield
+• evidence/document
+• OCR
+• audit result
+• QAR/report
+
+Make CONTROL RULES visually important without making it huge.
+
+Keep the Standard Change clarification as a small, secondary contextual note.
+
+It must clearly communicate:
+
+"Standard template check applies to Standard Changes only."
+
+Do not make this note compete with the main workflow.
+
+============================================================
+ICONS
+============================================================
+
+Improve icon quality where necessary.
+
+Use one coherent professional line-icon family.
+
+Icons should be:
+
+• minimal
+• crisp
+• meaningful
+• technically relevant
+• visually consistent
+
+Avoid:
+
+• cartoon icons
+• emoji-like icons
+• overly decorative icons
+• random icon styles
+• 3D graphics
+• futuristic AI illustrations
+
+Do NOT add an icon simply because a box is empty.
+
+Every icon should communicate something.
+
+============================================================
+DECORATORS
+============================================================
+
+I WANT DECORATORS.
+
+But they must look like the work of a human presentation designer.
+
+Good examples:
+
+• subtle vertical accent bars
+• small section markers
+• thin connector lines
+• meaningful numbered circles
+• small status indicators
+• subtle highlighted pipeline stage
+• small project-category label
+• restrained geometric detail
+• tiny contextual symbols
+• understated output icons
+
+Do NOT turn the slide into a collection of decorative shapes.
+
+The rule is:
+
+DECORATION SHOULD SUPPORT STORYTELLING.
+
+Not:
+
+DECORATION SHOULD FILL SPACE.
+
+============================================================
+CONTROLLED ASYMMETRY
+============================================================
+
+Introduce subtle controlled asymmetry.
+
+Do NOT force every object to have exactly the same visual weight.
+
+For example:
+
+The Solution statement can have slightly more visual emphasis.
+
+The key pipeline stage can be slightly more prominent.
+
+The Output strip can have one stronger output.
+
+One side of a section can contain a small visual cue while the other remains clean.
+
+However:
+
+Everything must remain properly aligned.
+
+This should feel intentional, not messy.
+
+============================================================
+COLOUR
+============================================================
+
+Maintain the First Citizens India corporate visual identity.
+
+Use:
+
+• dark navy
+• white
+• light grey
+• restrained blue
+• muted corporate accents
+
+Project-specific accent colours may remain:
+
+Incident Classifier → subtle gold/blue AI accent
+IMT → restrained green/teal automation accent
+HAM → restrained red audit accent
+Change Management → restrained blue control accent
+
+IMPORTANT:
+
+Do NOT use large coloured backgrounds.
+
+Do NOT use gradients.
+
+Do NOT use neon colours.
+
+Do NOT use excessive colour.
+
+Colour should guide attention.
+
+============================================================
+TYPOGRAPHY
+============================================================
+
+The current typography is broadly good.
+
+Do NOT radically change the typography.
+
+Instead, refine hierarchy.
+
+Use:
+
+PROJECT TITLE
+→ strongest
+
+SECTION HEADINGS
+→ clear but smaller
+
+KEY STATEMENT
+→ bold selectively
+
+SUPPORTING TEXT
+→ lighter and quieter
+
+Do not bold entire paragraphs.
+
+Do not make every heading uppercase if it hurts readability.
+
+Do not shrink text to fit.
+
+If something is too long:
+
+SHORTEN THE WORDING.
+
+Do not reduce font size.
+
+============================================================
+PROBLEM / SOLUTION CARDS
+============================================================
+
+Keep the Problem/Solution structure.
+
+But make it feel less like two identical AI-generated cards.
+
+Use subtle differentiation.
+
+For example:
+
+PROBLEM
+→ slightly quieter / diagnostic visual treatment
+
+SOLUTION
+→ slightly stronger / constructive visual treatment
+
+Use icons meaningfully.
+
+Keep the text concise.
+
+The Problem should answer:
+
+"What was difficult?"
+
+The Solution should answer:
+
+"What did I build?"
+
+Avoid generic corporate language.
+
+============================================================
+PIPELINE
+============================================================
+
+The pipeline is the heart of these slides.
+
+Keep:
+
+01 → 02 → 03 → 04...
+
+But improve its visual storytelling.
+
+Each stage should contain:
+
+NUMBER
+ICON
+SHORT TITLE
+SHORT DESCRIPTION
+
+Descriptions should be short enough to read instantly.
+
+Example:
+
+03
+RECONCILE
+Match records
+
+NOT:
+
+"Perform the reconciliation process by comparing multiple source records and determining the appropriate update classification."
+
+Keep the visual language concise.
+
+============================================================
+CORE STAGE
+============================================================
+
+The existing "CORE STAGE" idea is useful.
+
+Do not necessarily remove it.
+
+Instead, make it more subtle and integrated.
+
+For example:
+
+• small accent strip
+• subtle bottom marker
+• slightly stronger stage border
+• small "KEY STEP" label
+
+Use only ONE such focal treatment per slide.
+
+Do not repeat it unnecessarily.
+
+============================================================
+OUTPUT
+============================================================
+
+The Output section is important.
+
+Keep it visually strong but simple.
+
+Use:
+
+ICON + OUTPUT NAME
+
+Examples:
+
+Assignment Group
+Resolution Profile
+Historical Precedents
+Confidence & Explainability
+
+Do not add paragraphs.
+
+Make the outputs feel tangible.
+
+The audience should leave the slide understanding:
+
+"THIS is what the project actually produced."
+
+============================================================
+PROJECT LABEL
+============================================================
+
+The small top-right project-category labels are useful.
+
+Keep them if they are helping orientation.
+
+Examples:
+
+AI / ML INTELLIGENCE
+DATA RECONCILIATION
+ASSET-CI AUDIT
+CHANGE CONTROL
+
+But make them subtle.
+
+They should act as navigation cues, not decorative badges.
+
+============================================================
+DO NOT CHANGE BRANDING
+============================================================
+
+Absolutely preserve:
 
 • First Citizens India logo
-• company branding
+• logo position
 • footer
 • "Internal"
 • slide numbers
 • presentation aspect ratio
-• master/template elements
+• corporate identity
 
-Do not move, resize, distort or recreate the company logo.
+Do not recreate the logo.
 
-==================================================
-MOST IMPORTANT QUALITY CRITERIA
-==================================================
+Do not move it.
 
-When finished, place the four project slides conceptually side-by-side and ask:
+Do not distort it.
 
-"Do these look like four projects from the SAME presentation?"
+============================================================
+DO NOT CHANGE PROJECT FACTS
+============================================================
 
-The answer must be YES.
+Do not invent:
 
-Then ask:
+• technologies
+• capabilities
+• business impact
+• metrics
+• automation scope
+• AI capabilities
 
-"Can I immediately tell these are FOUR DIFFERENT PROJECTS?"
+Do not exaggerate.
 
-The answer must also be YES.
+Keep the technical meaning of the existing content.
 
-That balance is the goal.
+You are improving PRESENTATION DESIGN, not rewriting the projects.
 
-The slides should feel:
+============================================================
+READABILITY TEST
+============================================================
 
-CONSISTENT IN DESIGN
-BUT
-DIFFERENT IN VISUAL STORY.
+The slides will be presented to people sitting several metres away.
 
-Prioritize:
+Therefore:
 
-1. Readability
-2. Clean hierarchy
-3. Visual storytelling
-4. Consistency
-5. Meaningful icons/decorators
-6. Professional polish
-7. Technical accuracy
-8. Aesthetic appeal
+• no microscopic text
+• no overly thin text
+• no crowded cards
+• no long paragraphs
+• no overlapping elements
 
-Do not sacrifice readability for decoration.
+At presentation distance, the audience should immediately see:
+
+PROBLEM
+SOLUTION
+PIPELINE
+KEY STAGE
+OUTPUT
+
+============================================================
+THE "HUMAN TOUCH" TEST
+============================================================
+
+Before finalizing each slide, ask:
+
+"If a human designer had personally reviewed this slide, would they really leave every card identical?"
+
+If yes → introduce subtle hierarchy.
+
+"If every element is equally emphasized, is the slide communicating what matters?"
+
+If no → create one focal point.
+
+"Does every icon have a reason to exist?"
+
+If no → remove it.
+
+"Does this decorative element help the audience?"
+
+If no → remove it.
+
+"Does this slide look like it came from an AI-generated template?"
+
+If yes → reduce repetition and introduce controlled visual hierarchy.
+
+============================================================
+THE "WOW" TEST
+============================================================
+
+I do NOT want a flashy WOW.
+
+I want a:
+
+"Wow, this is really well designed."
+
+reaction.
+
+That means:
+
+• excellent spacing
+• beautiful alignment
+• restrained colour
+• meaningful icons
+• clear hierarchy
+• one strong focal point
+• concise language
+• subtle visual details
+• professional polish
+
+The sophistication should come from RESTRAINT.
+
+============================================================
+FINAL PASS
+============================================================
+
+After making the changes, review all four project slides side-by-side.
+
+They must feel like:
+
+ONE PRESENTATION
+but
+FOUR DISTINCT PROJECTS.
+
+Specifically verify:
+
+✓ No large unnecessary outer frame
+✓ No excessive rounded-card repetition
+✓ No "ONE PRIMARY FOCUS" template label
+✓ No unnecessary decorative elements
+✓ No generic AI imagery
+✓ No random icon styles
+✓ One clear focal point per slide
+✓ Project-specific visual identity
+✓ Consistent typography
+✓ Consistent spacing
+✓ Consistent section hierarchy
+✓ Strong Problem/Solution storytelling
+✓ Strong pipeline storytelling
+✓ Strong Output section
+✓ No text overlap
+✓ No clipping
+✓ No tiny text
+✓ No distorted branding
+✓ No factual changes
+
+IMPORTANT:
+
+THIS IS THE FINAL POLISH PASS.
+
+Do not keep adding design elements simply to make the slides "more attractive."
+
+If something already looks good, leave it alone.
+
+The goal is to make the presentation look:
+
+HUMAN-DESIGNED
+MODERN
+PREMIUM
+CORPORATE
+TECHNICALLY CREDIBLE
+AND
+MEMORABLE.
