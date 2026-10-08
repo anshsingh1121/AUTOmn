@@ -1,66 +1,74 @@
-
-Now edit ONLY the INCIDENT CLASSIFIER project slide.
+Now edit ONLY the IMT RECONCILIATION & UPDATE AUTOMATION slide.
 
 Do not modify any other slide.
 
-Use the unified project-slide template and visual system established in my previous instruction.
+Bring it into exact visual alignment with the unified project-slide template and the HAM slide's clean presentation style.
 
-Make this slide visually consistent with the HAM project slide.
-
-Use exactly these section labels:
+Use exactly:
 
 PROBLEM
 SOLUTION
 AUTOMATED PIPELINE
 OUTPUT
 
-The slide should communicate this story:
+Use the following concise content:
 
-PROBLEM:
-Manual incident reading, triage and routing creates avoidable effort, inconsistent assignment and delayed resolution.
+PROBLEM
 
-SOLUTION:
-AI-powered ServiceNow incident intelligence that combines structured incident data, ML prediction and historical similarity to support faster triage.
+• Monthly YTD updates require ServiceNow report extraction
+• Manual row/column comparison is repetitive and error-prone
+• Reconciliation and updates require significant manual effort
 
-AUTOMATED PIPELINE:
+SOLUTION
 
-01 — DATA INTELLIGENCE
-Prepare and validate ML-ready incident data
+Python-based end-to-end reconciliation and update automation that standardizes the monthly workflow and produces consistent, auditable outputs.
 
-02 — MODEL PREDICTION
-Classify assignment group and estimate resolution profile
+AUTOMATED PIPELINE
 
-03 — SEMANTIC SEARCH
-Retrieve relevant historical incidents
+01 — INPUTS
+Master YTD, ServiceNow monthly report and IC lookup
 
-04 — HYBRID INFERENCE
-Combine predictions with historical precedents
+02 — DATA LOADER
+Load and standardize source files
 
-05 — ACTIONABLE OUTPUT
-Provide recommended routing, resolution insight and supporting precedents
+03 — VALIDATOR
+Check required columns, number fields and lookup data
 
-OUTPUT:
-• Assignment Group Recommendation
-• Resolution Time Insight
-• Historical Precedents
-• Confidence / Explainability
+04 — RECONCILER
+Match records and classify Updated / New / Historical
 
-IMPORTANT:
-Keep the technical meaning of the existing slide.
-Do not invent functionality.
-Do not make the slide look like a generic AI diagram.
+05 — BUSINESS RULES
+Apply IC, region, bank/SVB and duration logic
 
-Visually simplify the current slide significantly.
+06 — OUTPUT WRITER
+Update the Excel template while preserving required structure and formulas
 
-The existing Incident Classifier slide is currently too dense compared with the HAM slide. Reduce visual clutter, remove redundant labels, shorten text and create stronger whitespace.
+OUTPUT
 
-Use a clean horizontal pipeline with consistent numbered cards.
+• Updated Master YTD
+• Reconciliation Report
+• Audit Log
+• Consistent & Repeatable Processing
 
-Make the ML/AI aspect visually identifiable through restrained iconography and one subtle accent colour.
+IMPORTANT DESIGN INSTRUCTION:
 
-Keep the existing First Citizens India branding, footer, slide number and presentation theme untouched.
+The current slide has too many competing boxes.
 
-Final test:
-The slide should be understandable within approximately 5 seconds from:
+Simplify it to the same visual grammar as HAM:
+top Problem/Solution cards,
+middle numbered automated pipeline,
+bottom Output strip.
 
-PROBLEM → SOLUTION → PIPELINE → OUTPUT.
+Do not put long descriptions inside pipeline boxes.
+
+Use short action-oriented titles.
+
+Retain the concept that this is a single portable application, but do not allow that secondary message to overpower the main pipeline.
+
+Preserve all existing First Citizens India branding, footer and slide number.
+
+No overlap.
+No tiny text.
+No unnecessary decorative elements.
+
+The final slide should feel like the same designer created it as the HAM slide.
