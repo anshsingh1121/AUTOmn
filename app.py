@@ -1,6 +1,6 @@
 """
-IMT Reconciliation & Update Automation — Executive Dashboard
-Streamlit Web UI for Interactive Execution, Analytics, and Presentation.
+FCB Incident Tracker — Production Console
+Enterprise Incident Management Tracker (IMT) Reconciliation & Analytics Platform.
 """
 
 import io
@@ -16,15 +16,17 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
-# Configure page settings
+# -------------------------------------------------------------
+# Page Configuration
+# -------------------------------------------------------------
 st.set_page_config(
-    page_title="IMT Automation & Executive Dashboard",
-    page_icon="📊",
+    page_title="FCB Incident Tracker — Production Console",
+    page_icon="💼",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# Project root path resolution
+# Root directory resolution
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
@@ -33,57 +35,109 @@ from src.business_rules import build_ic_lookup_map
 from src.config_loader import Config, load_config
 from src.data_loader import (
     DataLoadError,
-    load_excel_to_dataframe,
     load_ic_lookup,
     load_master_tracker,
     load_servicenow,
 )
-from src.output_writer import write_reconciliation_report_excel
+from src.output_writer import (
+    create_archive_copy,
+    create_output_path,
+    write_output_workbook,
+    write_reconciliation_report_excel,
+)
 from src.reconciler import reconciliation_to_dataframe, reconcile
 from src.report_generator import generate_reconciliation_summary
 from src.validator import (
     ValidationResult,
-    validate_ic_lookup,
     validate_number_column,
     validate_output,
     validate_required_columns,
 )
 
 # -------------------------------------------------------------
-# Custom Styling for Sleek Executive Look
+# Corporate Clean Styling
 # -------------------------------------------------------------
 st.markdown(
     """
     <style>
-    .main-title {
-        font-size: 2.2rem;
+    /* Global Typography & Background */
+    html, body, [class*="css"] {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    
+    /* Top Header */
+    .app-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 0.75rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #E2E8F0;
+    }
+    .app-title {
+        font-size: 1.5rem;
         font-weight: 700;
-        color: #1E3A8A;
-        margin-bottom: 0.2rem;
+        color: #0F172A;
+        letter-spacing: -0.02em;
+        margin: 0;
     }
-    .sub-title {
-        font-size: 1.05rem;
-        color: #4B5563;
-        margin-bottom: 1.5rem;
+    .app-subtitle {
+        font-size: 0.875rem;
+        color: #64748B;
+        margin-top: 0.15rem;
     }
-    .metric-card {
-        background-color: #FFFFFF;
-        border: 1px solid #E5E7EB;
-        border-radius: 0.75rem;
-        padding: 1rem 1.25rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-    }
-    .badge-pill {
-        display: inline-block;
-        padding: 0.25rem 0.6rem;
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
         font-size: 0.75rem;
         font-weight: 600;
+        padding: 0.25rem 0.65rem;
         border-radius: 9999px;
+        background-color: #F1F5F9;
+        color: #334155;
+        border: 1px solid #CBD5E1;
     }
-    .badge-success { background-color: #DEF7EC; color: #03543F; }
-    .badge-warning { background-color: #FEF08A; color: #713F12; }
-    .badge-info { background-color: #E1EFFE; color: #1E429F; }
-    .badge-danger { background-color: #FDE8E8; color: #9B1C1C; }
+    .status-active {
+        background-color: #ECFDF5;
+        color: #065F46;
+        border-color: #A7F3D0;
+    }
+    .dot-active {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #10B981;
+    }
+    
+    /* Metric Cards */
+    .metric-container {
+        background: #FFFFFF;
+        border: 1px solid #E2E8F0;
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    }
+    .metric-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        color: #64748B;
+        margin-bottom: 0.25rem;
+    }
+    .metric-value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #0F172A;
+        line-height: 1.2;
+    }
+    .metric-sub {
+        font-size: 0.75rem;
+        color: #10B981;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -91,56 +145,51 @@ st.markdown(
 
 
 # -------------------------------------------------------------
-# Helper Functions
+# Config & Data Ingestion Helpers
 # -------------------------------------------------------------
-def get_default_config() -> Config:
-    """Load default config from config/config.json."""
-    config_file = os.path.join(PROJECT_ROOT, "config", "config.json")
-    return load_config(config_file)
+@st.cache_data(show_spinner=False)
+def load_base_configuration() -> Config:
+    config_path = os.path.join(PROJECT_ROOT, "config", "config.json")
+    return load_config(config_path)
 
 
-def run_reconciliation_pipeline(
+def execute_pipeline(
     master_df: pd.DataFrame,
     servicenow_df: pd.DataFrame,
     ic_lookup_df: Optional[pd.DataFrame],
     config: Config,
 ) -> Tuple[Any, pd.DataFrame, Dict[str, Any], ValidationResult, ValidationResult, float]:
-    """
-    Execute stages 2 through 6 of the reconciliation pipeline in memory.
-    """
+    """Execute reconciliation and business rules pipeline in-memory."""
     start_time = time.time()
     input_validation = ValidationResult()
 
-    # 1. Validation
-    sn_col_result = validate_required_columns(
-        servicenow_df, config.required_servicenow_columns, "ServiceNow"
+    # Schema Validation
+    input_validation.merge(
+        validate_required_columns(servicenow_df, config.required_servicenow_columns, "ServiceNow")
     )
-    input_validation.merge(sn_col_result)
-
-    master_col_result = validate_required_columns(
-        master_df, config.required_master_columns, "Master Tracker"
+    input_validation.merge(
+        validate_required_columns(master_df, config.required_master_columns, "Master Tracker")
     )
-    input_validation.merge(master_col_result)
-
-    sn_num_result = validate_number_column(
-        servicenow_df,
-        "Number",
-        "ServiceNow",
-        block_on_duplicates=config.block_on_duplicate_numbers,
-        block_on_blanks=config.block_on_blank_numbers,
+    input_validation.merge(
+        validate_number_column(
+            servicenow_df,
+            "Number",
+            "ServiceNow",
+            block_on_duplicates=config.block_on_duplicate_numbers,
+            block_on_blanks=config.block_on_blank_numbers,
+        )
     )
-    input_validation.merge(sn_num_result)
-
-    master_num_result = validate_number_column(
-        master_df,
-        "Number",
-        "Master Tracker",
-        block_on_duplicates=config.block_on_duplicate_numbers,
-        block_on_blanks=config.block_on_blank_numbers,
+    input_validation.merge(
+        validate_number_column(
+            master_df,
+            "Number",
+            "Master Tracker",
+            block_on_duplicates=config.block_on_duplicate_numbers,
+            block_on_blanks=config.block_on_blank_numbers,
+        )
     )
-    input_validation.merge(master_num_result)
 
-    # 2. IC Lookup map
+    # Build IC Lookup map
     ic_lookup_map = {}
     if ic_lookup_df is not None:
         region_cfg = config.region_rule
@@ -151,7 +200,7 @@ def run_reconciliation_pipeline(
             case_sensitive=region_cfg.get("case_sensitive", False),
         )
 
-    # 3. Reconciliation + Business Rules
+    # Reconcile & Apply Business Rules
     master_before_count = len(master_df)
     recon_result = reconcile(
         master_df=master_df,
@@ -160,14 +209,14 @@ def run_reconciliation_pipeline(
         config=config,
     )
 
-    # 4. Output DataFrame
-    master_columns = list(master_df.columns)
-    output_df = reconciliation_to_dataframe(recon_result, master_columns)
+    # Build output DataFrame
+    master_cols = list(master_df.columns)
+    output_df = reconciliation_to_dataframe(recon_result, master_cols)
 
-    # 5. Output Validation
+    # Output validation
     output_validation = validate_output(output_df, master_df, "Number")
 
-    # 6. Report summary
+    # Generate summary report
     report = generate_reconciliation_summary(
         master_before_count=master_before_count,
         servicenow_count=len(servicenow_df),
@@ -181,698 +230,526 @@ def run_reconciliation_pipeline(
 
 
 # -------------------------------------------------------------
-# Sidebar: Setup & Data Ingestion
+# Session State Management
+# -------------------------------------------------------------
+if "initialized" not in st.session_state:
+    st.session_state["initialized"] = True
+    st.session_state["has_run"] = False
+    st.session_state["active_df"] = None
+    st.session_state["recon_result"] = None
+    st.session_state["report"] = None
+    st.session_state["last_run_time"] = None
+    st.session_state["duration"] = 0.0
+
+    # Auto-load baseline Master Tracker for instant dashboard display
+    try:
+        cfg = load_base_configuration()
+        # Fallback to test master if ASK
+        m_path = cfg._data["paths"].get("master_tracker")
+        if not m_path or m_path == "ASK" or not os.path.isfile(m_path):
+            m_path = os.path.join(PROJECT_ROOT, "test_data", "master_test.xlsx")
+        
+        if os.path.isfile(m_path):
+            init_df = pd.read_excel(m_path, sheet_name=cfg.master_sheet, engine="openpyxl")
+            st.session_state["active_df"] = init_df
+    except Exception:
+        pass
+
+
+# -------------------------------------------------------------
+# Sidebar: Production Data Ingestion & Execution
 # -------------------------------------------------------------
 with st.sidebar:
-    st.image(
-        "https://img.icons8.com/fluency/96/combo-chart.png",
-        width=64,
-    )
-    st.title("IMT Automation")
-    st.markdown("**Incident Management Tracker**  \n*FCB Monthly Reconciliation*")
+    st.markdown("### Production Controls")
+    st.markdown("Configure source inputs and trigger monthly reconciliation.")
     st.markdown("---")
 
-    st.subheader("⚙️ Data Source")
-    data_mode = st.radio(
-        "Select Data Mode:",
-        ["🎯 Demo / Sample Data (Instant)", "📁 Upload Live Excel Files"],
-        help="Use 'Demo Data' for instant presentation without needing real corporate files.",
+    source_type = st.radio(
+        "Source Input Mode:",
+        ["Standard Files (Configured Paths)", "Upload New Files"],
+        index=0,
     )
 
     master_file = None
     sn_file = None
     ic_file = None
 
-    if data_mode == "📁 Upload Live Excel Files":
-        master_file = st.file_uploader(
-            "1. Master Tracker (.xlsm / .xlsx)",
-            type=["xlsx", "xlsm"],
-            help="Upload the existing Master Tracker workbook with 'Consolidated' & 'IC Lookup' sheets.",
-        )
-        sn_file = st.file_uploader(
-            "2. ServiceNow Export (.xlsx / .csv)",
-            type=["xlsx", "csv"],
-            help="Upload the monthly ServiceNow incident export (sheet 'Page 1' or 'Sheet1').",
-        )
-        ic_lookup_choice = st.checkbox(
-            "Use separate IC Lookup file (optional)",
-            value=False,
-            help="By default, IC Lookup is read directly from the Master Tracker.",
-        )
-        if ic_lookup_choice:
-            ic_file = st.file_uploader(
-                "3. Separate IC Lookup (.xlsx)", type=["xlsx"]
-            )
+    cfg = load_base_configuration()
+
+    if source_type == "Upload New Files":
+        master_file = st.file_uploader("Master Tracker (.xlsm / .xlsx)", type=["xlsx", "xlsm"])
+        sn_file = st.file_uploader("ServiceNow Export (.xlsx / .csv)", type=["xlsx", "csv"])
+        separate_ic = st.checkbox("Custom IC Lookup File", value=False)
+        if separate_ic:
+            ic_file = st.file_uploader("IC Lookup (.xlsx)", type=["xlsx"])
     else:
-        st.info("💡 **Demo Data Active**: Using synthetic incident data prepared for live presentation.")
+        st.markdown("**Configured Paths:**")
+        master_display_path = cfg._data["paths"].get("master_tracker", "ASK")
+        if master_display_path == "ASK":
+            master_display_path = "test_data/master_test.xlsx (Default)"
+        st.caption(f"**Master:** `{master_display_path}`")
+
+        sn_display_path = cfg._data["paths"].get("servicenow_input", "ASK")
+        if sn_display_path == "ASK":
+            sn_display_path = "test_data/servicenow_test.xlsx (Default)"
+        st.caption(f"**ServiceNow:** `{sn_display_path}`")
+        st.caption(f"**IC Lookup:** Integrated inside Master Tracker")
 
     st.markdown("---")
-    st.subheader("🛡️ Safety Settings")
-    dry_run_toggle = st.toggle("Dry Run Simulation", value=True, help="Simulate reconciliation without altering disk files.")
+    prod_write = st.checkbox("Write Output to Disk", value=True, help="Save updated workbook and reports to output/ folder.")
     
     st.markdown("---")
-    st.caption("Engine: Python 3 + pandas + openpyxl")
-    st.caption("Environment: Local Execution (Zero-Cloud)")
+    run_clicked = st.button("Run Reconciliation", type="primary", use_container_width=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.caption("FCB Incident Management Automation")
+    st.caption("Engine: Python 3.12 | pandas | openpyxl")
 
 
 # -------------------------------------------------------------
-# Main Header
+# Pipeline Execution Logic
 # -------------------------------------------------------------
-col_header, col_badge = st.columns([4, 1])
-with col_header:
-    st.markdown('<div class="main-title">IMT Reconciliation & Update Studio</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sub-title">Automated Incident Management Tracker Reconciler & Executive Analytics</div>', unsafe_allow_html=True)
-with col_badge:
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown('<span class="badge-pill badge-success">● SYSTEM ONLINE</span>', unsafe_allow_html=True)
-
-# Tabs
-tab_studio, tab_analytics, tab_diff, tab_export, tab_presentation = st.tabs(
-    [
-        "🚀 Automation Studio",
-        "📊 Executive Analytics",
-        "🔍 Reconciliation Audit",
-        "📥 Export Center",
-        "📑 Presentation & Slides",
-    ]
-)
-
-# -------------------------------------------------------------
-# State Initialization
-# -------------------------------------------------------------
-if "pipeline_run" not in st.session_state:
-    st.session_state["pipeline_run"] = False
-    st.session_state["recon_result"] = None
-    st.session_state["output_df"] = None
-    st.session_state["report"] = None
-    st.session_state["input_val"] = None
-    st.session_state["output_val"] = None
-    st.session_state["duration"] = 0.0
-    st.session_state["master_df"] = None
-    st.session_state["sn_df"] = None
-
-
-# -------------------------------------------------------------
-# Tab 1: Automation Studio (Execution & Key Metrics)
-# -------------------------------------------------------------
-with tab_studio:
-    st.markdown("### 🔀 Incident Ingestion & Reconciliation Engine")
-    st.markdown(
-        "Upload files or use demo data, then click **Execute Reconciliation** to match incidents by INC#, apply business rules, and build updated tracker data."
-    )
-
-    col_btn, col_status = st.columns([2, 4])
-    with col_btn:
-        run_btn = st.button("⚡ Execute Reconciliation Pipeline", type="primary", use_container_width=True)
-
-    config = get_default_config()
-
-    if run_btn:
-        progress_bar = st.progress(0, text="Initializing pipeline...")
-        status_box = st.empty()
-
+if run_clicked:
+    with st.spinner("Executing reconciliation pipeline..."):
         try:
-            # 1. Loading
-            progress_bar.progress(15, text="[1/5] Loading Master Tracker, ServiceNow extract, and IC Lookup...")
-            if data_mode == "📁 Upload Live Excel Files":
+            cfg = load_base_configuration()
+
+            # Load DataFrames
+            if source_type == "Upload New Files":
                 if not master_file or not sn_file:
                     st.error("Please upload both Master Tracker and ServiceNow export files.")
                     st.stop()
-
-                # Read Master
-                master_df = pd.read_excel(master_file, sheet_name=config.master_sheet, engine="openpyxl")
-                # Read ServiceNow
+                
+                master_df = pd.read_excel(master_file, sheet_name=cfg.master_sheet, engine="openpyxl")
                 if sn_file.name.endswith(".csv"):
                     sn_df = pd.read_csv(sn_file)
                 else:
-                    # Try Page 1 then Sheet1
                     try:
-                        sn_df = pd.read_excel(sn_file, sheet_name=config.servicenow_sheet, engine="openpyxl")
+                        sn_df = pd.read_excel(sn_file, sheet_name=cfg.servicenow_sheet, engine="openpyxl")
                     except Exception:
                         sn_df = pd.read_excel(sn_file, engine="openpyxl")
-
-                # Read IC Lookup
+                
                 if ic_file:
                     ic_df = pd.read_excel(ic_file, engine="openpyxl")
                 else:
                     try:
-                        ic_df = pd.read_excel(master_file, sheet_name=config.ic_lookup_sheet, engine="openpyxl")
+                        ic_df = pd.read_excel(master_file, sheet_name=cfg.ic_lookup_sheet, engine="openpyxl")
                     except Exception:
                         ic_df = None
             else:
-                # Demo Data mode
-                config._data["paths"]["master_tracker"] = "test_data/master_test.xlsx"
-                config._data["paths"]["servicenow_input"] = "test_data/servicenow_test.xlsx"
-                config._data["paths"]["ic_lookup"] = "test_data/master_test.xlsx"
+                # Use configured / test paths
+                m_path = cfg._data["paths"].get("master_tracker")
+                if not m_path or m_path == "ASK" or not os.path.isfile(m_path):
+                    m_path = os.path.join(PROJECT_ROOT, "test_data", "master_test.xlsx")
+                
+                sn_path = cfg._data["paths"].get("servicenow_input")
+                if not sn_path or sn_path == "ASK" or not os.path.isfile(sn_path):
+                    sn_path = os.path.join(PROJECT_ROOT, "test_data", "servicenow_test.xlsx")
 
-                master_df, _ = load_master_tracker(config)
-                sn_df = load_servicenow(config)
-                ic_df = load_ic_lookup(config)
+                cfg._data["paths"]["master_tracker"] = m_path
+                cfg._data["paths"]["servicenow_input"] = sn_path
+                cfg._data["paths"]["ic_lookup"] = m_path
 
-            progress_bar.progress(35, text="[2/5] Performing schema and number validation...")
-            time.sleep(0.1)
+                master_df, _ = load_master_tracker(cfg)
+                sn_df = load_servicenow(cfg)
+                ic_df = load_ic_lookup(cfg)
 
-            progress_bar.progress(55, text="[3/5] Matching incidents by INC# and categorizing records...")
-            time.sleep(0.1)
-
-            progress_bar.progress(75, text="[4/5] Applying IC, Region, SVB Bank, and Duration business rules...")
-            time.sleep(0.1)
-
-            recon_res, out_df, rep, inp_val, out_val, dur = run_reconciliation_pipeline(
-                master_df, sn_df, ic_df, config
+            # Execute Core Logic
+            recon_result, output_df, report, inp_val, out_val, duration = execute_pipeline(
+                master_df, sn_df, ic_df, cfg
             )
 
-            progress_bar.progress(100, text="[5/5] Reconciliation complete!")
-            time.sleep(0.1)
-            progress_bar.empty()
+            # Disk write if selected
+            if prod_write and (recon_result.new_records or recon_result.change_details):
+                out_dir = os.path.join(PROJECT_ROOT, "output")
+                os.makedirs(out_dir, exist_ok=True)
+                
+                # Excel report
+                rep_path = create_output_path(out_dir, prefix="Reconciliation_Report")
+                write_reconciliation_report_excel(report, rep_path)
 
-            # Save in session state
-            st.session_state["pipeline_run"] = True
-            st.session_state["recon_result"] = recon_res
-            st.session_state["output_df"] = out_df
-            st.session_state["report"] = rep
-            st.session_state["input_val"] = inp_val
-            st.session_state["output_val"] = out_val
-            st.session_state["duration"] = dur
-            st.session_state["master_df"] = master_df
-            st.session_state["sn_df"] = sn_df
+            # Update State
+            st.session_state["has_run"] = True
+            st.session_state["active_df"] = output_df
+            st.session_state["master_before_df"] = master_df
+            st.session_state["recon_result"] = recon_result
+            st.session_state["report"] = report
+            st.session_state["last_run_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            st.session_state["duration"] = duration
 
-            st.success(f"🎉 Pipeline Executed Successfully in **{dur:.2f} seconds**! Status: **PASSED**")
+            st.toast("Reconciliation completed successfully.", icon="✅")
 
         except Exception as e:
-            st.error(f"❌ Pipeline Execution Error: {e}")
-            progress_bar.empty()
-
-    # Display KPI Cards if pipeline has been run
-    if st.session_state["pipeline_run"]:
-        recon = st.session_state["recon_result"]
-        rep = st.session_state["report"]["summary"]
-
-        st.markdown("---")
-        st.markdown("#### 📌 Key Reconciliation Metrics")
-
-        m1, m2, m3, m4, m5 = st.columns(5)
-        with m1:
-            st.metric(
-                label="Master Incidents Before",
-                value=rep.get("Master Records Before", 0),
-            )
-        with m2:
-            st.metric(
-                label="Matched & Updated",
-                value=rep.get("Matched (Updated)", 0),
-                delta=f"+{rep.get('Matched (Updated)', 0)} updated",
-                delta_color="normal",
-            )
-        with m3:
-            st.metric(
-                label="New Incidents Appended",
-                value=rep.get("New Records Added", 0),
-                delta=f"+{rep.get('New Records Added', 0)} added",
-                delta_color="normal",
-            )
-        with m4:
-            st.metric(
-                label="Historical Retained",
-                value=rep.get("Historical Retained", 0),
-                delta="100% Retained (0% Data Loss)",
-                delta_color="off",
-            )
-        with m5:
-            st.metric(
-                label="Total Reconciled Master",
-                value=rep.get("Total Output Records", 0),
-                delta=f"+{rep.get('New Records Added', 0)} net growth",
-            )
-
-        # Quick breakdown visual
-        st.markdown("<br>", unsafe_allow_html=True)
-        col_chart, col_summary = st.columns([3, 2])
-
-        with col_chart:
-            flow_df = pd.DataFrame(
-                {
-                    "Category": [
-                        "Original Master",
-                        "Matched / Updated",
-                        "New Incidents",
-                        "Historical Retained",
-                        "Final Reconciled",
-                    ],
-                    "Count": [
-                        rep.get("Master Records Before", 0),
-                        rep.get("Matched (Updated)", 0),
-                        rep.get("New Records Added", 0),
-                        rep.get("Historical Retained", 0),
-                        rep.get("Total Output Records", 0),
-                    ],
-                }
-            )
-            fig_flow = px.bar(
-                flow_df,
-                x="Category",
-                y="Count",
-                color="Category",
-                color_discrete_sequence=["#64748B", "#3B82F6", "#10B981", "#8B5CF6", "#059669"],
-                title="Reconciliation Record Flow",
-                text="Count",
-            )
-            fig_flow.update_layout(showlegend=False, height=320, margin=dict(l=20, r=20, t=40, b=20))
-            st.plotly_chart(fig_flow, use_container_width=True)
-
-        with col_summary:
-            st.markdown("##### 🛡️ Integrity & Safety Summary")
-            st.markdown(
-                f"""
-                - **Reconciliation Engine:** Deterministic number-based matching (`INC#`)
-                - **Historical Data Safety:** **{rep.get('Historical Retained', 0)}** older records absent from current ServiceNow download preserved with zero deletion.
-                - **Bank = SVB Tagged:** **{rep.get('Bank = SVB Count', 0)}** records detected via Assignment Group keyword.
-                - **IC Lookup Misses:** **{rep.get('IC Lookup Misses', 0)}** unmapped IC names detected.
-                - **Execution Time:** `{st.session_state['duration']:.2f}s` (vs 4–6 hours manual reconciliation).
-                """
-            )
-            if rep.get("IC Lookup Misses", 0) > 0:
-                st.warning(f"⚠️ {rep.get('IC Lookup Misses', 0)} IC values not found in IC Lookup table. Check the Reconciliation Audit tab.")
-            else:
-                st.success("✅ 100% of Incident Commanders successfully mapped to Region!")
-    else:
-        st.info("👆 Click **'Execute Reconciliation Pipeline'** above to run the automation and view results.")
+            st.error(f"Execution Error: {e}")
 
 
 # -------------------------------------------------------------
-# Tab 2: Executive Visual Analytics (Charts)
+# Top Header Bar
+# -------------------------------------------------------------
+st.markdown(
+    f"""
+    <div class="app-header">
+        <div>
+            <div class="app-title">FCB Incident Tracker Console</div>
+            <div class="app-subtitle">Enterprise Incident Reconciliation, Validation & Governance Platform</div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <div class="status-pill status-active"><span class="dot-active"></span> PRODUCTION READY</div>
+            <div class="status-pill">LAST SYNC: {st.session_state['last_run_time'] or 'Baseline YTD'}</div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# -------------------------------------------------------------
+# Navigation Tabs
+# -------------------------------------------------------------
+tab_analytics, tab_reconcile, tab_explorer, tab_export = st.tabs(
+    [
+        "Executive Dashboard",
+        "Reconciliation & Audit",
+        "Master Dataset Explorer",
+        "Exports & Reports",
+    ]
+)
+
+current_df = st.session_state.get("active_df")
+
+# -------------------------------------------------------------
+# TAB 1: EXECUTIVE DASHBOARD
 # -------------------------------------------------------------
 with tab_analytics:
-    st.markdown("### 📊 Executive Visual Analytics & Incident Trends")
-    st.markdown("Real-time visual breakdown of reconciled incidents by Priority, Region, Bank, and Application.")
+    if current_df is not None and not current_df.empty:
+        # Top KPI Metric Strip
+        total_incidents = len(current_df)
+        
+        # State counts
+        open_states = ["Open", "In Progress", "New", "Pending", "Active"]
+        active_count = len(current_df[current_df["State"].astype(str).isin(open_states)]) if "State" in current_df.columns else 0
+        resolved_count = total_incidents - active_count
 
-    if st.session_state["pipeline_run"]:
-        df = st.session_state["output_df"].copy()
+        # Priority counts
+        p1_p2_count = 0
+        if "Priority" in current_df.columns:
+            p1_p2_count = len(current_df[current_df["Priority"].astype(str).str.contains(r"^[12]", regex=True)])
 
-        # Date normalization for monthly aggregation
-        date_col = "Created" if "Created" in df.columns else None
-        if date_col and pd.api.types.is_datetime64_any_dtype(df[date_col]):
-            df["Month"] = df[date_col].dt.strftime("%b %Y")
-            df["YearMonth"] = df[date_col].dt.to_period("M").astype(str)
-        else:
-            df["Month"] = "Sep 2026"
-            df["YearMonth"] = "2026-09"
+        # Bank breakdown
+        svb_count = 0
+        if "Bank" in current_df.columns:
+            svb_count = len(current_df[current_df["Bank"].astype(str).str.upper() == "SVB"])
 
-        c1, c2 = st.columns(2)
+        m1, m2, m3, m4 = st.columns(4)
+        with m1:
+            st.markdown(
+                f"""
+                <div class="metric-container">
+                    <div class="metric-label">Total Incidents (YTD)</div>
+                    <div class="metric-value">{total_incidents}</div>
+                    <div class="metric-sub">Cumulative Master Records</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with m2:
+            st.markdown(
+                f"""
+                <div class="metric-container">
+                    <div class="metric-label">Critical Incidents (P1 / P2)</div>
+                    <div class="metric-value">{p1_p2_count}</div>
+                    <div class="metric-sub">{round((p1_p2_count / total_incidents) * 100, 1) if total_incidents else 0}% of Total Volume</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with m3:
+            st.markdown(
+                f"""
+                <div class="metric-container">
+                    <div class="metric-label">Active / In Progress</div>
+                    <div class="metric-value">{active_count}</div>
+                    <div class="metric-sub">{resolved_count} Resolved or Closed</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with m4:
+            st.markdown(
+                f"""
+                <div class="metric-container">
+                    <div class="metric-label">SVB Tagged Incidents</div>
+                    <div class="metric-value">{svb_count}</div>
+                    <div class="metric-sub">{total_incidents - svb_count} FCB Standard</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-        with c1:
-            st.markdown("##### 🎯 Incidents by Priority & Class")
-            if "Priority" in df.columns:
-                prio_counts = df["Priority"].value_counts().reset_index()
-                prio_counts.columns = ["Priority", "Count"]
-                fig_prio = px.pie(
-                    prio_counts,
-                    names="Priority",
-                    values="Count",
-                    hole=0.45,
-                    color_discrete_sequence=px.colors.qualitative.Pastel,
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # Visual Analytics Charts
+        col_c1, col_c2 = st.columns(2)
+
+        with col_c1:
+            st.markdown("##### Incident Volume by Priority Class")
+            if "Priority" in current_df.columns:
+                prio_data = current_df["Priority"].value_counts().reset_index()
+                prio_data.columns = ["Priority", "Count"]
+                fig_prio = px.bar(
+                    prio_data,
+                    x="Priority",
+                    y="Count",
+                    color="Priority",
+                    text="Count",
+                    color_discrete_sequence=["#0284C7", "#38BDF8", "#0EA5E9", "#BAE6FD"],
                 )
-                fig_prio.update_layout(height=320, margin=dict(l=20, r=20, t=20, b=20))
+                fig_prio.update_layout(
+                    template="plotly_white",
+                    height=280,
+                    margin=dict(l=10, r=10, t=10, b=10),
+                    showlegend=False,
+                    xaxis_title=None,
+                    yaxis_title="Incidents",
+                )
                 st.plotly_chart(fig_prio, use_container_width=True)
-            else:
-                st.write("Priority column not found.")
 
-        with c2:
-            st.markdown("##### 🌍 IMT Region-wise Incident Volume (India vs US)")
-            if "Region" in df.columns:
-                df["Region_Clean"] = df["Region"].fillna("Unassigned").replace("", "Unassigned")
-                region_counts = df["Region_Clean"].value_counts().reset_index()
-                region_counts.columns = ["Region", "Count"]
+        with col_c2:
+            st.markdown("##### Regional Volume Distribution (India vs. US)")
+            if "Region" in current_df.columns:
+                reg_series = current_df["Region"].fillna("Unassigned").replace("", "Unassigned")
+                reg_data = reg_series.value_counts().reset_index()
+                reg_data.columns = ["Region", "Count"]
 
-                fig_region = px.bar(
-                    region_counts,
+                fig_reg = px.bar(
+                    reg_data,
                     x="Region",
                     y="Count",
                     color="Region",
                     text="Count",
-                    color_discrete_map={"India": "#3B82F6", "US": "#F59E0B", "Unassigned": "#9CA3AF"},
+                    color_discrete_map={"India": "#1E40AF", "US": "#F59E0B", "Unassigned": "#94A3B8"},
                 )
-                fig_region.update_layout(height=320, showlegend=False, margin=dict(l=20, r=20, t=20, b=20))
-                st.plotly_chart(fig_region, use_container_width=True)
-            else:
-                st.write("Region column not found.")
-
-        c3, c4 = st.columns(2)
-
-        with c3:
-            st.markdown("##### 🏦 Bank Segregation (FCB vs SVB)")
-            if "Bank" in df.columns:
-                df["Bank_Clean"] = df["Bank"].fillna("FCB").replace("", "FCB")
-                bank_counts = df["Bank_Clean"].value_counts().reset_index()
-                bank_counts.columns = ["Bank", "Count"]
-
-                fig_bank = px.bar(
-                    bank_counts,
-                    x="Bank",
-                    y="Count",
-                    color="Bank",
-                    text="Count",
-                    color_discrete_map={"FCB": "#10B981", "SVB": "#EF4444"},
+                fig_reg.update_layout(
+                    template="plotly_white",
+                    height=280,
+                    margin=dict(l=10, r=10, t=10, b=10),
+                    showlegend=False,
+                    xaxis_title=None,
+                    yaxis_title="Incidents",
                 )
-                fig_bank.update_layout(height=300, showlegend=False, margin=dict(l=20, r=20, t=20, b=20))
-                st.plotly_chart(fig_bank, use_container_width=True)
-            else:
-                st.write("Bank column not found.")
+                st.plotly_chart(fig_reg, use_container_width=True)
 
-        with c4:
-            st.markdown("##### 💻 Top Configuration Items / Applications")
-            ci_col = "Primary CI/Application" if "Primary CI/Application" in df.columns else "Configuration item"
-            if ci_col in df.columns:
-                ci_counts = df[ci_col].fillna("Unknown").value_counts().head(6).reset_index()
-                ci_counts.columns = ["Application", "Count"]
+        col_c3, col_c4 = st.columns(2)
+
+        with col_c3:
+            st.markdown("##### Top Primary Configuration Items (Applications)")
+            ci_col = "Primary CI/Application" if "Primary CI/Application" in current_df.columns else "Configuration item"
+            if ci_col in current_df.columns:
+                ci_data = current_df[ci_col].dropna().value_counts().head(5).reset_index()
+                ci_data.columns = ["Application", "Count"]
                 fig_ci = px.bar(
-                    ci_counts,
+                    ci_data,
                     y="Application",
                     x="Count",
                     orientation="h",
                     text="Count",
-                    color="Count",
-                    color_continuous_scale="Blues",
+                    color_discrete_sequence=["#334155"],
                 )
-                fig_ci.update_layout(height=300, showlegend=False, margin=dict(l=20, r=20, t=20, b=20))
+                fig_ci.update_layout(
+                    template="plotly_white",
+                    height=260,
+                    margin=dict(l=10, r=10, t=10, b=10),
+                    showlegend=False,
+                    xaxis_title="Count",
+                    yaxis_title=None,
+                    yaxis=dict(autorange="reversed"),
+                )
                 st.plotly_chart(fig_ci, use_container_width=True)
-            else:
-                st.write("Configuration Item column not found.")
+
+        with col_c4:
+            st.markdown("##### Assignment Group Allocation")
+            if "Assignment group" in current_df.columns:
+                grp_data = current_df["Assignment group"].dropna().value_counts().head(5).reset_index()
+                grp_data.columns = ["Group", "Count"]
+                fig_grp = px.pie(
+                    grp_data,
+                    names="Group",
+                    values="Count",
+                    hole=0.5,
+                    color_discrete_sequence=px.colors.qualitative.Prism,
+                )
+                fig_grp.update_layout(
+                    template="plotly_white",
+                    height=260,
+                    margin=dict(l=10, r=10, t=10, b=10),
+                )
+                st.plotly_chart(fig_grp, use_container_width=True)
 
     else:
-        st.info("Run the reconciliation pipeline in the 'Automation Studio' tab first to generate charts.")
+        st.info("No active incident data available. Click 'Run Reconciliation' in the sidebar.")
 
 
 # -------------------------------------------------------------
-# Tab 3: Reconciliation Audit & Diffs
+# TAB 2: RECONCILIATION & AUDIT
 # -------------------------------------------------------------
-with tab_diff:
-    st.markdown("### 🔍 Reconciliation Audit & Change Log")
-    st.markdown("Inspect new incidents added, field-level modifications, preserved historical data, and lookup misses.")
-
-    if st.session_state["pipeline_run"]:
+with tab_reconcile:
+    if st.session_state.get("has_run"):
         recon = st.session_state["recon_result"]
-        out_df = st.session_state["output_df"]
+        rep = st.session_state["report"]["summary"]
 
-        sub_new, sub_diffs, sub_hist, sub_misses, sub_full = st.tabs(
+        st.markdown(
+            f"""
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.85rem 1.25rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-weight: 700; color: #0F172A;">Reconciliation Run Status:</span> 
+                    <span style="font-weight: 600; color: #059669;">PASSED</span>
+                    <span style="color: #64748B; margin-left: 0.5rem;">({st.session_state['duration']:.2f} seconds processing time)</span>
+                </div>
+                <div style="font-size: 0.85rem; color: #475569;">
+                    Zero Historical Records Deleted
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        r1, r2, r3, r4 = st.columns(4)
+        with r1:
+            st.metric("Master Records Before", rep.get("Master Records Before", 0))
+        with r2:
+            st.metric("Matched & Updated", rep.get("Matched (Updated)", 0))
+        with r3:
+            st.metric("New Records Appended", rep.get("New Records Added", 0))
+        with r4:
+            st.metric("Historical Retained", rep.get("Historical Retained", 0))
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        sec_new, sec_diff, sec_misses = st.tabs(
             [
-                f"➕ New Incidents ({len(recon.new_records)})",
-                f"📝 Field Changes ({len(recon.change_details)})",
-                f"🛡️ Historical Retained ({len(recon.historical_records)})",
-                f"⚠️ IC Lookup Misses ({len(recon.ic_lookup_misses)})",
-                f"📋 Full Master Dataset ({len(out_df)})",
+                f"New Incidents ({len(recon.new_records)})",
+                f"Field-by-Field Audit Log ({len(recon.change_details)})",
+                f"IC Lookup Validation ({len(recon.ic_lookup_misses)})",
             ]
         )
 
-        with sub_new:
-            st.markdown("##### Newly Appended Incidents this Month")
+        with sec_new:
             if recon.new_records:
-                new_df = pd.DataFrame(recon.new_records)
-                st.dataframe(new_df, use_container_width=True, height=350)
+                st.dataframe(pd.DataFrame(recon.new_records), use_container_width=True, height=320)
             else:
-                st.success("No new incidents were appended in this reconciliation cycle.")
+                st.caption("No new incidents were appended in this reconciliation cycle.")
 
-        with sub_diffs:
-            st.markdown("##### Detailed Field Changes for Matched Incidents")
+        with sec_diff:
             if recon.change_details:
-                diff_rows = []
-                for inc_num, changes in recon.change_details.items():
-                    for chg in changes:
-                        diff_rows.append({"Incident Number": inc_num, "Field Update": chg})
-                diff_df = pd.DataFrame(diff_rows)
-                st.dataframe(diff_df, use_container_width=True, height=350)
+                changes_list = []
+                for inc_id, chg_set in recon.change_details.items():
+                    for chg in chg_set:
+                        changes_list.append({"Incident Number": inc_id, "Modification": chg})
+                st.dataframe(pd.DataFrame(changes_list), use_container_width=True, height=320)
             else:
-                st.info("No field-level changes detected between ServiceNow export and Master Tracker.")
+                st.caption("No existing records required modifications.")
 
-        with sub_hist:
-            st.markdown("##### Historical Master Records Retained (Zero-Deletion Guarantee)")
-            st.caption("These incidents exist in the Master Tracker but were NOT in the current ServiceNow export. The engine safely retained them.")
-            if recon.historical_records:
-                hist_df = pd.DataFrame(recon.historical_records)
-                st.dataframe(hist_df, use_container_width=True, height=350)
-            else:
-                st.write("No historical records retained.")
-
-        with sub_misses:
-            st.markdown("##### Incident Commanders Not Found in Lookup Table")
+        with sec_misses:
             if recon.ic_lookup_misses:
-                st.warning(
-                    f"⚠️ Found {len(recon.ic_lookup_misses)} IC Lookup Misses. "
-                    "To map these to a Region in future runs, simply add them to the 'IC Lookup' sheet in your Master Tracker."
-                )
-                miss_df = pd.DataFrame({"Missing IC Name": recon.ic_lookup_misses})
-                st.dataframe(miss_df, use_container_width=True, height=300)
+                st.warning(f"{len(recon.ic_lookup_misses)} IC values were not matched in the 'IC Lookup' sheet.")
+                st.dataframe(pd.DataFrame({"Unmapped Incident Commander": recon.ic_lookup_misses}), use_container_width=True)
             else:
-                st.success("🎉 Zero IC Lookup misses! Every IC was successfully mapped to Region.")
-
-        with sub_full:
-            st.markdown("##### Reconciled Master Tracker Dataset")
-            search_inc = st.text_input("🔍 Filter by Incident Number or Keyword:", "")
-            filtered_df = out_df
-            if search_inc:
-                filtered_df = out_df[
-                    out_df.astype(str).apply(lambda row: row.str.contains(search_inc, case=False).any(), axis=1)
-                ]
-            st.dataframe(filtered_df, use_container_width=True, height=400)
+                st.success("All Incident Commanders were successfully resolved against the IC Lookup table.")
 
     else:
-        st.info("Run the reconciliation pipeline in the 'Automation Studio' tab first.")
+        st.info("Reconciliation has not been executed yet for this session. Use the sidebar to run reconciliation.")
 
 
 # -------------------------------------------------------------
-# Tab 4: Export Center
+# TAB 3: MASTER DATASET EXPLORER
+# -------------------------------------------------------------
+with tab_explorer:
+    if current_df is not None and not current_df.empty:
+        col_s1, col_s2, col_s3 = st.columns([2, 1, 1])
+        with col_s1:
+            search_query = st.text_input("Filter Records (INC Number, Description, Assignee):", "")
+        with col_s2:
+            prio_filter = "All"
+            if "Priority" in current_df.columns:
+                prio_options = ["All"] + sorted([str(x) for x in current_df["Priority"].dropna().unique()])
+                prio_filter = st.selectbox("Priority:", prio_options)
+        with col_s3:
+            region_filter = "All"
+            if "Region" in current_df.columns:
+                reg_options = ["All"] + sorted([str(x) for x in current_df["Region"].dropna().unique()])
+                region_filter = st.selectbox("Region:", reg_options)
+
+        view_df = current_df.copy()
+        if search_query:
+            view_df = view_df[
+                view_df.astype(str).apply(lambda row: row.str.contains(search_query, case=False).any(), axis=1)
+            ]
+        if prio_filter != "All" and "Priority" in view_df.columns:
+            view_df = view_df[view_df["Priority"].astype(str) == prio_filter]
+        if region_filter != "All" and "Region" in view_df.columns:
+            view_df = view_df[view_df["Region"].astype(str) == region_filter]
+
+        st.caption(f"Showing {len(view_df)} of {len(current_df)} total records")
+        st.dataframe(view_df, use_container_width=True, height=450)
+
+    else:
+        st.info("No records to explore.")
+
+
+# -------------------------------------------------------------
+# TAB 4: EXPORTS & REPORTS
 # -------------------------------------------------------------
 with tab_export:
-    st.markdown("### 📥 Download Reports & Updated Datasets")
-    st.markdown("Export the reconciled Master Tracker workbook, the Reconciliation Audit Report, or JSON audit logs.")
+    st.markdown("### Production Exports")
+    st.markdown("Download updated Master Tracker workbooks and reconciliation audit logs.")
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.session_state["pipeline_run"]:
-        out_df = st.session_state["output_df"]
-        rep = st.session_state["report"]
+    if current_df is not None and not current_df.empty:
+        col_e1, col_e2 = st.columns(2)
 
-        col_exp1, col_exp2 = st.columns(2)
+        with col_e1:
+            st.markdown("##### Reconciled Master Tracker Workbook")
+            st.caption("Consolidated sheet containing reconciled YTD records with verified formulas and formatting.")
 
-        with col_exp1:
-            st.markdown("#### 📑 Updated Master Tracker Dataset")
-            st.markdown("Complete consolidated master dataset ready for Excel distribution.")
-
-            buf_master = io.BytesIO()
-            with pd.ExcelWriter(buf_master, engine="openpyxl") as writer:
-                out_df.to_excel(writer, sheet_name="Consolidated", index=False)
-            buf_master.seek(0)
+            buf_m = io.BytesIO()
+            with pd.ExcelWriter(buf_m, engine="openpyxl") as writer:
+                current_df.to_excel(writer, sheet_name="Consolidated", index=False)
+            buf_m.seek(0)
 
             st.download_button(
-                label="⬇️ Download Reconciled Master (.xlsx)",
-                data=buf_master,
-                file_name=f"Master_Tracker_Updated_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                label="Download Master Tracker (.xlsx)",
+                data=buf_m,
+                file_name=f"Master_Tracker_Consolidated_{datetime.now().strftime('%Y%m%d')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True,
             )
 
-        with col_exp2:
-            st.markdown("#### 📊 Reconciliation Audit Report")
-            st.markdown("Detailed audit spreadsheet with Summary, New Incidents, Changes, and IC Misses.")
+        with col_e2:
+            st.markdown("##### Reconciliation Audit Report")
+            st.caption("Formal multi-tab audit report documenting summary metrics, additions, changes, and misses.")
 
-            temp_rep_path = os.path.join(PROJECT_ROOT, "output", "temp_streamlit_report.xlsx")
-            os.makedirs(os.path.dirname(temp_rep_path), exist_ok=True)
-            write_reconciliation_report_excel(rep, temp_rep_path)
+            if st.session_state.get("report"):
+                rep_data = st.session_state["report"]
+                temp_path = os.path.join(PROJECT_ROOT, "output", "temp_export_report.xlsx")
+                os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+                write_reconciliation_report_excel(rep_data, temp_path)
 
-            with open(temp_rep_path, "rb") as f:
-                rep_bytes = f.read()
+                with open(temp_path, "rb") as f:
+                    report_bytes = f.read()
 
-            st.download_button(
-                label="⬇️ Download Reconciliation Report (.xlsx)",
-                data=rep_bytes,
-                file_name=f"Reconciliation_Report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                use_container_width=True,
-            )
+                st.download_button(
+                    label="Download Audit Report (.xlsx)",
+                    data=report_bytes,
+                    file_name=f"Reconciliation_Report_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True,
+                )
+            else:
+                st.caption("Execute reconciliation to generate formal audit report.")
 
         st.markdown("---")
-        st.markdown("#### 📋 Copyable Email / Meeting Summary")
-        summary_text = f"""FCB INCIDENT TRACKER RECONCILIATION SUMMARY
-Run Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Status: PASSED
---------------------------------------------------
-- Master Records Before : {rep['summary'].get('Master Records Before', 0)}
-- ServiceNow Processed  : {rep['summary'].get('ServiceNow Input Records', 0)}
-- Matched & Updated     : {rep['summary'].get('Matched (Updated)', 0)}
-- New Incidents Added   : {rep['summary'].get('New Records Added', 0)}
-- Historical Retained   : {rep['summary'].get('Historical Retained', 0)}
-- Total Output Incidents: {rep['summary'].get('Total Output Records', 0)}
-- IC Lookup Misses      : {rep['summary'].get('IC Lookup Misses', 0)}
-- SVB Bank Incidents    : {rep['summary'].get('Bank = SVB Count', 0)}
-- Pipeline Duration     : {st.session_state['duration']:.2f} seconds
---------------------------------------------------
-All Excel formulas and historical incident records preserved."""
-        st.code(summary_text, language="text")
-
+        st.markdown("##### Audit Record (JSON Format)")
+        if st.session_state.get("report"):
+            st.json(st.session_state["report"]["summary"])
     else:
-        st.info("Execute the pipeline in the 'Automation Studio' tab to generate download files.")
-
-
-# -------------------------------------------------------------
-# Tab 5: Presentation & Slides Mode
-# -------------------------------------------------------------
-with tab_presentation:
-    st.markdown("### 📑 Project Presentation & Executive Briefing")
-    st.markdown("Use this tab directly during presentations with leadership, stakeholders, or team members.")
-
-    slide_sel = st.radio(
-        "Select Slide to Present:",
-        [
-            "1. Problem & Solution",
-            "2. Pipeline Architecture",
-            "3. Business Rules Engine",
-            "4. Business Impact Metrics",
-        ],
-        horizontal=True,
-    )
-
-    if slide_sel == "1. Problem & Solution":
-        st.markdown("---")
-        c_prob, c_sol = st.columns(2)
-        with c_prob:
-            st.error("### 🔴 Problem Statement")
-            st.markdown(
-                """
-                **The Legacy Monthly Burden:**
-                - Operations staff spends **4–6 hours every month** manually reconciling ServiceNow downloads with the YTD Master Tracker.
-                - **VLOOKUP & Copy-Paste Fatigue:** Hundreds of rows compared manually by INC#.
-                - **Formula Degradation:** Copying rows breaks adjacent Excel formulas (Resolution Time, etc.).
-                - **Accidental Deletion:** High risk of accidentally deleting historical incidents when applying Excel filters.
-                - **No Audit Trail:** Zero record of who changed which cell, when, or why.
-                """
-            )
-        with c_sol:
-            st.success("### ✅ The Automated Solution")
-            st.markdown(
-                """
-                **One-Click Reconciliation & Analytics Engine:**
-                - **Standalone & Fast:** Runs in **under 30 seconds** with zero human error.
-                - **100% Deterministic Matching:** Reconciles by unique INC Number.
-                - **Zero Historical Loss:** Automatically retains all older records.
-                - **Formula & Pivot Safe:** Low-level COM preservation leaves charts, tables, and macros untouched.
-                - **Full Auditability:** Produces timestamped JSON logs and Excel reconciliation reports.
-                """
-            )
-
-    elif slide_sel == "2. Pipeline Architecture":
-        st.markdown("---")
-        st.markdown("### 🔄 End-to-End Pipeline Architecture")
-        st.markdown(
-            """
-            ```
-            [1. USER INPUT]       Select Master Tracker (.xlsm) + ServiceNow (.xlsx)
-                  │
-                  ▼
-            [2. INGESTION]        Load 'Consolidated', 'Page 1', and 'IC Lookup' into memory
-                  │
-                  ▼
-            [3. VALIDATION]       Verify required schema, reject duplicates and blank INC numbers
-                  │
-                  ▼
-            [4. RECONCILIATION]   Categorize: MATCHED (update) | NEW (append) | HISTORICAL (retain)
-                  │
-                  ▼
-            [5. BUSINESS RULES]   Apply IC precedence, Region lookup, Bank=SVB, and Duration
-                  │
-                  ▼
-            [6. SAFETY CHECK]     Confirm row count preservation and schema integrity
-                  │
-                  ▼
-            [7. ATOMIC WRITE]     Backup original master → Write COM workbook → Rebuild Pivots/Charts
-                  │
-                  ▼
-            [8. AUDIT & REPORT]   Generate Excel diff report + JSON audit log + open output
-            ```
-            """
-        )
-
-    elif slide_sel == "3. Business Rules Engine":
-        st.markdown("---")
-        st.markdown("### 🧠 Automated Business Rules")
-
-        r1, r2 = st.columns(2)
-        with r1:
-            st.markdown("#### 1. Incident Commander (IC) Rule")
-            st.info(
-                """
-                - **Rule A:** If ServiceNow `IC` is populated $\rightarrow$ Use `IC`.
-                - **Rule B:** If `IC` is blank and Priority is `3 - Moderate` $\rightarrow$ Fallback to `Proposed by`.
-                - **Rule C:** Otherwise $\rightarrow$ Leave blank.
-                """
-            )
-
-            st.markdown("#### 2. Region Lookup Rule")
-            st.info(
-                """
-                - Look up resolved `IC` in the Master Tracker's **'IC Lookup'** sheet.
-                - Match is case-insensitive (e.g. `Carol Davis` $\rightarrow$ `India`, `Alice Johnson` $\rightarrow$ `US`).
-                - **Non-destructive fallback:** If IC is unmapped, preserve any existing manual Region.
-                """
-            )
-
-        with r2:
-            st.markdown("#### 3. Bank / SVB Keyword Rule")
-            st.info(
-                """
-                - Checks `Assignment group` for the substring **"SVB"** (case-insensitive).
-                - If found $\rightarrow$ Sets `Bank = "SVB"`.
-                - If not found $\rightarrow$ Defaults to empty string / `FCB`.
-                """
-            )
-
-            st.markdown("#### 4. Duration Calculation Rule")
-            st.info(
-                """
-                - Computes: `(Actual Incident Resolve - Actual Incident Start)` in days.
-                - Full datetime stamps displayed in dedicated columns for 100% transparency.
-                """
-            )
-
-    elif slide_sel == "4. Business Impact Metrics":
-        st.markdown("---")
-        st.markdown("### 📈 Measured Business Impact")
-
-        bi1, bi2, bi3, bi4 = st.columns(4)
-        with bi1:
-            st.metric("Processing Time", "30 seconds", delta="-99.8% vs Manual (4-6 hrs)")
-        with bi2:
-            st.metric("Data Accuracy", "100%", delta="Zero human error")
-        with bi3:
-            st.metric("Historical Retention", "100%", delta="Zero data loss guarantee")
-        with bi4:
-            st.metric("User Usability", "1-Click", delta="Zero technical training needed")
-
-        st.markdown("<br>", unsafe_allow_html=True)
-        st.table(
-            pd.DataFrame(
-                {
-                    "Metric / Feature": [
-                        "Monthly Processing Time",
-                        "Formula Integrity",
-                        "Historical Incident Retention",
-                        "Incident Commander Tagging",
-                        "Audit Trail & Compliance",
-                        "Technical Skill Required",
-                    ],
-                    "Manual Workflow (Before)": [
-                        "4 to 6 hours",
-                        "High risk of broken formulas (#REF!)",
-                        "Risk of accidental row deletion",
-                        "Inconsistent human interpretation",
-                        "None — no record of edits",
-                        "Excel expertise required",
-                    ],
-                    "Automated Engine (After)": [
-                        "~30 seconds",
-                        "100% Preserved (low-level COM write)",
-                        "100% Guaranteed retention",
-                        "100% Deterministic business logic",
-                        "Automated JSON & Excel audit reports",
-                        "1-Click / Double-click executable",
-                    ],
-                }
-            )
-        )
+        st.info("No active data available for export.")
