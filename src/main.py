@@ -17,6 +17,14 @@ import os
 import sys
 from datetime import datetime
 
+# Configure Windows console encoding for UTF-8 compatibility
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 # Determine the root directory (handles both script and PyInstaller .exe execution)
 if getattr(sys, 'frozen', False):
     # Running as compiled executable - use the folder containing the .exe

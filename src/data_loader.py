@@ -42,10 +42,29 @@ def load_excel_to_dataframe(
     try:
         df = pd.read_excel(file_path, sheet_name=sheet_name, engine="openpyxl")
     except ValueError as e:
-        raise DataLoadError(
-            f"Sheet '{sheet_name}' not found in '{file_path}'. "
-            f"Available sheets can be checked with openpyxl. Error: {e}"
-        )
+        # Resilient fallback: if the requested sheet isn't found, check available sheets
+        try:
+            import openpyxl
+            wb = openpyxl.load_workbook(file_path, read_only=True)
+            available = wb.sheetnames
+            wb.close()
+            if len(available) == 1:
+                df = pd.read_excel(file_path, sheet_name=available[0], engine="openpyxl")
+            elif sheet_name == "Page 1" and "Sheet1" in available:
+                df = pd.read_excel(file_path, sheet_name="Sheet1", engine="openpyxl")
+            elif sheet_name == "Sheet1" and "Page 1" in available:
+                df = pd.read_excel(file_path, sheet_name="Page 1", engine="openpyxl")
+            else:
+                raise DataLoadError(
+                    f"Sheet '{sheet_name}' not found in '{file_path}'. "
+                    f"Available sheets: {available}. Error: {e}"
+                )
+        except DataLoadError:
+            raise
+        except Exception:
+            raise DataLoadError(
+                f"Sheet '{sheet_name}' not found in '{file_path}'. Error: {e}"
+            )
     except Exception as e:
         raise DataLoadError(f"Error reading '{file_path}' sheet '{sheet_name}': {e}")
 
