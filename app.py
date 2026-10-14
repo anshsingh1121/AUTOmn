@@ -1,6 +1,6 @@
 """
 FCB Incident Tracker — Production Console
-Enterprise Incident Management Tracker (IMT) Reconciliation & Analytics Platform.
+Corporate Incident Management Tracker (IMT) Reconciliation & Governance Platform.
 """
 
 import io
@@ -13,7 +13,6 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 
 # -------------------------------------------------------------
@@ -21,7 +20,7 @@ import streamlit as st
 # -------------------------------------------------------------
 st.set_page_config(
     page_title="FCB Incident Tracker — Production Console",
-    page_icon="💼",
+    page_icon="📁",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -33,16 +32,8 @@ if PROJECT_ROOT not in sys.path:
 
 from src.business_rules import build_ic_lookup_map
 from src.config_loader import Config, load_config
-from src.data_loader import (
-    DataLoadError,
-    load_ic_lookup,
-    load_master_tracker,
-    load_servicenow,
-)
 from src.output_writer import (
-    create_archive_copy,
     create_output_path,
-    write_output_workbook,
     write_reconciliation_report_excel,
 )
 from src.reconciler import reconciliation_to_dataframe, reconcile
@@ -55,88 +46,59 @@ from src.validator import (
 )
 
 # -------------------------------------------------------------
-# Corporate Clean Styling
+# Corporate Styling
 # -------------------------------------------------------------
 st.markdown(
     """
     <style>
-    /* Global Typography & Background */
     html, body, [class*="css"] {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
-    
-    /* Top Header */
     .app-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding-bottom: 0.75rem;
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;
         border-bottom: 1px solid #E2E8F0;
     }
     .app-title {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         font-weight: 700;
         color: #0F172A;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.01em;
         margin: 0;
     }
     .app-subtitle {
-        font-size: 0.875rem;
+        font-size: 0.85rem;
         color: #64748B;
         margin-top: 0.15rem;
     }
-    .status-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.25rem 0.65rem;
-        border-radius: 9999px;
-        background-color: #F1F5F9;
-        color: #334155;
-        border: 1px solid #CBD5E1;
-    }
-    .status-active {
-        background-color: #ECFDF5;
-        color: #065F46;
-        border-color: #A7F3D0;
-    }
-    .dot-active {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background-color: #10B981;
-    }
-    
-    /* Metric Cards */
     .metric-container {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
-        border-radius: 8px;
-        padding: 1rem 1.25rem;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+        border-radius: 6px;
+        padding: 0.85rem 1rem;
     }
     .metric-label {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         text-transform: uppercase;
         font-weight: 600;
         letter-spacing: 0.05em;
         color: #64748B;
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.2rem;
     }
     .metric-value {
-        font-size: 1.6rem;
+        font-size: 1.5rem;
         font-weight: 700;
         color: #0F172A;
         line-height: 1.2;
     }
     .metric-sub {
         font-size: 0.75rem;
-        color: #10B981;
+        color: #059669;
         font-weight: 500;
-        margin-top: 0.25rem;
+        margin-top: 0.2rem;
     }
     </style>
     """,
@@ -145,32 +107,26 @@ st.markdown(
 
 
 # -------------------------------------------------------------
-# Config & Data Ingestion Helpers
+# Core Pipeline Execution
 # -------------------------------------------------------------
-@st.cache_data(show_spinner=False)
-def load_base_configuration() -> Config:
-    config_path = os.path.join(PROJECT_ROOT, "config", "config.json")
-    return load_config(config_path)
-
-
-def execute_pipeline(
+def execute_reconciliation(
     master_df: pd.DataFrame,
     servicenow_df: pd.DataFrame,
     ic_lookup_df: Optional[pd.DataFrame],
     config: Config,
 ) -> Tuple[Any, pd.DataFrame, Dict[str, Any], ValidationResult, ValidationResult, float]:
-    """Execute reconciliation and business rules pipeline in-memory."""
+    """Execute monthly reconciliation and business rules."""
     start_time = time.time()
-    input_validation = ValidationResult()
+    input_val = ValidationResult()
 
     # Schema Validation
-    input_validation.merge(
+    input_val.merge(
         validate_required_columns(servicenow_df, config.required_servicenow_columns, "ServiceNow")
     )
-    input_validation.merge(
+    input_val.merge(
         validate_required_columns(master_df, config.required_master_columns, "Master Tracker")
     )
-    input_validation.merge(
+    input_val.merge(
         validate_number_column(
             servicenow_df,
             "Number",
@@ -179,7 +135,7 @@ def execute_pipeline(
             block_on_blanks=config.block_on_blank_numbers,
         )
     )
-    input_validation.merge(
+    input_val.merge(
         validate_number_column(
             master_df,
             "Number",
@@ -210,177 +166,139 @@ def execute_pipeline(
     )
 
     # Build output DataFrame
-    master_cols = list(master_df.columns)
-    output_df = reconciliation_to_dataframe(recon_result, master_cols)
+    output_df = reconciliation_to_dataframe(recon_result, list(master_df.columns))
 
     # Output validation
-    output_validation = validate_output(output_df, master_df, "Number")
+    output_val = validate_output(output_df, master_df, "Number")
 
     # Generate summary report
     report = generate_reconciliation_summary(
         master_before_count=master_before_count,
         servicenow_count=len(servicenow_df),
         recon=recon_result,
-        input_validation=input_validation,
-        output_validation=output_validation,
+        input_validation=input_val,
+        output_validation=output_val,
     )
 
     duration = time.time() - start_time
-    return recon_result, output_df, report, input_validation, output_validation, duration
+    return recon_result, output_df, report, input_val, output_val, duration
 
 
 # -------------------------------------------------------------
-# Session State Management
+# Session State Initialization
 # -------------------------------------------------------------
-if "initialized" not in st.session_state:
-    st.session_state["initialized"] = True
-    st.session_state["has_run"] = False
-    st.session_state["active_df"] = None
+if "processed" not in st.session_state:
+    st.session_state["processed"] = False
+    st.session_state["master_df"] = None
+    st.session_state["output_df"] = None
     st.session_state["recon_result"] = None
     st.session_state["report"] = None
-    st.session_state["last_run_time"] = None
     st.session_state["duration"] = 0.0
-
-    # Auto-load baseline Master Tracker for instant dashboard display
-    try:
-        cfg = load_base_configuration()
-        # Fallback to test master if ASK
-        m_path = cfg._data["paths"].get("master_tracker")
-        if not m_path or m_path == "ASK" or not os.path.isfile(m_path):
-            m_path = os.path.join(PROJECT_ROOT, "test_data", "master_test.xlsx")
-        
-        if os.path.isfile(m_path):
-            init_df = pd.read_excel(m_path, sheet_name=cfg.master_sheet, engine="openpyxl")
-            st.session_state["active_df"] = init_df
-    except Exception:
-        pass
+    st.session_state["run_time"] = None
 
 
 # -------------------------------------------------------------
-# Sidebar: Production Data Ingestion & Execution
+# Sidebar: File Selection & Actions
 # -------------------------------------------------------------
 with st.sidebar:
-    st.markdown("### Production Controls")
-    st.markdown("Configure source inputs and trigger monthly reconciliation.")
+    st.markdown("### Monthly Inputs")
+    st.markdown("Select your corporate Master Tracker and ServiceNow export files.")
     st.markdown("---")
 
-    source_type = st.radio(
-        "Source Input Mode:",
-        ["Standard Files (Configured Paths)", "Upload New Files"],
-        index=0,
+    master_file = st.file_uploader(
+        "1. Master Tracker Workbook (.xlsm / .xlsx)",
+        type=["xlsm", "xlsx"],
+        help="The cumulative Master Tracker containing 'Consolidated' and 'IC Lookup' sheets.",
     )
 
-    master_file = None
-    sn_file = None
-    ic_file = None
-
-    cfg = load_base_configuration()
-
-    if source_type == "Upload New Files":
-        master_file = st.file_uploader("Master Tracker (.xlsm / .xlsx)", type=["xlsx", "xlsm"])
-        sn_file = st.file_uploader("ServiceNow Export (.xlsx / .csv)", type=["xlsx", "csv"])
-        separate_ic = st.checkbox("Custom IC Lookup File", value=False)
-        if separate_ic:
-            ic_file = st.file_uploader("IC Lookup (.xlsx)", type=["xlsx"])
-    else:
-        st.markdown("**Configured Paths:**")
-        master_display_path = cfg._data["paths"].get("master_tracker", "ASK")
-        if master_display_path == "ASK":
-            master_display_path = "test_data/master_test.xlsx (Default)"
-        st.caption(f"**Master:** `{master_display_path}`")
-
-        sn_display_path = cfg._data["paths"].get("servicenow_input", "ASK")
-        if sn_display_path == "ASK":
-            sn_display_path = "test_data/servicenow_test.xlsx (Default)"
-        st.caption(f"**ServiceNow:** `{sn_display_path}`")
-        st.caption(f"**IC Lookup:** Integrated inside Master Tracker")
+    sn_file = st.file_uploader(
+        "2. ServiceNow Export (.xlsx / .csv)",
+        type=["xlsx", "csv"],
+        help="The monthly incident extract from ServiceNow.",
+    )
 
     st.markdown("---")
-    prod_write = st.checkbox("Write Output to Disk", value=True, help="Save updated workbook and reports to output/ folder.")
-    
-    st.markdown("---")
-    run_clicked = st.button("Run Reconciliation", type="primary", use_container_width=True)
+    save_to_output = st.checkbox(
+        "Save Output to 'output/' folder",
+        value=True,
+        help="Saves the updated workbook and reconciliation report into the local output directory.",
+    )
+
+    run_btn = st.button("Run Reconciliation", type="primary", use_container_width=True)
 
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.caption("FCB Incident Management Automation")
-    st.caption("Engine: Python 3.12 | pandas | openpyxl")
+    st.caption("Environment: Corporate Production")
 
 
 # -------------------------------------------------------------
-# Pipeline Execution Logic
+# Execution Workflow
 # -------------------------------------------------------------
-if run_clicked:
-    with st.spinner("Executing reconciliation pipeline..."):
-        try:
-            cfg = load_base_configuration()
+if run_btn:
+    if not master_file or not sn_file:
+        st.error("Please provide both the Master Tracker and the ServiceNow export file.")
+    else:
+        with st.spinner("Processing reconciliation..."):
+            try:
+                cfg_path = os.path.join(PROJECT_ROOT, "config", "config.json")
+                config = load_config(cfg_path)
 
-            # Load DataFrames
-            if source_type == "Upload New Files":
-                if not master_file or not sn_file:
-                    st.error("Please upload both Master Tracker and ServiceNow export files.")
-                    st.stop()
-                
-                master_df = pd.read_excel(master_file, sheet_name=cfg.master_sheet, engine="openpyxl")
-                if sn_file.name.endswith(".csv"):
-                    sn_df = pd.read_csv(sn_file)
+                # Load Master Tracker (Consolidated sheet)
+                master_df = pd.read_excel(master_file, sheet_name=config.master_sheet, engine="openpyxl")
+
+                # Load IC Lookup (from inside the same Master Tracker workbook)
+                try:
+                    ic_lookup_df = pd.read_excel(master_file, sheet_name=config.ic_lookup_sheet, engine="openpyxl")
+                except Exception:
+                    ic_lookup_df = None
+
+                # Load ServiceNow Export
+                if sn_file.name.lower().endswith(".csv"):
+                    try:
+                        servicenow_df = pd.read_csv(sn_file, encoding="utf-8")
+                    except UnicodeDecodeError:
+                        servicenow_df = pd.read_csv(sn_file, encoding="cp1252")
                 else:
                     try:
-                        sn_df = pd.read_excel(sn_file, sheet_name=cfg.servicenow_sheet, engine="openpyxl")
+                        servicenow_df = pd.read_excel(sn_file, sheet_name=config.servicenow_sheet, engine="openpyxl")
                     except Exception:
-                        sn_df = pd.read_excel(sn_file, engine="openpyxl")
-                
-                if ic_file:
-                    ic_df = pd.read_excel(ic_file, engine="openpyxl")
-                else:
-                    try:
-                        ic_df = pd.read_excel(master_file, sheet_name=cfg.ic_lookup_sheet, engine="openpyxl")
-                    except Exception:
-                        ic_df = None
-            else:
-                # Use configured / test paths
-                m_path = cfg._data["paths"].get("master_tracker")
-                if not m_path or m_path == "ASK" or not os.path.isfile(m_path):
-                    m_path = os.path.join(PROJECT_ROOT, "test_data", "master_test.xlsx")
-                
-                sn_path = cfg._data["paths"].get("servicenow_input")
-                if not sn_path or sn_path == "ASK" or not os.path.isfile(sn_path):
-                    sn_path = os.path.join(PROJECT_ROOT, "test_data", "servicenow_test.xlsx")
+                        # Fallback to first available sheet
+                        servicenow_df = pd.read_excel(sn_file, engine="openpyxl")
 
-                cfg._data["paths"]["master_tracker"] = m_path
-                cfg._data["paths"]["servicenow_input"] = sn_path
-                cfg._data["paths"]["ic_lookup"] = m_path
+                # Clean header whitespace
+                master_df.columns = [str(c).strip() for c in master_df.columns]
+                servicenow_df.columns = [str(c).strip() for c in servicenow_df.columns]
+                if ic_lookup_df is not None:
+                    ic_lookup_df.columns = [str(c).strip() for c in ic_lookup_df.columns]
 
-                master_df, _ = load_master_tracker(cfg)
-                sn_df = load_servicenow(cfg)
-                ic_df = load_ic_lookup(cfg)
+                # Run reconciliation pipeline
+                recon_res, out_df, rep, inp_val, out_val, duration = execute_reconciliation(
+                    master_df=master_df,
+                    servicenow_df=servicenow_df,
+                    ic_lookup_df=ic_lookup_df,
+                    config=config,
+                )
 
-            # Execute Core Logic
-            recon_result, output_df, report, inp_val, out_val, duration = execute_pipeline(
-                master_df, sn_df, ic_df, cfg
-            )
+                # Save output to disk if checked
+                if save_to_output and (recon_res.new_records or recon_res.change_details):
+                    out_dir = os.path.join(PROJECT_ROOT, "output")
+                    os.makedirs(out_dir, exist_ok=True)
+                    rep_path = create_output_path(out_dir, prefix="Reconciliation_Report")
+                    write_reconciliation_report_excel(rep, rep_path)
 
-            # Disk write if selected
-            if prod_write and (recon_result.new_records or recon_result.change_details):
-                out_dir = os.path.join(PROJECT_ROOT, "output")
-                os.makedirs(out_dir, exist_ok=True)
-                
-                # Excel report
-                rep_path = create_output_path(out_dir, prefix="Reconciliation_Report")
-                write_reconciliation_report_excel(report, rep_path)
+                # Store in session state
+                st.session_state["processed"] = True
+                st.session_state["master_df"] = master_df
+                st.session_state["output_df"] = out_df
+                st.session_state["recon_result"] = recon_res
+                st.session_state["report"] = rep
+                st.session_state["duration"] = duration
+                st.session_state["run_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # Update State
-            st.session_state["has_run"] = True
-            st.session_state["active_df"] = output_df
-            st.session_state["master_before_df"] = master_df
-            st.session_state["recon_result"] = recon_result
-            st.session_state["report"] = report
-            st.session_state["last_run_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            st.session_state["duration"] = duration
+                st.toast("Reconciliation completed successfully.", icon="✅")
 
-            st.toast("Reconciliation completed successfully.", icon="✅")
-
-        except Exception as e:
-            st.error(f"Execution Error: {e}")
+            except Exception as e:
+                st.error(f"Reconciliation Failed: {e}")
 
 
 # -------------------------------------------------------------
@@ -390,12 +308,11 @@ st.markdown(
     f"""
     <div class="app-header">
         <div>
-            <div class="app-title">FCB Incident Tracker Console</div>
-            <div class="app-subtitle">Enterprise Incident Reconciliation, Validation & Governance Platform</div>
+            <div class="app-title">FCB Incident Tracker — Production Console</div>
+            <div class="app-subtitle">Corporate Incident Reconciliation & Governance</div>
         </div>
-        <div style="display: flex; gap: 0.5rem; align-items: center;">
-            <div class="status-pill status-active"><span class="dot-active"></span> PRODUCTION READY</div>
-            <div class="status-pill">LAST SYNC: {st.session_state['last_run_time'] or 'Baseline YTD'}</div>
+        <div style="font-size: 0.85rem; color: #475569;">
+            {f"Last Execution: {st.session_state['run_time']}" if st.session_state['run_time'] else "Ready for File Ingestion"}
         </div>
     </div>
     """,
@@ -404,50 +321,41 @@ st.markdown(
 
 
 # -------------------------------------------------------------
-# Navigation Tabs
+# Main Application Content
 # -------------------------------------------------------------
-tab_analytics, tab_reconcile, tab_explorer, tab_export = st.tabs(
-    [
-        "Executive Dashboard",
-        "Reconciliation & Audit",
-        "Master Dataset Explorer",
-        "Exports & Reports",
-    ]
-)
+if not st.session_state["processed"]:
+    st.info(
+        "👈 Please select the **Master Tracker** workbook and the monthly **ServiceNow Export** in the left sidebar, "
+        "then click **'Run Reconciliation'**."
+    )
+else:
+    output_df = st.session_state["output_df"]
+    recon = st.session_state["recon_result"]
+    rep_summary = st.session_state["report"]["summary"]
 
-current_df = st.session_state.get("active_df")
+    # Navigation Tabs
+    tab_summary, tab_analytics, tab_explorer, tab_export = st.tabs(
+        [
+            "Reconciliation Summary",
+            "Incident Analytics",
+            "Master Dataset Explorer",
+            "Export & Download",
+        ]
+    )
 
-# -------------------------------------------------------------
-# TAB 1: EXECUTIVE DASHBOARD
-# -------------------------------------------------------------
-with tab_analytics:
-    if current_df is not None and not current_df.empty:
-        # Top KPI Metric Strip
-        total_incidents = len(current_df)
-        
-        # State counts
-        open_states = ["Open", "In Progress", "New", "Pending", "Active"]
-        active_count = len(current_df[current_df["State"].astype(str).isin(open_states)]) if "State" in current_df.columns else 0
-        resolved_count = total_incidents - active_count
-
-        # Priority counts
-        p1_p2_count = 0
-        if "Priority" in current_df.columns:
-            p1_p2_count = len(current_df[current_df["Priority"].astype(str).str.contains(r"^[12]", regex=True)])
-
-        # Bank breakdown
-        svb_count = 0
-        if "Bank" in current_df.columns:
-            svb_count = len(current_df[current_df["Bank"].astype(str).str.upper() == "SVB"])
-
-        m1, m2, m3, m4 = st.columns(4)
+    # ---------------------------------------------------------
+    # TAB 1: RECONCILIATION SUMMARY
+    # ---------------------------------------------------------
+    with tab_summary:
+        # KPI Metric Strip
+        m1, m2, m3, m4, m5 = st.columns(5)
         with m1:
             st.markdown(
                 f"""
                 <div class="metric-container">
-                    <div class="metric-label">Total Incidents (YTD)</div>
-                    <div class="metric-value">{total_incidents}</div>
-                    <div class="metric-sub">Cumulative Master Records</div>
+                    <div class="metric-label">Master Records (Before)</div>
+                    <div class="metric-value">{rep_summary.get('Master Records Before', 0)}</div>
+                    <div class="metric-sub" style="color:#64748B;">Existing Baseline</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -456,9 +364,9 @@ with tab_analytics:
             st.markdown(
                 f"""
                 <div class="metric-container">
-                    <div class="metric-label">Critical Incidents (P1 / P2)</div>
-                    <div class="metric-value">{p1_p2_count}</div>
-                    <div class="metric-sub">{round((p1_p2_count / total_incidents) * 100, 1) if total_incidents else 0}% of Total Volume</div>
+                    <div class="metric-label">Matched & Updated</div>
+                    <div class="metric-value">{rep_summary.get('Matched (Updated)', 0)}</div>
+                    <div class="metric-sub">Updated with latest data</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -467,9 +375,9 @@ with tab_analytics:
             st.markdown(
                 f"""
                 <div class="metric-container">
-                    <div class="metric-label">Active / In Progress</div>
-                    <div class="metric-value">{active_count}</div>
-                    <div class="metric-sub">{resolved_count} Resolved or Closed</div>
+                    <div class="metric-label">New Incidents Added</div>
+                    <div class="metric-value">{rep_summary.get('New Records Added', 0)}</div>
+                    <div class="metric-sub">Newly identified</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -478,9 +386,20 @@ with tab_analytics:
             st.markdown(
                 f"""
                 <div class="metric-container">
-                    <div class="metric-label">SVB Tagged Incidents</div>
-                    <div class="metric-value">{svb_count}</div>
-                    <div class="metric-sub">{total_incidents - svb_count} FCB Standard</div>
+                    <div class="metric-label">Historical Retained</div>
+                    <div class="metric-value">{rep_summary.get('Historical Retained', 0)}</div>
+                    <div class="metric-sub">100% Preserved (Zero Deletion)</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        with m5:
+            st.markdown(
+                f"""
+                <div class="metric-container">
+                    <div class="metric-label">Total Reconciled Records</div>
+                    <div class="metric-value">{rep_summary.get('Total Output Records', 0)}</div>
+                    <div class="metric-sub">Updated Master Count</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -488,16 +407,54 @@ with tab_analytics:
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        # Visual Analytics Charts
+        # Sub-tabs for Audit Inspection
+        sub_new, sub_diffs, sub_misses = st.tabs(
+            [
+                f"New Incidents ({len(recon.new_records)})",
+                f"Field-Level Changes ({len(recon.change_details)})",
+                f"IC Lookup Validation ({len(recon.ic_lookup_misses)})",
+            ]
+        )
+
+        with sub_new:
+            if recon.new_records:
+                st.dataframe(pd.DataFrame(recon.new_records), use_container_width=True, height=340)
+            else:
+                st.caption("No new incidents were identified in this cycle.")
+
+        with sub_diffs:
+            if recon.change_details:
+                diff_rows = []
+                for inc_id, chgs in recon.change_details.items():
+                    for chg in chgs:
+                        diff_rows.append({"Incident Number": inc_id, "Field Update": chg})
+                st.dataframe(pd.DataFrame(diff_rows), use_container_width=True, height=340)
+            else:
+                st.caption("No field changes detected for existing records.")
+
+        with sub_misses:
+            if recon.ic_lookup_misses:
+                st.warning(
+                    f"{len(recon.ic_lookup_misses)} IC values were not matched in the 'IC Lookup' sheet. "
+                    "Add them to the 'IC Lookup' sheet in your Master Tracker to map their Region."
+                )
+                st.dataframe(pd.DataFrame({"Unmapped Incident Commander": recon.ic_lookup_misses}), use_container_width=True)
+            else:
+                st.success("All Incident Commanders were successfully resolved in the IC Lookup table.")
+
+    # ---------------------------------------------------------
+    # TAB 2: INCIDENT ANALYTICS
+    # ---------------------------------------------------------
+    with tab_analytics:
         col_c1, col_c2 = st.columns(2)
 
         with col_c1:
-            st.markdown("##### Incident Volume by Priority Class")
-            if "Priority" in current_df.columns:
-                prio_data = current_df["Priority"].value_counts().reset_index()
-                prio_data.columns = ["Priority", "Count"]
+            st.markdown("##### Incident Count by Priority Class")
+            if "Priority" in output_df.columns:
+                prio_counts = output_df["Priority"].value_counts().reset_index()
+                prio_counts.columns = ["Priority", "Count"]
                 fig_prio = px.bar(
-                    prio_data,
+                    prio_counts,
                     x="Priority",
                     y="Count",
                     color="Priority",
@@ -510,19 +467,18 @@ with tab_analytics:
                     margin=dict(l=10, r=10, t=10, b=10),
                     showlegend=False,
                     xaxis_title=None,
-                    yaxis_title="Incidents",
+                    yaxis_title="Count",
                 )
                 st.plotly_chart(fig_prio, use_container_width=True)
 
         with col_c2:
-            st.markdown("##### Regional Volume Distribution (India vs. US)")
-            if "Region" in current_df.columns:
-                reg_series = current_df["Region"].fillna("Unassigned").replace("", "Unassigned")
-                reg_data = reg_series.value_counts().reset_index()
-                reg_data.columns = ["Region", "Count"]
-
+            st.markdown("##### Region Volume Distribution (India vs. US)")
+            if "Region" in output_df.columns:
+                reg_clean = output_df["Region"].fillna("Unassigned").replace("", "Unassigned")
+                reg_counts = reg_clean.value_counts().reset_index()
+                reg_counts.columns = ["Region", "Count"]
                 fig_reg = px.bar(
-                    reg_data,
+                    reg_counts,
                     x="Region",
                     y="Count",
                     color="Region",
@@ -535,7 +491,7 @@ with tab_analytics:
                     margin=dict(l=10, r=10, t=10, b=10),
                     showlegend=False,
                     xaxis_title=None,
-                    yaxis_title="Incidents",
+                    yaxis_title="Count",
                 )
                 st.plotly_chart(fig_reg, use_container_width=True)
 
@@ -543,12 +499,12 @@ with tab_analytics:
 
         with col_c3:
             st.markdown("##### Top Primary Configuration Items (Applications)")
-            ci_col = "Primary CI/Application" if "Primary CI/Application" in current_df.columns else "Configuration item"
-            if ci_col in current_df.columns:
-                ci_data = current_df[ci_col].dropna().value_counts().head(5).reset_index()
-                ci_data.columns = ["Application", "Count"]
+            ci_col = "Primary CI/Application" if "Primary CI/Application" in output_df.columns else "Configuration item"
+            if ci_col in output_df.columns:
+                ci_counts = output_df[ci_col].dropna().value_counts().head(5).reset_index()
+                ci_counts.columns = ["Application", "Count"]
                 fig_ci = px.bar(
-                    ci_data,
+                    ci_counts,
                     y="Application",
                     x="Count",
                     orientation="h",
@@ -567,189 +523,100 @@ with tab_analytics:
                 st.plotly_chart(fig_ci, use_container_width=True)
 
         with col_c4:
-            st.markdown("##### Assignment Group Allocation")
-            if "Assignment group" in current_df.columns:
-                grp_data = current_df["Assignment group"].dropna().value_counts().head(5).reset_index()
-                grp_data.columns = ["Group", "Count"]
-                fig_grp = px.pie(
-                    grp_data,
-                    names="Group",
+            st.markdown("##### Bank Segregation (FCB vs. SVB)")
+            if "Bank" in output_df.columns:
+                bank_clean = output_df["Bank"].fillna("FCB").replace("", "FCB")
+                bank_counts = bank_clean.value_counts().reset_index()
+                bank_counts.columns = ["Bank", "Count"]
+                fig_bank = px.pie(
+                    bank_counts,
+                    names="Bank",
                     values="Count",
                     hole=0.5,
-                    color_discrete_sequence=px.colors.qualitative.Prism,
+                    color="Bank",
+                    color_discrete_map={"FCB": "#10B981", "SVB": "#EF4444"},
                 )
-                fig_grp.update_layout(
+                fig_bank.update_layout(
                     template="plotly_white",
                     height=260,
                     margin=dict(l=10, r=10, t=10, b=10),
                 )
-                st.plotly_chart(fig_grp, use_container_width=True)
+                st.plotly_chart(fig_bank, use_container_width=True)
 
-    else:
-        st.info("No active incident data available. Click 'Run Reconciliation' in the sidebar.")
-
-
-# -------------------------------------------------------------
-# TAB 2: RECONCILIATION & AUDIT
-# -------------------------------------------------------------
-with tab_reconcile:
-    if st.session_state.get("has_run"):
-        recon = st.session_state["recon_result"]
-        rep = st.session_state["report"]["summary"]
-
-        st.markdown(
-            f"""
-            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 0.85rem 1.25rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <span style="font-weight: 700; color: #0F172A;">Reconciliation Run Status:</span> 
-                    <span style="font-weight: 600; color: #059669;">PASSED</span>
-                    <span style="color: #64748B; margin-left: 0.5rem;">({st.session_state['duration']:.2f} seconds processing time)</span>
-                </div>
-                <div style="font-size: 0.85rem; color: #475569;">
-                    Zero Historical Records Deleted
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        r1, r2, r3, r4 = st.columns(4)
-        with r1:
-            st.metric("Master Records Before", rep.get("Master Records Before", 0))
-        with r2:
-            st.metric("Matched & Updated", rep.get("Matched (Updated)", 0))
-        with r3:
-            st.metric("New Records Appended", rep.get("New Records Added", 0))
-        with r4:
-            st.metric("Historical Retained", rep.get("Historical Retained", 0))
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        sec_new, sec_diff, sec_misses = st.tabs(
-            [
-                f"New Incidents ({len(recon.new_records)})",
-                f"Field-by-Field Audit Log ({len(recon.change_details)})",
-                f"IC Lookup Validation ({len(recon.ic_lookup_misses)})",
-            ]
-        )
-
-        with sec_new:
-            if recon.new_records:
-                st.dataframe(pd.DataFrame(recon.new_records), use_container_width=True, height=320)
-            else:
-                st.caption("No new incidents were appended in this reconciliation cycle.")
-
-        with sec_diff:
-            if recon.change_details:
-                changes_list = []
-                for inc_id, chg_set in recon.change_details.items():
-                    for chg in chg_set:
-                        changes_list.append({"Incident Number": inc_id, "Modification": chg})
-                st.dataframe(pd.DataFrame(changes_list), use_container_width=True, height=320)
-            else:
-                st.caption("No existing records required modifications.")
-
-        with sec_misses:
-            if recon.ic_lookup_misses:
-                st.warning(f"{len(recon.ic_lookup_misses)} IC values were not matched in the 'IC Lookup' sheet.")
-                st.dataframe(pd.DataFrame({"Unmapped Incident Commander": recon.ic_lookup_misses}), use_container_width=True)
-            else:
-                st.success("All Incident Commanders were successfully resolved against the IC Lookup table.")
-
-    else:
-        st.info("Reconciliation has not been executed yet for this session. Use the sidebar to run reconciliation.")
-
-
-# -------------------------------------------------------------
-# TAB 3: MASTER DATASET EXPLORER
-# -------------------------------------------------------------
-with tab_explorer:
-    if current_df is not None and not current_df.empty:
+    # ---------------------------------------------------------
+    # TAB 3: MASTER DATASET EXPLORER
+    # ---------------------------------------------------------
+    with tab_explorer:
         col_s1, col_s2, col_s3 = st.columns([2, 1, 1])
         with col_s1:
-            search_query = st.text_input("Filter Records (INC Number, Description, Assignee):", "")
+            query = st.text_input("Filter Records (INC Number, Description, Assignee):", "")
         with col_s2:
-            prio_filter = "All"
-            if "Priority" in current_df.columns:
-                prio_options = ["All"] + sorted([str(x) for x in current_df["Priority"].dropna().unique()])
-                prio_filter = st.selectbox("Priority:", prio_options)
+            prio_opts = ["All"] + sorted([str(x) for x in output_df["Priority"].dropna().unique()]) if "Priority" in output_df.columns else ["All"]
+            prio_val = st.selectbox("Priority:", prio_opts)
         with col_s3:
-            region_filter = "All"
-            if "Region" in current_df.columns:
-                reg_options = ["All"] + sorted([str(x) for x in current_df["Region"].dropna().unique()])
-                region_filter = st.selectbox("Region:", reg_options)
+            reg_opts = ["All"] + sorted([str(x) for x in output_df["Region"].dropna().unique()]) if "Region" in output_df.columns else ["All"]
+            reg_val = st.selectbox("Region:", reg_opts)
 
-        view_df = current_df.copy()
-        if search_query:
-            view_df = view_df[
-                view_df.astype(str).apply(lambda row: row.str.contains(search_query, case=False).any(), axis=1)
+        filtered = output_df.copy()
+        if query:
+            filtered = filtered[
+                filtered.astype(str).apply(lambda r: r.str.contains(query, case=False).any(), axis=1)
             ]
-        if prio_filter != "All" and "Priority" in view_df.columns:
-            view_df = view_df[view_df["Priority"].astype(str) == prio_filter]
-        if region_filter != "All" and "Region" in view_df.columns:
-            view_df = view_df[view_df["Region"].astype(str) == region_filter]
+        if prio_val != "All" and "Priority" in filtered.columns:
+            filtered = filtered[filtered["Priority"].astype(str) == prio_val]
+        if reg_val != "All" and "Region" in filtered.columns:
+            filtered = filtered[filtered["Region"].astype(str) == reg_val]
 
-        st.caption(f"Showing {len(view_df)} of {len(current_df)} total records")
-        st.dataframe(view_df, use_container_width=True, height=450)
+        st.caption(f"Showing {len(filtered)} of {len(output_df)} records")
+        st.dataframe(filtered, use_container_width=True, height=450)
 
-    else:
-        st.info("No records to explore.")
+    # ---------------------------------------------------------
+    # TAB 4: EXPORT & DOWNLOAD
+    # ---------------------------------------------------------
+    with tab_export:
+        st.markdown("### Export Reconciled Files")
+        st.markdown("Download the updated Master Tracker workbook and the Reconciliation Audit Report.")
+        st.markdown("<br>", unsafe_allow_html=True)
 
-
-# -------------------------------------------------------------
-# TAB 4: EXPORTS & REPORTS
-# -------------------------------------------------------------
-with tab_export:
-    st.markdown("### Production Exports")
-    st.markdown("Download updated Master Tracker workbooks and reconciliation audit logs.")
-    st.markdown("<br>", unsafe_allow_html=True)
-
-    if current_df is not None and not current_df.empty:
         col_e1, col_e2 = st.columns(2)
 
         with col_e1:
-            st.markdown("##### Reconciled Master Tracker Workbook")
-            st.caption("Consolidated sheet containing reconciled YTD records with verified formulas and formatting.")
+            st.markdown("##### Updated Master Tracker (.xlsx)")
+            st.caption("Consolidated sheet containing reconciled records with verified formulas and formatting.")
 
-            buf_m = io.BytesIO()
-            with pd.ExcelWriter(buf_m, engine="openpyxl") as writer:
-                current_df.to_excel(writer, sheet_name="Consolidated", index=False)
-            buf_m.seek(0)
+            buf = io.BytesIO()
+            with pd.ExcelWriter(buf, engine="openpyxl") as writer:
+                output_df.to_excel(writer, sheet_name="Consolidated", index=False)
+            buf.seek(0)
 
             st.download_button(
-                label="Download Master Tracker (.xlsx)",
-                data=buf_m,
-                file_name=f"Master_Tracker_Consolidated_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                label="Download Updated Master Tracker",
+                data=buf,
+                file_name=f"Master_Tracker_Updated_{datetime.now().strftime('%Y%m%d')}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True,
             )
 
         with col_e2:
-            st.markdown("##### Reconciliation Audit Report")
-            st.caption("Formal multi-tab audit report documenting summary metrics, additions, changes, and misses.")
+            st.markdown("##### Reconciliation Audit Report (.xlsx)")
+            st.caption("Detailed multi-tab workbook documenting Summary, Additions, Field Diffs, and Misses.")
 
-            if st.session_state.get("report"):
-                rep_data = st.session_state["report"]
-                temp_path = os.path.join(PROJECT_ROOT, "output", "temp_export_report.xlsx")
-                os.makedirs(os.path.dirname(temp_path), exist_ok=True)
-                write_reconciliation_report_excel(rep_data, temp_path)
+            rep_data = st.session_state["report"]
+            temp_path = os.path.join(PROJECT_ROOT, "output", "temp_export_report.xlsx")
+            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+            write_reconciliation_report_excel(rep_data, temp_path)
 
-                with open(temp_path, "rb") as f:
-                    report_bytes = f.read()
+            with open(temp_path, "rb") as f:
+                rep_bytes = f.read()
 
-                st.download_button(
-                    label="Download Audit Report (.xlsx)",
-                    data=report_bytes,
-                    file_name=f"Reconciliation_Report_{datetime.now().strftime('%Y%m%d')}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    use_container_width=True,
-                )
-            else:
-                st.caption("Execute reconciliation to generate formal audit report.")
+            st.download_button(
+                label="Download Reconciliation Audit Report",
+                data=rep_bytes,
+                file_name=f"Reconciliation_Report_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True,
+            )
 
         st.markdown("---")
-        st.markdown("##### Audit Record (JSON Format)")
-        if st.session_state.get("report"):
-            st.json(st.session_state["report"]["summary"])
-    else:
-        st.info("No active data available for export.")
+        st.markdown("##### Audit Record (JSON)")
+        st.json(st.session_state["report"]["summary"])
