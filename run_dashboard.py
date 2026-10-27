@@ -5,6 +5,14 @@ Starts the Streamlit server and automatically opens the user's browser.
 
 import os
 import sys
+
+# Force environment variables before Streamlit is imported or initialized
+os.environ["STREAMLIT_SERVER_PORT"] = "8501"
+os.environ["STREAMLIT_SERVER_ADDRESS"] = "127.0.0.1"
+os.environ["STREAMLIT_BROWSER_SERVER_PORT"] = "8501"
+os.environ["STREAMLIT_BROWSER_SERVER_ADDRESS"] = "127.0.0.1"
+os.environ["STREAMLIT_SERVER_HEADLESS"] = "false"
+
 import webbrowser
 import threading
 import time
@@ -25,7 +33,7 @@ def main():
     else:
         app_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app.py")
 
-    # Launch browser automatically
+    # Launch browser automatically to port 8501
     threading.Thread(target=open_browser, daemon=True).start()
 
     flag_options = {
