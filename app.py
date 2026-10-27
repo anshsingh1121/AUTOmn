@@ -25,8 +25,12 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Root directory resolution
-PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+# Root directory resolution (handles standalone PyInstaller executable and normal python)
+if getattr(sys, "frozen", False):
+    PROJECT_ROOT = os.path.dirname(sys.executable)
+else:
+    PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
@@ -34,8 +38,10 @@ from src.business_rules import build_ic_lookup_map
 from src.config_loader import Config, load_config
 from src.output_writer import (
     create_output_path,
+    write_output_workbook,
     write_reconciliation_report_excel,
 )
+from src.audit import create_audit_record, save_audit_log
 from src.reconciler import reconciliation_to_dataframe, reconcile
 from src.report_generator import generate_reconciliation_summary
 from src.validator import (
@@ -280,13 +286,70 @@ if run_btn:
                 )
 
                 # Save output to disk if checked
+                saved_files = []
                 if save_to_output and (recon_res.new_records or recon_res.change_details):
                     out_dir = os.path.join(PROJECT_ROOT, "output")
                     os.makedirs(out_dir, exist_ok=True)
-                    rep_path = create_output_path(out_dir, prefix="Reconciliation_Report")
+                    timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+                    # 1. Save Updated Master Tracker Workbook
+                    is_xlsm = str(getattr(master_file, "name", "")).lower().endswith(".xlsm")
+                    master_ext = ".xlsm" if is_xlsm else ".xlsx"
+                    master_out_path = os.path.join(out_dir, f"Master_Tracker_Updated_{timestamp_str}{master_ext}")
+
+                    temp_master = os.path.join(out_dir, f"_temp_master_{timestamp_str}{master_ext}")
+                    try:
+                        with open(temp_master, "wb") as f_tmp:
+                            f_tmp.write(master_file.getvalue())
+
+                        # Attempt native COM write to preserve pivots, charts, and macros
+                        try:
+                            write_output_workbook(
+                                output_df=out_df,
+                                output_path=master_out_path,
+                                source_workbook_path=temp_master,
+                                target_sheets=config.target_sheets,
+                            )
+                        except Exception:
+                            # Fallback: direct write
+                            with pd.ExcelWriter(master_out_path, engine="openpyxl") as writer:
+                                out_df.to_excel(writer, sheet_name=config.master_sheet, index=False)
+                                if "FCB" in config.target_sheets:
+                                    out_df.to_excel(writer, sheet_name="FCB", index=False)
+                                if ic_lookup_df is not None:
+                                    ic_lookup_df.to_excel(writer, sheet_name=config.ic_lookup_sheet, index=False)
+                    finally:
+                        if os.path.isfile(temp_master):
+                            try:
+                                os.remove(temp_master)
+                            except Exception:
+                                pass
+
+                    saved_files.append(os.path.basename(master_out_path))
+
+                    # 2. Save Reconciliation Audit Report
+                    rep_path = os.path.join(out_dir, f"Reconciliation_Report_{timestamp_str}.xlsx")
                     write_reconciliation_report_excel(rep, rep_path)
+                    saved_files.append(os.path.basename(rep_path))
+
+                    # 3. Save JSON Audit Log
+                    audit_record = create_audit_record(
+                        config=config,
+                        master_before_count=len(master_df),
+                        servicenow_count=len(servicenow_df),
+                        recon_summary=recon_res.summary(),
+                        validation_passed=(inp_val.is_valid and out_val.is_valid),
+                        report_summary=rep["summary"],
+                        output_path=master_out_path,
+                        archive_path=None,
+                        errors=rep.get("errors", []),
+                        warnings=rep.get("warnings", []),
+                    )
+                    audit_path = save_audit_log(audit_record, out_dir)
+                    saved_files.append(os.path.basename(audit_path))
 
                 # Store in session state
+                st.session_state["saved_files"] = saved_files
                 st.session_state["processed"] = True
                 st.session_state["master_df"] = master_df
                 st.session_state["output_df"] = out_df
@@ -347,6 +410,13 @@ else:
     # TAB 1: RECONCILIATION SUMMARY
     # ---------------------------------------------------------
     with tab_summary:
+        saved = st.session_state.get("saved_files", [])
+        if saved:
+            st.success(
+                "📁 **All output files successfully generated in `output/` directory:**\n\n"
+                + "\n".join([f"- `{f}`" for f in saved])
+            )
+
         # KPI Metric Strip
         m1, m2, m3, m4, m5 = st.columns(5)
         with m1:
