@@ -110,7 +110,7 @@ def save_workbook(workbook, output_path):
         print(f"Error saving output file: {exc}")
         sys.exit(1)
     print(f"Successfully created: {saved_path}")
-    if hasattr(constants, "api_logger") and constants.api_logger._HIT_COUNTER > 0:
+    if getattr(constants, "api_logger", None) and constants.api_logger._HIT_COUNTER > 0:
         print(f"API Audit Trail ({constants.api_logger._HIT_COUNTER} hits logged): {constants.api_logger.get_summary_path()}")
 
 

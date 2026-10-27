@@ -45,7 +45,7 @@ def _sanitize_auth(kwargs: dict) -> dict:
     sanitized = {}
     auth = kwargs.get("auth")
     if auth and isinstance(auth, (tuple, list)) and len(auth) >= 2:
-        sanitized["auth"] = (auth[0], "********")
+        sanitized["auth"] = (str(auth[0]), "********")
     headers = kwargs.get("headers")
     if headers and isinstance(headers, dict):
         clean_headers = dict(headers)
@@ -66,6 +66,17 @@ def _extract_table_or_endpoint(url: str) -> str:
     return path.split("/")[-1] or "api_endpoint"
 
 
+def _extract_params(url: str, args, kwargs) -> dict:
+    """Extract query parameters safely from kwargs, args, or the URL itself."""
+    params = kwargs.get("params")
+    if not params and args and len(args) > 0 and isinstance(args[0], dict):
+        params = args[0]
+    if not params and "?" in url:
+        parsed_url = urllib.parse.urlparse(url)
+        params = dict(urllib.parse.parse_qsl(parsed_url.query))
+    return params or {}
+
+
 def _log_hit(url: str, args, kwargs, response: requests.Response, elapsed_ms: float):
     global _HIT_COUNTER
     _HIT_COUNTER += 1
@@ -77,14 +88,11 @@ def _log_hit(url: str, args, kwargs, response: requests.Response, elapsed_ms: fl
     payload_filename = f"hit_{hit_num:03d}_{safe_table_name}.json"
     payload_path = session_dir / payload_filename
 
-    # Extract query params
-    params = kwargs.get("params") or {}
-    if not params and "?" in url:
-        parsed_url = urllib.parse.urlparse(url)
-        params = dict(urllib.parse.parse_qsl(parsed_url.query))
+    params = _extract_params(url, args, kwargs)
 
-    # Parse JSON payload if applicable
-    is_json = "application/json" in response.headers.get("Content-Type", "").casefold()
+    # Determine if response is JSON or binary/text
+    content_type = response.headers.get("Content-Type", "") if hasattr(response, "headers") else ""
+    is_json = "application/json" in content_type.casefold()
     records_count = 0
     payload_content = None
 
@@ -98,14 +106,12 @@ def _log_hit(url: str, args, kwargs, response: requests.Response, elapsed_ms: fl
                 elif result is not None:
                     records_count = 1
         except Exception:
-            payload_content = response.text[:2000]
+            payload_content = response.text[:2000] if hasattr(response, "text") else ""
     else:
-        # Binary or text stream (e.g. attachment file download)
-        content_size = len(response.content) if response.content else 0
+        content_size = len(response.content) if hasattr(response, "content") and response.content else 0
         records_count = 1 if content_size > 0 else 0
-        payload_content = f"[Binary attachment content: {content_size} bytes, Content-Type: {response.headers.get('Content-Type')}]"
+        payload_content = f"[Binary/Stream attachment content: {content_size} bytes, Content-Type: {content_type}]"
 
-    # Assemble structured hit log
     log_record = {
         "hit_number": hit_num,
         "timestamp": datetime.now().isoformat(),
@@ -116,25 +122,23 @@ def _log_hit(url: str, args, kwargs, response: requests.Response, elapsed_ms: fl
         "query_parameters": params,
         "request_options": _sanitize_auth(kwargs),
         "response": {
-            "status_code": response.status_code,
-            "reason": response.reason,
+            "status_code": getattr(response, "status_code", None),
+            "reason": getattr(response, "reason", ""),
             "elapsed_ms": round(elapsed_ms, 2),
             "records_returned": records_count,
-            "content_type": response.headers.get("Content-Type", ""),
+            "content_type": content_type,
             "payload": payload_content,
         },
     }
 
-    # Write formatted, pretty-printed JSON file
     try:
         with open(payload_path, "w", encoding="utf-8") as f:
-            json.dump(log_record, f, indent=2, ensure_ascii=False)
+            json.dump(log_record, f, indent=2, ensure_ascii=False, default=str)
     except Exception as exc:
         print(f"[api_logger] Warning: Failed to save payload for hit {hit_num}: {exc}")
 
-    # Append row to markdown summary table
     summary_file = session_dir / "00_API_HITS_SUMMARY.md"
-    status_str = f"{response.status_code} {response.reason}"
+    status_str = f"{getattr(response, 'status_code', 'ERR')} {getattr(response, 'reason', '')}".strip()
     duration_str = f"{round(elapsed_ms, 1)}ms"
     row = (
         f"| {hit_num:03d} | {datetime.now().strftime('%H:%M:%S')} | "
@@ -148,18 +152,75 @@ def _log_hit(url: str, args, kwargs, response: requests.Response, elapsed_ms: fl
         pass
 
 
-def logged_get(url, *args, **kwargs):
-    """Wrapper intercepting requests.get to record payloads."""
-    start_time = time.perf_counter()
-    response = _ORIGINAL_REQUESTS_GET(url, *args, **kwargs)
-    elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+def _log_error_hit(url: str, args, kwargs, error: Exception, elapsed_ms: float):
+    """Log an API hit that raised an exception (e.g. timeout, connection error)."""
+    global _HIT_COUNTER
+    _HIT_COUNTER += 1
+    hit_num = _HIT_COUNTER
+    session_dir = _get_session_dir()
+
+    table_name = _extract_table_or_endpoint(url)
+    safe_table_name = re.sub(r"[^a-zA-Z0-9_\-]", "_", table_name)
+    payload_filename = f"hit_{hit_num:03d}_{safe_table_name}_ERROR.json"
+    payload_path = session_dir / payload_filename
+
+    params = _extract_params(url, args, kwargs)
+
+    log_record = {
+        "hit_number": hit_num,
+        "timestamp": datetime.now().isoformat(),
+        "method": "GET",
+        "url": url,
+        "decoded_url": urllib.parse.unquote(url),
+        "target_resource": table_name,
+        "query_parameters": params,
+        "request_options": _sanitize_auth(kwargs),
+        "error": {
+            "type": type(error).__name__,
+            "message": str(error),
+            "elapsed_ms": round(elapsed_ms, 2),
+        },
+    }
 
     try:
-        _log_hit(url, args, kwargs, response, elapsed_ms)
-    except Exception as exc:
-        print(f"[api_logger] Warning: Failed to log API hit: {exc}")
+        with open(payload_path, "w", encoding="utf-8") as f:
+            json.dump(log_record, f, indent=2, ensure_ascii=False, default=str)
+    except Exception:
+        pass
 
-    return response
+    summary_file = session_dir / "00_API_HITS_SUMMARY.md"
+    status_str = f"FAILED ({type(error).__name__})"
+    duration_str = f"{round(elapsed_ms, 1)}ms"
+    row = (
+        f"| {hit_num:03d} | {datetime.now().strftime('%H:%M:%S')} | "
+        f"`{table_name}` | **{status_str}** | {duration_str} | "
+        f"0 | [`{payload_filename}`]({payload_filename}) |\n"
+    )
+    try:
+        with open(summary_file, "a", encoding="utf-8") as f:
+            f.write(row)
+    except Exception:
+        pass
+
+
+def logged_get(url, *args, **kwargs):
+    """Wrapper intercepting requests.get to record payloads and errors."""
+    start_time = time.perf_counter()
+    try:
+        response = _ORIGINAL_REQUESTS_GET(url, *args, **kwargs)
+        elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+        try:
+            _log_hit(url, args, kwargs, response, elapsed_ms)
+        except Exception as log_exc:
+            print(f"[api_logger] Warning: Failed to log API hit: {log_exc}")
+        return response
+    except Exception as req_error:
+        elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+        try:
+            _log_error_hit(url, args, kwargs, req_error, elapsed_ms)
+        except Exception:
+            pass
+        raise req_error
 
 
 def install_api_logging():

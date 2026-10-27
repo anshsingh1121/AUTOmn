@@ -14,7 +14,10 @@ try:
 except ImportError:
     pass
 
-import api_logger
+try:
+    import api_logger
+except ImportError:
+    api_logger = None
 
 INSTANCE_URL = os.getenv("SN_INSTANCE_URL", "https://your-instance.service-now.com").rstrip("/")
 BASE_URL = f"{INSTANCE_URL}/api/now/table/"
