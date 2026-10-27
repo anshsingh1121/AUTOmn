@@ -5,7 +5,7 @@ a = Analysis(
     ['src/main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('config/config.json', 'config')],
     hiddenimports=['openpyxl', 'pandas'],
     hookspath=[],
     hooksconfig={},

@@ -5,6 +5,7 @@ Loads and validates the JSON configuration file for the FCB Incident Tracker.
 
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -176,13 +177,25 @@ def load_config(config_path: str, base_dir: Optional[str] = None) -> Config:
     """
     config_path = os.path.abspath(config_path)
 
+    # Hybrid Resolution: If specified config file is not found, check bundled data in frozen app
     if not os.path.isfile(config_path):
-        raise ConfigError(f"Configuration file not found: {config_path}")
+        fallback_found = False
+        if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+            bundled_config = os.path.join(sys._MEIPASS, "config", "config.json")
+            if os.path.isfile(bundled_config):
+                config_path = bundled_config
+                fallback_found = True
+
+        if not fallback_found:
+            raise ConfigError(f"Configuration file not found: {config_path}")
 
     if base_dir is None:
-        # Default base_dir to the project root (parent of config/)
-        config_dir = os.path.dirname(config_path)
-        base_dir = os.path.dirname(config_dir) if os.path.basename(config_dir) == "config" else config_dir
+        # For frozen executable, base_dir must be the executable's directory (not temp _MEIPASS)
+        if getattr(sys, "frozen", False):
+            base_dir = os.path.dirname(sys.executable)
+        else:
+            config_dir = os.path.dirname(config_path)
+            base_dir = os.path.dirname(config_dir) if os.path.basename(config_dir) == "config" else config_dir
 
     try:
         with open(config_path, "r", encoding="utf-8") as f:

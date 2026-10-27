@@ -346,7 +346,12 @@ def main():
 
     # Load config
     try:
-        config = load_config(args.config)
+        config = load_config(args.config, base_dir=project_root)
+        if getattr(sys, "frozen", False):
+            if not os.path.isfile(args.config):
+                print("  Note: Using embedded default configuration.")
+            else:
+                print(f"  Note: Using external configuration: {args.config}")
     except ConfigError as e:
         print(f"✗ CONFIGURATION ERROR: {e}")
         sys.exit(2)
