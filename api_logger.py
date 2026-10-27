@@ -239,6 +239,5 @@ def get_summary_path() -> Path:
     return _get_session_dir() / "00_API_HITS_SUMMARY.md"
 
 
-# Auto-install upon import if enabled via environment (default: enabled)
-if os.getenv("SN_LOG_PAYLOADS", "true").casefold() in {"1", "true", "yes"}:
-    install_api_logging()
+# Automatically install logger upon import
+install_api_logging()
