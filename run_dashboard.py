@@ -10,9 +10,12 @@ import threading
 import time
 from streamlit.web import bootstrap
 
+def open_browser():
+    time.sleep(2)
+    webbrowser.open("http://127.0.0.1:8501")
+
 def main():
     if getattr(sys, "frozen", False):
-        # Running as PyInstaller executable
         if hasattr(sys, "_MEIPASS"):
             app_path = os.path.join(sys._MEIPASS, "app.py")
             if not os.path.exists(app_path):
@@ -22,9 +25,15 @@ def main():
     else:
         app_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app.py")
 
+    # Launch browser automatically
+    threading.Thread(target=open_browser, daemon=True).start()
+
     flag_options = {
-        "server.headless": False,
         "server.port": 8501,
+        "server.address": "127.0.0.1",
+        "browser.serverAddress": "127.0.0.1",
+        "browser.serverPort": 8501,
+        "server.headless": False,
         "global.developmentMode": False,
         "browser.gatherUsageStats": False,
     }
