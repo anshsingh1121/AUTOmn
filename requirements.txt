@@ -1,9 +1,20 @@
 # FCB Monthly Incident Tracker Automation
-# Python 3.9+
+# Python 3.9+ Dependencies
 
+# Core Data & Validation
 openpyxl>=3.1.0
 pandas>=2.0.0
-pytest>=7.0.0
 jsonschema>=4.0.0
+
+# User Interface & Analytics
 streamlit>=1.30.0
 plotly>=5.18.0
+
+# Windows Integration & Non-Destructive COM Writer
+pywin32>=306; platform_system == "Windows"
+
+# Packaging
+pyinstaller>=6.0.0
+
+# Testing & Quality Assurance
+pytest>=7.0.0

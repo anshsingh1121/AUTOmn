@@ -3,10 +3,14 @@ Output Writer
 Writes the reconciled data to Excel.
 
 Strategy:
-- Main output workbook: Uses win32com (COM automation) to write data into a copy
-  of the original master tracker. This preserves ALL Excel internals (Pivot Tables,
-  Charts, Macros, Data Models, Conditional Formatting) that openpyxl would silently
-  corrupt upon save.
+- Main output workbook:
+  1. Primary: Uses win32com (COM automation) to write data into a copy
+     of the original master tracker. This preserves ALL Excel internals (Pivot Tables,
+     Charts, Macros, Data Models, Conditional Formatting).
+  2. Fallback: If COM is unavailable (e.g., Office not installed, pywin32 missing,
+     or security policies blocking COM automation), falls back to openpyxl
+     with keep_vba=True to preserve macros (.xlsm), all other sheets, and structure
+     without corruption.
 - Reconciliation report: Uses openpyxl to create a simple NEW workbook (no pivots
   or charts to corrupt).
 """
@@ -92,40 +96,30 @@ def _to_com_safe(val: Any) -> Any:
     """
     Convert a Python / numpy / pandas value to a type that the Windows COM
     bridge can marshal into an Excel cell without error.
-
-    Handles: numpy scalars, NaN, NaT, pd.Timestamp, None, empty strings.
     """
     if val is None:
         return ""
 
-    # numpy integer types (int8, int16, int32, int64, …)
     if isinstance(val, np.integer):
         return int(val)
 
-    # numpy float types — also catches np.nan
     if isinstance(val, np.floating):
         if np.isnan(val):
             return ""
         return float(val)
 
-    # numpy bool
     if isinstance(val, np.bool_):
         return bool(val)
 
-    # pandas Timestamp or native datetime
     if isinstance(val, (pd.Timestamp, datetime)):
         if pd.isna(val):
             return ""
-        # Convert to Excel Serial Date float (days since 1899-12-30)
-        # This completely guarantees COM never mangles it into a text string
         delta = pd.Timestamp(val) - pd.Timestamp("1899-12-30")
         return float(delta.total_seconds() / 86400.0)
 
-    # plain Python float NaN
     if isinstance(val, float) and val != val:
         return ""
 
-    # plain Python string — empty / "nan"
     if isinstance(val, str):
         if val.strip() == "" or val.strip().lower() == "nan":
             return ""
@@ -135,100 +129,103 @@ def _to_com_safe(val: Any) -> Any:
 
 
 # ============================================================
-# MAIN OUTPUT WORKBOOK (COM-based, pivot-safe)
+# OPENPYXL FALLBACK WRITER (Preserves .xlsm, all sheets, no corruption)
 # ============================================================
 
-def write_output_workbook(
+def write_output_workbook_openpyxl(
     output_df: pd.DataFrame,
     output_path: str,
-    source_workbook_path: Optional[str] = None,
+    source_workbook_path: str,
     target_sheets: Optional[List[str]] = None,
-    formula_columns: Optional[Dict[str, str]] = None,
 ) -> str:
     """
-    Write the output DataFrame into an Excel workbook using native COM.
-
-    The approach:
-      1. Copy the pristine master tracker to output_path (preserving ALL internals).
-      2. Open the copy with an invisible Excel instance via COM.
-      3. For each target sheet: read headers, detect formulas in row 2,
-         clear old data rows, write new data as a 2-D array (fast).
-      4. Resize any ListObjects (Excel Tables).
-      5. Expand PivotCache source ranges to cover new rows.
-      6. RefreshAll → CalculateUntilAsyncQueriesDone → Save → Close.
-
-    This guarantees Pivot Tables, Charts, Macros, and Data Models are never
-    destroyed because the file is never touched by openpyxl.
+    Safe fallback when Excel COM is unavailable or disabled.
+    Uses openpyxl with keep_vba=True to preserve macros (.xlsm), all other sheets,
+    and styles without destroying the workbook structure.
     """
-    if not source_workbook_path or not os.path.isfile(source_workbook_path):
-        raise OutputWriteError(
-            "A source workbook template is required. "
-            f"Path: {source_workbook_path}"
-        )
+    import openpyxl
 
+    is_xlsm = str(source_workbook_path).lower().endswith(".xlsm") or str(output_path).lower().endswith(".xlsm")
     target_sheets = target_sheets or ["Consolidated"]
 
-    # ------------------------------------------------------------------
-    # Pre-process DataFrame for COM transfer
-    # ------------------------------------------------------------------
+    try:
+        wb = openpyxl.load_workbook(source_workbook_path, keep_vba=is_xlsm, data_only=False)
+    except Exception as e:
+        raise OutputWriteError(f"Openpyxl cannot load source workbook '{source_workbook_path}': {e}")
+
     df_write = output_df.copy()
 
-    # Force convert known date columns to real DateTime objects (fixes left-aligned text issue)
-    date_columns = ["Created", "Resolved", "Actual Incident Resolve"]
-    for col in df_write.columns:
-        if col in date_columns or pd.api.types.is_datetime64_any_dtype(df_write[col]):
-            # Coerce forces invalid dates to NaT, which we then turn into empty strings
-            df_write[col] = pd.to_datetime(df_write[col], errors='coerce')
-            df_write[col] = df_write[col].apply(
-                lambda x: "" if pd.isna(x) else x.to_pydatetime()
-            )
+    for sheet_name in target_sheets:
+        if sheet_name not in wb.sheetnames:
+            print(f"  Warning (openpyxl): Sheet '{sheet_name}' not found in workbook, skipping.")
+            continue
 
-    df_write = df_write.fillna("")
+        ws = wb[sheet_name]
 
-    # ------------------------------------------------------------------
-    # 1. Copy pristine template → output path
-    # ------------------------------------------------------------------
+        # Read headers from row 1
+        headers = []
+        for c in range(1, ws.max_column + 1):
+            val = ws.cell(row=1, column=c).value
+            headers.append(str(val).strip() if val is not None else "")
+
+        # Detect new columns that are not in headers
+        headers_set = set(headers)
+        new_cols = [c for c in df_write.columns if c not in headers_set and c != ""]
+        if new_cols:
+            start_col = len(headers) + 1
+            for i, col_name in enumerate(new_cols):
+                ws.cell(row=1, column=start_col + i, value=col_name)
+            headers.extend(new_cols)
+
+        # Clear existing data rows (row 2 down)
+        if ws.max_row >= 2:
+            ws.delete_rows(2, ws.max_row - 1)
+
+        # Write data rows
+        for _, row in df_write.iterrows():
+            row_vals = []
+            for h in headers:
+                if h in df_write.columns:
+                    val = row[h]
+                    if pd.isna(val):
+                        val = ""
+                    elif isinstance(val, (pd.Timestamp, datetime)):
+                        val = val.to_pydatetime() if hasattr(val, "to_pydatetime") else val
+                    row_vals.append(val)
+                else:
+                    row_vals.append("")
+            ws.append(row_vals)
+
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+    wb.save(output_path)
+    wb.close()
+    return output_path
+
+
+# ============================================================
+# INTERNAL COM WORKER
+# ============================================================
+
+def _com_populate_workbook(
+    excel,
+    abs_output: str,
+    df_write: pd.DataFrame,
+    target_sheets: List[str],
+    formula_columns: Optional[Dict[str, str]],
+):
+    """
+    Subroutine isolated in its own scope so that all COM sheet, range, and table
+    proxies go out of scope and are collected before excel.Quit() is called.
+    """
+    wb = excel.Workbooks.Open(abs_output, UpdateLinks=0)
     try:
-        shutil.copy2(source_workbook_path, output_path)
-    except Exception as e:
-        raise OutputWriteError(f"Cannot copy template to output path: {e}")
-
-    abs_output = os.path.abspath(output_path)
-
-    # ------------------------------------------------------------------
-    # 2. Open with COM, write data, refresh pivots
-    # ------------------------------------------------------------------
-    try:
-        import win32com.client
-        import pythoncom
-    except ImportError:
-        raise OutputWriteError(
-            "pywin32 is required for pivot-safe writes. "
-            "Install with:  pip install pywin32"
-        )
-
-    pythoncom.CoInitialize()
-    excel = None
-
-    try:
-        excel = win32com.client.DispatchEx("Excel.Application")
-        excel.DisplayAlerts = False
-        excel.Visible = False
-        excel.AskToUpdateLinks = False  # prevent dialogs
-        excel.AutomationSecurity = 1    # msoAutomationSecurityLow: Bypasses yellow security banner to allow Refresh!
-
-        wb = excel.Workbooks.Open(abs_output, UpdateLinks=0)
-
         for sheet_name in target_sheets:
-            # --- open sheet (skip if missing) ---
             try:
                 ws = wb.Worksheets(sheet_name)
             except Exception:
-                print(f"  Warning: Sheet '{sheet_name}' not found in "
-                      f"workbook, skipping.")
+                print(f"  Warning: Sheet '{sheet_name}' not found in workbook, skipping.")
                 continue
 
-            # --- read headers from row 1 ---
             last_col = ws.Cells(1, ws.Columns.Count).End(-4159).Column  # xlToLeft
             if last_col < 1:
                 continue
@@ -238,7 +235,7 @@ def write_output_workbook(
                 val = ws.Cells(1, c).Value
                 headers.append(str(val).strip() if val else "")
 
-            # --- detect formulas from row 2 (skip Duration) ---
+            # Detect formulas from row 2
             existing_formulas: Dict[int, str] = {}
             old_last_row = ws.Cells(ws.Rows.Count, 1).End(-4162).Row  # xlUp
             if old_last_row >= 2:
@@ -246,38 +243,32 @@ def write_output_workbook(
                     cell = ws.Cells(2, c)
                     if cell.HasFormula:
                         h = headers[c - 1]
-                        # Duration is computed by Python — do not preserve formula
                         if h.lower() != "duration":
                             existing_formulas[c] = cell.FormulaR1C1
 
-            # --- override with explicit formula config (if any) ---
             if formula_columns:
                 for c_idx, h in enumerate(headers, start=1):
                     if h in formula_columns and h.lower() != "duration":
                         existing_formulas[c_idx] = formula_columns[h]
 
-            # --- clear old data rows (row 2 → end) ---
+            # Clear old data rows (row 2 -> end)
             if old_last_row >= 2:
                 ws.Range(
                     ws.Cells(2, 1),
                     ws.Cells(old_last_row, last_col),
                 ).ClearContents()
 
-            # --- build 2-D array of new data ---
             num_records = len(df_write)
             if num_records == 0:
                 continue
 
-            # --- detect new columns in DataFrame that aren't in the template ---
             headers_set = set(headers)
             new_cols = [c for c in df_write.columns if c not in headers_set and c != ""]
             if new_cols:
-                # Write new column headers at the end of row 1
                 for i, col_name in enumerate(new_cols):
                     ws.Cells(1, last_col + 1 + i).Value = col_name
                 headers.extend(new_cols)
                 new_last_col = last_col + len(new_cols)
-                print(f"  New columns added to '{sheet_name}': {new_cols}")
             else:
                 new_last_col = last_col
 
@@ -286,7 +277,6 @@ def write_output_workbook(
                 row_data: List[Any] = []
                 for c_idx, h in enumerate(headers, start=1):
                     if c_idx in existing_formulas:
-                        # Leave formula columns blank for now, applied in second pass
                         row_data.append("")
                     elif h in df_write.columns:
                         row_data.append(_to_com_safe(row[h]))
@@ -294,14 +284,13 @@ def write_output_workbook(
                         row_data.append("")
                 write_data.append(row_data)
 
-            # --- write entire array at once (Value preserves real Excel Dates) ---
             target_range = ws.Range(
                 ws.Cells(2, 1),
                 ws.Cells(1 + num_records, new_last_col),
             )
             target_range.Value = write_data
-            
-            # --- Second Pass: Apply preserved R1C1 formulas ---
+
+            # Apply preserved formulas
             for c_idx, f_str in existing_formulas.items():
                 f_range = ws.Range(
                     ws.Cells(2, c_idx),
@@ -309,7 +298,7 @@ def write_output_workbook(
                 )
                 f_range.FormulaR1C1 = f_str
 
-            # --- Third Pass: Format date columns so they don't show ##### ---
+            # Format date columns
             date_only_columns = {"Created", "Resolved"}
             datetime_columns = {"Actual Incident Resolve", "Actual Incident Start"}
             for c_idx, h in enumerate(headers, start=1):
@@ -325,17 +314,15 @@ def write_output_workbook(
                 except Exception:
                     pass
 
-            # --- Auto-fit all columns to eliminate ##### ---
             try:
                 ws.Columns.AutoFit()
             except Exception:
                 pass
 
-            # --- resize ListObjects (Excel Tables) and preserve banding ---
+            # Resize ListObjects (Excel Tables)
             try:
                 for i in range(1, ws.ListObjects.Count + 1):
                     obj = ws.ListObjects(i)
-                    # Save the table's original style before touching anything
                     try:
                         original_style = obj.TableStyle
                     except Exception:
@@ -345,18 +332,16 @@ def write_output_workbook(
                     except Exception:
                         original_banding = True
 
-                    # Use the table's original width to prevent cutting off custom helper columns
                     tbl_width = obj.Range.Columns.Count
                     tbl_start_col = obj.Range.Column
                     tbl_start_row = obj.Range.Row
-                    
+
                     new_range = ws.Range(
                         ws.Cells(tbl_start_row, tbl_start_col),
                         ws.Cells(tbl_start_row + num_records, tbl_start_col + tbl_width - 1),
                     )
                     obj.Resize(new_range)
 
-                    # Re-apply the saved style + banding (fixes lost blue-white rows)
                     try:
                         if original_style:
                             obj.TableStyle = original_style
@@ -368,34 +353,133 @@ def write_output_workbook(
 
             print(f"  Sheet '{sheet_name}': {num_records} records written.")
 
-        # --- UPDATE PIVOTS SHEET (Pure Python — no Excel Pivot engine needed) ---
+        # Update Pivots Sheet
         try:
             from src.pivot_updater import update_pivots_sheet
-            update_pivots_sheet(wb, output_df)
+            update_pivots_sheet(wb, df_write)
         except Exception as e:
             print(f"  Warning: Pivots sheet update failed: {e}")
 
         wb.Save()
-        wb.Close(SaveChanges=True)
+    finally:
+        try:
+            wb.Close(SaveChanges=False)
+        except Exception:
+            pass
 
+
+# ============================================================
+# MAIN OUTPUT WORKBOOK (COM with OpenPyXL Fallback)
+# ============================================================
+
+def write_output_workbook(
+    output_df: pd.DataFrame,
+    output_path: str,
+    source_workbook_path: Optional[str] = None,
+    target_sheets: Optional[List[str]] = None,
+    formula_columns: Optional[Dict[str, str]] = None,
+) -> str:
+    """
+    Write the output DataFrame into an Excel workbook.
+    Attempts native Windows COM for complete pivot/chart/table preservation.
+    If COM fails or is unavailable, cleanly falls back to openpyxl with
+    keep_vba=True, preventing any corruption.
+    """
+    if not source_workbook_path or not os.path.isfile(source_workbook_path):
+        raise OutputWriteError(
+            f"A source workbook template is required. Path: {source_workbook_path}"
+        )
+
+    target_sheets = target_sheets or ["Consolidated"]
+
+    # 1. First copy pristine template -> output path
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+    try:
+        shutil.copy2(source_workbook_path, output_path)
+    except Exception as e:
+        raise OutputWriteError(f"Cannot copy template to output path: {e}")
+
+    abs_output = os.path.abspath(output_path)
+
+    # 2. Attempt COM-based write
+    com_available = False
+    try:
+        import win32com.client
+        import pythoncom
+        com_available = True
+    except ImportError:
+        com_available = False
+
+    if not com_available:
+        print("  Notice: pywin32 not available. Using openpyxl fallback.")
+        return write_output_workbook_openpyxl(
+            output_df=output_df,
+            output_path=abs_output,
+            source_workbook_path=source_workbook_path,
+            target_sheets=target_sheets,
+        )
+
+    # Prepare DataFrame for writing
+    df_write = output_df.copy()
+    date_columns = ["Created", "Resolved", "Actual Incident Resolve"]
+    for col in df_write.columns:
+        if col in date_columns or pd.api.types.is_datetime64_any_dtype(df_write[col]):
+            df_write[col] = pd.to_datetime(df_write[col], errors='coerce')
+            df_write[col] = df_write[col].apply(
+                lambda x: "" if pd.isna(x) else x.to_pydatetime()
+            )
+    df_write = df_write.fillna("")
+
+    pythoncom.CoInitialize()
+    excel = None
+
+    try:
+        excel = win32com.client.DispatchEx("Excel.Application")
+        excel.DisplayAlerts = False
+        excel.Visible = False
+        excel.AskToUpdateLinks = False
+        excel.AutomationSecurity = 1  # msoAutomationSecurityLow
+
+        # Run population in isolated scope so COM proxies are destroyed
+        _com_populate_workbook(
+            excel=excel,
+            abs_output=abs_output,
+            df_write=df_write,
+            target_sheets=target_sheets,
+            formula_columns=formula_columns,
+        )
         print("  Output workbook saved (Consolidated, FCB, Pivots updated).")
 
-    except ImportError:
-        raise OutputWriteError(
-            "pywin32 is required. Install with:  pip install pywin32"
-        )
-    except OutputWriteError:
-        raise
     except Exception as e:
-        raise OutputWriteError(f"COM output write failed: {e}")
+        print(f"  COM write encountered an issue: {e}. Falling back to openpyxl...")
+        if excel is not None:
+            try:
+                excel.Quit()
+            except Exception:
+                pass
+            excel = None
+
+        return write_output_workbook_openpyxl(
+            output_df=output_df,
+            output_path=abs_output,
+            source_workbook_path=source_workbook_path,
+            target_sheets=target_sheets,
+        )
+
     finally:
+        # Proper, clean COM teardown in correct sequence
+        gc.collect()
+
         if excel is not None:
             try:
                 excel.Quit()
             except Exception:
                 pass
             del excel
+            excel = None
+
         gc.collect()
+
         try:
             pythoncom.CoUninitialize()
         except Exception:
@@ -414,18 +498,10 @@ def write_reconciliation_report_excel(
 ) -> str:
     """
     Write a reconciliation report to a brand-new Excel workbook.
-
-    Uses openpyxl which is perfectly safe for creating new files (the corruption
-    bug only affects files that already contain Pivot Tables / Charts).
-
-    Sheets created:
-        - Summary       — key metrics
-        - New Incidents — list of newly added incident numbers
-        - Changes       — field-level change log
-        - IC Lookup Misses — IC values not found in lookup
     """
     from openpyxl import Workbook
 
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
     wb = Workbook()
 
     # --- Summary sheet ---
@@ -469,4 +545,5 @@ def write_reconciliation_report_excel(
             ws_ic.cell(row=i, column=1, value=str(miss))
 
     wb.save(output_path)
+    wb.close()
     return output_path

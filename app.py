@@ -27,12 +27,15 @@ st.set_page_config(
 
 # Root directory resolution (handles standalone PyInstaller executable and normal python)
 if getattr(sys, "frozen", False):
-    PROJECT_ROOT = os.path.dirname(sys.executable)
+    APP_DIR = os.path.dirname(sys.executable)
+    INTERNAL_DIR = getattr(sys, "_MEIPASS", APP_DIR)
 else:
-    PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+    APP_DIR = os.path.dirname(os.path.abspath(__file__))
+    INTERNAL_DIR = APP_DIR
 
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
+for d in [INTERNAL_DIR, APP_DIR]:
+    if d and d not in sys.path:
+        sys.path.insert(0, d)
 
 from src.business_rules import build_ic_lookup_map
 from src.config_loader import Config, load_config
@@ -50,6 +53,20 @@ from src.validator import (
     validate_output,
     validate_required_columns,
 )
+
+
+def get_config_path() -> str:
+    """Find config.json with fallback priorities."""
+    candidates = [
+        os.path.join(APP_DIR, "config", "config.json"),
+        os.path.join(INTERNAL_DIR, "config", "config.json"),
+        os.path.join(os.getcwd(), "config", "config.json"),
+    ]
+    for p in candidates:
+        if os.path.isfile(p):
+            return p
+    return candidates[0]
+
 
 # -------------------------------------------------------------
 # Corporate Styling
@@ -201,6 +218,11 @@ if "processed" not in st.session_state:
     st.session_state["report"] = None
     st.session_state["duration"] = 0.0
     st.session_state["run_time"] = None
+    st.session_state["target_out_dir"] = None
+    st.session_state["master_out_path"] = None
+    st.session_state["rep_path"] = None
+    st.session_state["saved_full_paths"] = []
+    st.session_state["saved_files"] = []
 
 
 # -------------------------------------------------------------
@@ -224,10 +246,18 @@ with st.sidebar:
     )
 
     st.markdown("---")
+    st.markdown("### Output Configuration")
+    default_out_dir = os.path.join(APP_DIR, "output")
+    out_dir_custom = st.text_input(
+        "Target Output Folder",
+        value=default_out_dir,
+        help="Folder where reconciled master tracker, reports, and audit logs will be saved.",
+    )
+
     save_to_output = st.checkbox(
-        "Save Output to 'output/' folder",
+        "Save Reconciled Files to Output Folder",
         value=True,
-        help="Saves the updated workbook and reconciliation report into the local output directory.",
+        help="Saves the updated workbook and reconciliation report into the specified output directory.",
     )
 
     run_btn = st.button("Run Reconciliation", type="primary", use_container_width=True)
@@ -246,7 +276,7 @@ if run_btn:
     else:
         with st.spinner("Processing reconciliation..."):
             try:
-                cfg_path = os.path.join(PROJECT_ROOT, "config", "config.json")
+                cfg_path = get_config_path()
                 config = load_config(cfg_path)
 
                 # Load Master Tracker (Consolidated sheet)
@@ -287,37 +317,31 @@ if run_btn:
 
                 # Save output to disk if checked
                 saved_files = []
-                if save_to_output and (recon_res.new_records or recon_res.change_details):
-                    out_dir = os.path.join(PROJECT_ROOT, "output")
-                    os.makedirs(out_dir, exist_ok=True)
+                saved_full_paths = []
+                master_out_path = ""
+                rep_path = ""
+                target_out_dir = os.path.abspath(out_dir_custom.strip() or default_out_dir)
+
+                if save_to_output:
+                    os.makedirs(target_out_dir, exist_ok=True)
                     timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
 
                     # 1. Save Updated Master Tracker Workbook
                     is_xlsm = str(getattr(master_file, "name", "")).lower().endswith(".xlsm")
                     master_ext = ".xlsm" if is_xlsm else ".xlsx"
-                    master_out_path = os.path.join(out_dir, f"Master_Tracker_Updated_{timestamp_str}{master_ext}")
+                    master_out_path = os.path.join(target_out_dir, f"Master_Tracker_Updated_{timestamp_str}{master_ext}")
 
-                    temp_master = os.path.join(out_dir, f"_temp_master_{timestamp_str}{master_ext}")
+                    temp_master = os.path.join(target_out_dir, f"_temp_master_{timestamp_str}{master_ext}")
                     try:
                         with open(temp_master, "wb") as f_tmp:
                             f_tmp.write(master_file.getvalue())
 
-                        # Attempt native COM write to preserve pivots, charts, and macros
-                        try:
-                            write_output_workbook(
-                                output_df=out_df,
-                                output_path=master_out_path,
-                                source_workbook_path=temp_master,
-                                target_sheets=config.target_sheets,
-                            )
-                        except Exception:
-                            # Fallback: direct write
-                            with pd.ExcelWriter(master_out_path, engine="openpyxl") as writer:
-                                out_df.to_excel(writer, sheet_name=config.master_sheet, index=False)
-                                if "FCB" in config.target_sheets:
-                                    out_df.to_excel(writer, sheet_name="FCB", index=False)
-                                if ic_lookup_df is not None:
-                                    ic_lookup_df.to_excel(writer, sheet_name=config.ic_lookup_sheet, index=False)
+                        write_output_workbook(
+                            output_df=out_df,
+                            output_path=master_out_path,
+                            source_workbook_path=temp_master,
+                            target_sheets=config.target_sheets,
+                        )
                     finally:
                         if os.path.isfile(temp_master):
                             try:
@@ -326,11 +350,13 @@ if run_btn:
                                 pass
 
                     saved_files.append(os.path.basename(master_out_path))
+                    saved_full_paths.append(master_out_path)
 
                     # 2. Save Reconciliation Audit Report
-                    rep_path = os.path.join(out_dir, f"Reconciliation_Report_{timestamp_str}.xlsx")
+                    rep_path = os.path.join(target_out_dir, f"Reconciliation_Report_{timestamp_str}.xlsx")
                     write_reconciliation_report_excel(rep, rep_path)
                     saved_files.append(os.path.basename(rep_path))
+                    saved_full_paths.append(rep_path)
 
                     # 3. Save JSON Audit Log
                     audit_record = create_audit_record(
@@ -345,11 +371,16 @@ if run_btn:
                         errors=rep.get("errors", []),
                         warnings=rep.get("warnings", []),
                     )
-                    audit_path = save_audit_log(audit_record, out_dir)
+                    audit_path = save_audit_log(audit_record, target_out_dir)
                     saved_files.append(os.path.basename(audit_path))
+                    saved_full_paths.append(audit_path)
 
                 # Store in session state
                 st.session_state["saved_files"] = saved_files
+                st.session_state["saved_full_paths"] = saved_full_paths
+                st.session_state["target_out_dir"] = target_out_dir
+                st.session_state["master_out_path"] = master_out_path
+                st.session_state["rep_path"] = rep_path
                 st.session_state["processed"] = True
                 st.session_state["master_df"] = master_df
                 st.session_state["output_df"] = out_df
@@ -389,7 +420,7 @@ st.markdown(
 if not st.session_state["processed"]:
     st.info(
         "👈 Please select the **Master Tracker** workbook and the monthly **ServiceNow Export** in the left sidebar, "
-        "then click **'Run Reconciliation'**."
+        "verify your output directory, then click **'Run Reconciliation'**."
     )
 else:
     output_df = st.session_state["output_df"]
@@ -410,12 +441,21 @@ else:
     # TAB 1: RECONCILIATION SUMMARY
     # ---------------------------------------------------------
     with tab_summary:
-        saved = st.session_state.get("saved_files", [])
-        if saved:
+        saved_paths = st.session_state.get("saved_full_paths", [])
+        target_dir = st.session_state.get("target_out_dir", "")
+        if saved_paths and target_dir:
             st.success(
-                "📁 **All output files successfully generated in `output/` directory:**\n\n"
-                + "\n".join([f"- `{f}`" for f in saved])
+                f"📁 **Reconciliation output files successfully generated:**\n\n"
+                f"**Directory:** `{target_dir}`\n\n"
+                + "\n".join([f"- `{os.path.basename(f)}`" for f in saved_paths])
             )
+            col_open_btn, _ = st.columns([1, 4])
+            with col_open_btn:
+                if st.button("📂 Open Output Folder in Explorer", key="btn_open_exp_summary"):
+                    try:
+                        os.startfile(target_dir)
+                    except Exception as e:
+                        st.info(f"Directory path: {target_dir}")
 
         # KPI Metric Strip
         m1, m2, m3, m4, m5 = st.columns(5)
@@ -651,41 +691,74 @@ else:
         col_e1, col_e2 = st.columns(2)
 
         with col_e1:
-            st.markdown("##### Updated Master Tracker (.xlsx)")
-            st.caption("Consolidated sheet containing reconciled records with verified formulas and formatting.")
+            st.markdown("##### Updated Master Tracker")
+            st.caption("Complete workbook with all sheets (Consolidated, FCB, IC Lookup, Pivots) and preserved macros/formatting.")
 
-            buf = io.BytesIO()
-            with pd.ExcelWriter(buf, engine="openpyxl") as writer:
-                output_df.to_excel(writer, sheet_name="Consolidated", index=False)
-            buf.seek(0)
+            master_path = st.session_state.get("master_out_path")
+            if master_path and os.path.isfile(master_path):
+                is_xlsm = master_path.lower().endswith(".xlsm")
+                mime_type = "application/vnd.ms-excel.sheet.macroEnabled.12" if is_xlsm else "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                with open(master_path, "rb") as f_master:
+                    master_bytes = f_master.read()
 
-            st.download_button(
-                label="Download Updated Master Tracker",
-                data=buf,
-                file_name=f"Master_Tracker_Updated_{datetime.now().strftime('%Y%m%d')}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                use_container_width=True,
-            )
+                st.download_button(
+                    label=f"📥 Download Updated Master Tracker ({os.path.basename(master_path)})",
+                    data=master_bytes,
+                    file_name=os.path.basename(master_path),
+                    mime=mime_type,
+                    use_container_width=True,
+                )
+            else:
+                buf = io.BytesIO()
+                with pd.ExcelWriter(buf, engine="openpyxl") as writer:
+                    output_df.to_excel(writer, sheet_name="Consolidated", index=False)
+                buf.seek(0)
+                st.download_button(
+                    label="Download Consolidated Sheet (.xlsx)",
+                    data=buf,
+                    file_name=f"Master_Tracker_Updated_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True,
+                )
 
         with col_e2:
             st.markdown("##### Reconciliation Audit Report (.xlsx)")
             st.caption("Detailed multi-tab workbook documenting Summary, Additions, Field Diffs, and Misses.")
 
-            rep_data = st.session_state["report"]
-            temp_path = os.path.join(PROJECT_ROOT, "output", "temp_export_report.xlsx")
-            os.makedirs(os.path.dirname(temp_path), exist_ok=True)
-            write_reconciliation_report_excel(rep_data, temp_path)
+            rep_path = st.session_state.get("rep_path")
+            if rep_path and os.path.isfile(rep_path):
+                with open(rep_path, "rb") as f_rep:
+                    rep_bytes = f_rep.read()
+                st.download_button(
+                    label=f"📥 Download Audit Report ({os.path.basename(rep_path)})",
+                    data=rep_bytes,
+                    file_name=os.path.basename(rep_path),
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True,
+                )
+            else:
+                rep_data = st.session_state["report"]
+                temp_path = os.path.join(APP_DIR, "output", "_temp_export_report.xlsx")
+                os.makedirs(os.path.dirname(temp_path), exist_ok=True)
+                write_reconciliation_report_excel(rep_data, temp_path)
+                with open(temp_path, "rb") as f:
+                    rep_bytes = f.read()
+                st.download_button(
+                    label="Download Reconciliation Audit Report",
+                    data=rep_bytes,
+                    file_name=f"Reconciliation_Report_{datetime.now().strftime('%Y%m%d')}.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True,
+                )
 
-            with open(temp_path, "rb") as f:
-                rep_bytes = f.read()
-
-            st.download_button(
-                label="Download Reconciliation Audit Report",
-                data=rep_bytes,
-                file_name=f"Reconciliation_Report_{datetime.now().strftime('%Y%m%d')}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                use_container_width=True,
-            )
+        target_dir = st.session_state.get("target_out_dir")
+        if target_dir and os.path.isdir(target_dir):
+            st.markdown("<br>", unsafe_allow_html=True)
+            if st.button("📂 Open Output Folder in Windows Explorer", key="btn_open_exp_export"):
+                try:
+                    os.startfile(target_dir)
+                except Exception as e:
+                    st.info(f"Target folder: {target_dir}")
 
         st.markdown("---")
         st.markdown("##### Audit Record (JSON)")
