@@ -40,6 +40,20 @@ def _get_session_dir() -> Path:
     return _CURRENT_SESSION_DIR
 
 
+def _sanitize_url(url: str) -> str:
+    """Mask password from URL if embedded in userinfo (e.g. http://user:pass@host)."""
+    try:
+        parsed = urllib.parse.urlsplit(url)
+        if parsed.password:
+            netloc = f"{parsed.username}:********@{parsed.hostname}"
+            if parsed.port:
+                netloc += f":{parsed.port}"
+            return urllib.parse.urlunsplit((parsed.scheme, netloc, parsed.path, parsed.query, parsed.fragment))
+    except Exception:
+        pass
+    return url
+
+
 def _sanitize_auth(kwargs: dict) -> dict:
     """Mask password from auth tuple or headers."""
     sanitized = {}
@@ -49,10 +63,25 @@ def _sanitize_auth(kwargs: dict) -> dict:
     headers = kwargs.get("headers")
     if headers and isinstance(headers, dict):
         clean_headers = dict(headers)
-        if "Authorization" in clean_headers:
-            clean_headers["Authorization"] = "Basic ********"
+        for h_key in list(clean_headers.keys()):
+            if h_key.casefold() in {"authorization", "proxy-authorization"}:
+                clean_headers[h_key] = "Basic ********"
         sanitized["headers"] = clean_headers
     return sanitized
+
+
+def _mask_known_secrets(text: str) -> str:
+    """Scrub known sensitive values such as constants.PASSWORD from text/JSON output."""
+    if not text:
+        return text
+    try:
+        import constants
+        pwd = getattr(constants, "PASSWORD", None)
+        if pwd and isinstance(pwd, str) and len(pwd) >= 3 and pwd in text:
+            text = text.replace(pwd, "********")
+    except Exception:
+        pass
+    return text
 
 
 def _extract_table_or_endpoint(url: str) -> str:
@@ -112,12 +141,13 @@ def _log_hit(url: str, args, kwargs, response: requests.Response, elapsed_ms: fl
         records_count = 1 if content_size > 0 else 0
         payload_content = f"[Binary/Stream attachment content: {content_size} bytes, Content-Type: {content_type}]"
 
+    safe_url = _sanitize_url(url)
     log_record = {
         "hit_number": hit_num,
         "timestamp": datetime.now().isoformat(),
         "method": "GET",
-        "url": url,
-        "decoded_url": urllib.parse.unquote(url),
+        "url": safe_url,
+        "decoded_url": _sanitize_url(urllib.parse.unquote(url)),
         "target_resource": table_name,
         "query_parameters": params,
         "request_options": _sanitize_auth(kwargs),
@@ -132,8 +162,10 @@ def _log_hit(url: str, args, kwargs, response: requests.Response, elapsed_ms: fl
     }
 
     try:
+        raw_json = json.dumps(log_record, indent=2, ensure_ascii=False, default=str)
+        scrubbed_json = _mask_known_secrets(raw_json)
         with open(payload_path, "w", encoding="utf-8") as f:
-            json.dump(log_record, f, indent=2, ensure_ascii=False, default=str)
+            f.write(scrubbed_json)
     except Exception as exc:
         print(f"[api_logger] Warning: Failed to save payload for hit {hit_num}: {exc}")
 
@@ -165,13 +197,14 @@ def _log_error_hit(url: str, args, kwargs, error: Exception, elapsed_ms: float):
     payload_path = session_dir / payload_filename
 
     params = _extract_params(url, args, kwargs)
+    safe_url = _sanitize_url(url)
 
     log_record = {
         "hit_number": hit_num,
         "timestamp": datetime.now().isoformat(),
         "method": "GET",
-        "url": url,
-        "decoded_url": urllib.parse.unquote(url),
+        "url": safe_url,
+        "decoded_url": _sanitize_url(urllib.parse.unquote(url)),
         "target_resource": table_name,
         "query_parameters": params,
         "request_options": _sanitize_auth(kwargs),
@@ -183,8 +216,10 @@ def _log_error_hit(url: str, args, kwargs, error: Exception, elapsed_ms: float):
     }
 
     try:
+        raw_json = json.dumps(log_record, indent=2, ensure_ascii=False, default=str)
+        scrubbed_json = _mask_known_secrets(raw_json)
         with open(payload_path, "w", encoding="utf-8") as f:
-            json.dump(log_record, f, indent=2, ensure_ascii=False, default=str)
+            f.write(scrubbed_json)
     except Exception:
         pass
 
