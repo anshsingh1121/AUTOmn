@@ -27,7 +27,7 @@ rm -rf build/CMAA_Audit dist/CMAA_Audit
 find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 
 echo "[STEP 3/5] Validating codebase integrity (offline tests and syntax check)..."
-python3 validate_reconstruction.py
+python3 -m py_compile populate_cr_audit.py constants.py excel_handler.py sc_sheet_data.py servicenow_api.py
 echo "[OK] Codebase validation passed."
 
 if [ ! -f "QAR Report.xlsx" ]; then

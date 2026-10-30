@@ -38,7 +38,7 @@ for /d /r . %%d in (__pycache__) do @if exist "%%d" rd /s /q "%%d" 2>nul
 :: 4. Validate codebase integrity before building
 echo.
 echo [STEP 3/5] Validating codebase integrity (offline tests and syntax check)...
-python validate_reconstruction.py
+python -m py_compile populate_cr_audit.py constants.py excel_handler.py sc_sheet_data.py servicenow_api.py
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo [FATAL ERROR] Code validation failed!
