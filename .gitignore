@@ -1,6 +1,9 @@
 # Output and archive (generated at runtime)
 output/
 archive/
+report/
+api_logs/
+.env
 
 # Python
 __pycache__/

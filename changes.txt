@@ -1,0 +1,5 @@
+# Change numbers legibly recoverable from the screenshots are listed below.
+# The original screenshot contained additional IDs that were clipped/blurred;
+# verify this list against the original file before using it operationally.
+CHG6892954 CHG6957477 CHG6738045 CHG6908979 CHG6977700 CHG7006946 CHG6709451 CHG6816655 CHG6954933 CHG7444824
+CHG6858291 CHG6979234 CHG6941536 CHG6788074 CHG6886956 CHG6962915 CHG6786478 CHG6844150 CHG6960685 CHG6986662 CHG7165626

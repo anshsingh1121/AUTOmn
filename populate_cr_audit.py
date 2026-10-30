@@ -15,6 +15,19 @@ import servicenow_api
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 
+def resolve_template_path(template_name: str) -> str:
+    """Resolve template path across direct filesystem and PyInstaller --onefile."""
+    if not template_name:
+        template_name = "QAR Report.xlsx"
+    if os.path.exists(template_name):
+        return template_name
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        bundled = os.path.join(sys._MEIPASS, os.path.basename(template_name))
+        if os.path.exists(bundled):
+            return bundled
+    return template_name
+
+
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Populate Change Management audit results in the Excel template")
     parser.add_argument("--start-date", help="Start date in YYYY-MM-DD format")
@@ -96,10 +109,11 @@ def print_missing_change_numbers(requested_numbers, returned_crs):
 
 
 def load_workbook(template_path):
+    resolved_path = resolve_template_path(template_path)
     try:
-        return excel_handler.load_template(template_path)
+        return excel_handler.load_template(resolved_path)
     except FileNotFoundError:
-        print(f"Error: Template file '{template_path}' not found.")
+        print(f"Error: Template file '{template_path}' not found (resolved: '{resolved_path}').")
         sys.exit(1)
 
 
@@ -123,7 +137,7 @@ def create_change_wise_report(args, all_crs, tester, month):
     sc_col = sc_template_col = nc_col = ec_col = exp_col = 3
     filename = report_filename(month, change_wise=True)
     existing_report = os.path.join("report", filename)
-    template_path = existing_report if os.path.exists(existing_report) else args.template
+    template_path = existing_report if os.path.exists(existing_report) else resolve_template_path(args.template)
     workbook = load_workbook(template_path)
     basic_data = servicenow_api.get_basic_data(tester, month, len(all_crs), len(all_crs))
     populate_all_basic_data(workbook, basic_data)
@@ -212,7 +226,7 @@ def run_date_range_audit(args, start_date, end_date):
     filename = report_filename(month)
     output_path = args.output or filename
     existing_report = os.path.join("report", filename)
-    template_path = existing_report if os.path.exists(existing_report) else args.template
+    template_path = existing_report if os.path.exists(existing_report) else resolve_template_path(args.template)
     workbook = load_workbook(template_path)
     for sheet_name, change_type in constants.CHANGE_RESULTS.items():
         try:
@@ -243,25 +257,84 @@ def run_change_number_audit(args, change_numbers):
     create_change_wise_report(args, all_crs, args.tester, datetime.today().strftime("%B"))
 
 
+def interactive_prompt():
+    """Interactive fallback when executed without CLI arguments (e.g., double-clicked executable)."""
+    print("=" * 65)
+    print("      Change Management Audit Automation (CMAA) - Standalone")
+    print("=" * 65)
+    print("\nSelect an Audit Execution Mode:")
+    print("  [1] Audit specific Change Request(s) (e.g. CHG6892954 or changes.txt)")
+    print("  [2] Audit by Date Range with Sampling (e.g. 2026-10-01 to 2026-10-31)")
+    print("  [3] Exit\n")
+    try:
+        choice = input("Enter choice [1/2/3]: ").strip()
+    except (KeyboardInterrupt, EOFError):
+        return None
+
+    if choice == "1":
+        inp = input("\nEnter Change Number(s) or path to text file: ").strip()
+        if not inp:
+            print("No input provided.")
+            return None
+        return argparse.Namespace(
+            change_nums=inp.split(),
+            start_date=None,
+            end_date=None,
+            percentage=20,
+            template="QAR Report.xlsx",
+            tester="Tester",
+            output=None,
+        )
+    elif choice == "2":
+        start_date = input("Enter Start Date (YYYY-MM-DD): ").strip()
+        end_date = input("Enter End Date (YYYY-MM-DD): ").strip()
+        pct_input = input("Enter sample percentage [default: 20]: ").strip()
+        percentage = int(pct_input) if pct_input.isdigit() else 20
+        tester = input("Enter Tester Name [default: Tester]: ").strip() or "Tester"
+        return argparse.Namespace(
+            change_nums=None,
+            start_date=start_date,
+            end_date=end_date,
+            percentage=percentage,
+            template="QAR Report.xlsx",
+            tester=tester,
+            output=None,
+        )
+    return None
+
+
 def main():
-    args = parse_arguments()
+    is_interactive = False
+    if len(sys.argv) == 1:
+        args = interactive_prompt()
+        if not args:
+            sys.exit(0)
+        is_interactive = True
+    else:
+        args = parse_arguments()
+
     try:
         change_numbers = load_change_numbers(args.change_nums)
     except RuntimeError as exc:
         print(f"Error: {exc}")
+        if is_interactive:
+            input("\nPress Enter to exit...")
         sys.exit(1)
-    if change_numbers:
-        run_change_number_audit(args, change_numbers)
-        return
-    if not args.start_date or not args.end_date:
-        print("Error: provide either --change-nums or both --start-date and --end-date.")
-        sys.exit(2)
+
     try:
-        validate_date_range(args.start_date, args.end_date)
-    except ValueError as exc:
-        print(f"Error: {exc}")
-        sys.exit(2)
-    run_date_range_audit(args, args.start_date, args.end_date)
+        if change_numbers:
+            run_change_number_audit(args, change_numbers)
+        else:
+            if not args.start_date or not args.end_date:
+                print("Error: provide either --change-nums or both --start-date and --end-date.")
+                if is_interactive:
+                    input("\nPress Enter to exit...")
+                sys.exit(2)
+            validate_date_range(args.start_date, args.end_date)
+            run_date_range_audit(args, args.start_date, args.end_date)
+    finally:
+        if is_interactive:
+            input("\nAudit complete. Press Enter to exit...")
 
 
 if __name__ == "__main__":
