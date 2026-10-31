@@ -37,6 +37,7 @@ a = Analysis(
         'sc_sheet_data',
         'servicenow_api',
         'api_logger',
+        'dotenv',
     ],
     hookspath=[],
     hooksconfig={},

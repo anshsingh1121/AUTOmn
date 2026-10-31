@@ -35,17 +35,46 @@ BASIC_DATA_ROWS = {
     3: "test_month", 4: "sample_month", 5: "tester", 6: "population", 7: "samples_tested",
 }
 
-def load_template(template_path):
-    if not os.path.exists(template_path):
-        # Support PyInstaller --onefile bundled template fallback
-        if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
-            bundled = os.path.join(sys._MEIPASS, os.path.basename(template_path))
-            if os.path.exists(bundled):
-                template_path = bundled
-    if not os.path.exists(template_path):
-        raise FileNotFoundError(f"Template file not found at: {template_path}")
-    print(f"Loading the template from {template_path}")
-    return openpyxl.load_workbook(template_path)
+
+def resolve_template_path(template_name: str | None = None) -> str:
+    """Resolve master template path across current dir, executable dir, _internal, and _MEIPASS."""
+    target_name = template_name or "QAR Report.xlsx"
+
+    candidates = [
+        target_name,
+        os.path.abspath(target_name),
+    ]
+    base_name = os.path.basename(target_name)
+
+    # 1. Executable-relative checks (PyInstaller --onedir and --onefile)
+    if getattr(sys, "frozen", False):
+        exe_dir = os.path.dirname(sys.executable)
+        candidates.extend([
+            os.path.join(exe_dir, base_name),
+            os.path.join(exe_dir, "_internal", base_name),
+        ])
+        meipass = getattr(sys, "_MEIPASS", None)
+        if meipass:
+            candidates.append(os.path.join(meipass, base_name))
+
+    # 2. Script module directory
+    module_dir = os.path.dirname(os.path.abspath(__file__))
+    candidates.append(os.path.join(module_dir, base_name))
+
+    for cand in candidates:
+        if cand and os.path.isfile(cand):
+            return cand
+
+    return target_name
+
+
+def load_template(template_path: str):
+    resolved = resolve_template_path(template_path)
+    if not os.path.exists(resolved):
+        raise FileNotFoundError(f"Template file '{template_path}' not found (resolved: '{resolved}')")
+    print(f"Loading the template from {resolved}")
+    return openpyxl.load_workbook(resolved)
+
 
 def write_rows(ws, row_mapping, cr_data, col_idx):
     for row, key in row_mapping.items():
@@ -63,6 +92,7 @@ def write_rows(ws, row_mapping, cr_data, col_idx):
         elif val == constants.MA:
             cell.fill = MA_FILL
 
+
 def populate_basic_data(workbook, sheet_name, basic_data):
     if sheet_name not in workbook.sheetnames:
         print(f"Warning: Sheet '{sheet_name}' not found in workbook. Skipping.")
@@ -74,12 +104,14 @@ def populate_basic_data(workbook, sheet_name, basic_data):
         if value is not None and value != "":
             ws.cell(row=row, column=2).value = value
 
+
 def populate_cr_column(ws, cr_data, col_idx, sheet_name):
     if sheet_name == "SC Template Result Sheet":
         write_rows(ws, STD_Q_ROWS, cr_data, col_idx)
     else:
         write_rows(ws, GENERAL_DATA_ROWS, cr_data, col_idx)
         write_rows(ws, QUESTION_ROWS, cr_data, col_idx)
+
 
 def populate_sheet(workbook, sheet_name, crs_data):
     if sheet_name not in workbook.sheetnames:
@@ -91,6 +123,7 @@ def populate_sheet(workbook, sheet_name, crs_data):
     for i, cr_data in enumerate(crs_data):
         populate_cr_column(ws, cr_data, start_col_idx + i, sheet_name)
 
+
 def populate_sheet_single(workbook, sheet_name, crs_data, start_col_idx=3):
     if sheet_name not in workbook.sheetnames:
         print(f"Warning: Sheet '{sheet_name}' not found in workbook. Skipping.")
@@ -99,6 +132,7 @@ def populate_sheet_single(workbook, sheet_name, crs_data, start_col_idx=3):
     records = crs_data if isinstance(crs_data, list) else [crs_data]
     for i, cr_data in enumerate(records):
         populate_cr_column(ws, cr_data, start_col_idx + i, sheet_name)
+
 
 def save_output(workbook, output_path):
     os.makedirs("report", exist_ok=True)

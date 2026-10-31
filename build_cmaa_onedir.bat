@@ -8,7 +8,7 @@ echo   Production-Ready Corporate Build System
 echo =====================================================================
 echo.
 
-:: 1. Verify Python availability
+rem 1. Verify Python availability
 python --version >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Python is not installed or not in system PATH.
@@ -18,7 +18,7 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-:: 2. Check/Install PyInstaller and core libraries
+rem 2. Check/Install PyInstaller and core libraries
 echo [STEP 1/5] Checking required build dependencies...
 if exist "requirements-cmaa.txt" (
     python -m pip install -r requirements-cmaa.txt >nul 2>&1
@@ -29,21 +29,21 @@ if exist "requirements-cmaa.txt" (
     python -m pip install pyinstaller openpyxl requests certifi urllib3 rapidfuzz >nul 2>&1
 )
 if %ERRORLEVEL% NEQ 0 (
-    echo [WARNING] Pip install returned non-zero (possibly offline/air-gapped network).
+    echo [WARNING] Pip install returned non-zero - possibly offline or air-gapped network.
     echo Proceeding with currently installed packages in Python environment...
 )
 
-:: 3. Clean prior build cache and all stale __pycache__ bytecode
+rem 3. Clean prior build cache and all stale bytecode
 echo.
 echo [STEP 2/5] Cleaning previous build cache and stale bytecode...
 if exist "build\CMAA_Audit" rmdir /s /q "build\CMAA_Audit"
 if exist "dist\CMAA_Audit" rmdir /s /q "dist\CMAA_Audit"
 if exist "__pycache__" rmdir /s /q "__pycache__"
 
-:: 4. Validate codebase integrity before building
+rem 4. Validate codebase integrity before building
 echo.
 echo [STEP 3/5] Validating codebase syntax...
-python -m py_compile populate_cr_audit.py constants.py excel_handler.py sc_sheet_data.py servicenow_api.py
+python -m py_compile populate_cr_audit.py constants.py excel_handler.py sc_sheet_data.py servicenow_api.py api_logger.py questions_data.py
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo [FATAL ERROR] Python syntax validation failed!
@@ -55,7 +55,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 echo [OK] All codebase files compiled cleanly.
 
-:: 5. Verify master template is present
+rem 5. Verify master template is present
 if not exist "QAR Report.xlsx" (
     echo.
     echo [ERROR] Master template 'QAR Report.xlsx' not found in current directory!
@@ -65,7 +65,7 @@ if not exist "QAR Report.xlsx" (
     exit /b 1
 )
 
-:: 6. Build directory application
+rem 6. Build directory application
 echo.
 echo [STEP 4/5] Compiling low-latency --onedir application using CMAA_onedir.spec...
 python -m PyInstaller CMAA_onedir.spec --clean --noconfirm
@@ -78,7 +78,36 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-:: 7. Run post-build smoke verification test
+rem 7. Deploy supplementary corporate files
+if exist "dist\CMAA_Audit" (
+    copy /y "QAR Report.xlsx" "dist\CMAA_Audit\QAR Report.xlsx" >nul 2>&1
+    if exist "changes.txt" copy /y "changes.txt" "dist\CMAA_Audit\changes.txt" >nul 2>&1
+
+    rem Create companion batch launcher for extra safety
+    (
+        echo @echo off
+        echo title Change Management Audit Automation
+        echo cd /d "%%~dp0"
+        echo CMAA_Audit.exe %%*
+        echo if %%ERRORLEVEL%% NEQ 0 ^(
+        echo     echo.
+        echo     echo Application exited with code %%ERRORLEVEL%%.
+        echo     pause
+        echo ^)
+    ) > "dist\CMAA_Audit\Run_CMAA_Audit.bat"
+
+    rem Create optional .env example template
+    (
+        echo # CMAA Corporate ServiceNow Configuration
+        echo # Uncomment and populate if you prefer automated credential loading:
+        echo # SN_INSTANCE_URL=https://your-instance.service-now.com
+        echo # SN_USERNAME=your_username
+        echo # SN_PASSWORD=your_password
+        echo # SN_VERIFY_SSL=false
+    ) > "dist\CMAA_Audit\.env.example"
+)
+
+rem 8. Run post-build smoke verification test
 echo.
 echo [STEP 5/5] Performing post-build verification on compiled binary...
 if exist "dist\CMAA_Audit\CMAA_Audit.exe" (
@@ -101,11 +130,14 @@ echo [SUCCESS] CMAA Low-Latency Application Successfully Built!
 echo.
 echo Application Folder: dist\CMAA_Audit\
 echo Main Executable:    dist\CMAA_Audit\CMAA_Audit.exe
+echo Helper Launcher:    dist\CMAA_Audit\Run_CMAA_Audit.bat
+echo Master Template:    dist\CMAA_Audit\QAR Report.xlsx
 echo.
 echo Low-Latency Benefits:
-echo   - Instant Launch: No decompression or %%TEMP%% extraction delays (<0.3s).
-echo   - Antivirus Friendly: Does not trigger temporary binary rescanning.
-echo   - Distribution: Right-click 'dist\CMAA_Audit' -> Send to -> Zip.
+echo   - Instant Launch: No decompression or %%TEMP%% extraction delays.
+echo   - Corporate Friendly: Does not trigger temp file antivirus rescans.
+echo   - Safe Execution: Built-in pause prevents terminal from closing on exit.
+echo   - Distribution: Right-click 'dist\CMAA_Audit' -^> Send to -^> Compressed zip.
 echo =====================================================================
 echo.
 pause
