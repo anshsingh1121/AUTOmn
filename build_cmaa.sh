@@ -16,6 +16,9 @@ if [ -f "requirements-cmaa.txt" ]; then
     python3 -m pip install --quiet -r requirements-cmaa.txt || {
         echo "[WARNING] Pip install failed or offline network. Using existing installed packages."
     }
+elif [ -f "requirements.txt" ]; then
+    python3 -m pip install --quiet -r requirements.txt || true
+    python3 -m pip install --quiet pyinstaller || true
 else
     python3 -m pip install --quiet pyinstaller openpyxl requests certifi urllib3 rapidfuzz || {
         echo "[WARNING] Pip install failed or offline network. Using existing installed packages."

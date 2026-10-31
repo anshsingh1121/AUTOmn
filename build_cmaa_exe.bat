@@ -20,6 +20,9 @@ if %ERRORLEVEL% NEQ 0 (
 echo [STEP 1/5] Checking required build dependencies...
 if exist "requirements-cmaa.txt" (
     python -m pip install -r requirements-cmaa.txt >nul 2>&1
+) else if exist "requirements.txt" (
+    python -m pip install -r requirements.txt >nul 2>&1
+    python -m pip install pyinstaller >nul 2>&1
 ) else (
     python -m pip install pyinstaller openpyxl requests certifi urllib3 rapidfuzz >nul 2>&1
 )
