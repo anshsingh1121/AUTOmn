@@ -1,5 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
+cd /d "%~dp0"
 
 echo =====================================================================
 echo   CMAA Executable Builder (--onedir Low-Latency Package)
@@ -12,6 +13,7 @@ python --version >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Python is not installed or not in system PATH.
     echo Please install Python 3.9+ or run within your corporate virtual environment.
+    echo.
     pause
     exit /b 1
 )
@@ -36,17 +38,18 @@ echo.
 echo [STEP 2/5] Cleaning previous build cache and stale bytecode...
 if exist "build\CMAA_Audit" rmdir /s /q "build\CMAA_Audit"
 if exist "dist\CMAA_Audit" rmdir /s /q "dist\CMAA_Audit"
-for /d /r . %%d in (__pycache__) do @if exist "%%d" rd /s /q "%%d" 2>nul
+if exist "__pycache__" rmdir /s /q "__pycache__"
 
 :: 4. Validate codebase integrity before building
 echo.
-echo [STEP 3/5] Validating codebase integrity (syntax check)...
+echo [STEP 3/5] Validating codebase syntax...
 python -m py_compile populate_cr_audit.py constants.py excel_handler.py sc_sheet_data.py servicenow_api.py
 if %ERRORLEVEL% NEQ 0 (
     echo.
-    echo [FATAL ERROR] Code validation failed!
+    echo [FATAL ERROR] Python syntax validation failed!
     echo A syntax error was detected in your codebase files.
     echo Please fix the errors reported above before building the application.
+    echo.
     pause
     exit /b 1
 )
@@ -57,6 +60,7 @@ if not exist "QAR Report.xlsx" (
     echo.
     echo [ERROR] Master template 'QAR Report.xlsx' not found in current directory!
     echo Please ensure 'QAR Report.xlsx' is present before packaging.
+    echo.
     pause
     exit /b 1
 )
@@ -69,6 +73,7 @@ python -m PyInstaller CMAA_onedir.spec --clean --noconfirm
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo [FATAL ERROR] PyInstaller build failed. Review output log above.
+    echo.
     pause
     exit /b 1
 )
@@ -85,6 +90,7 @@ if exist "dist\CMAA_Audit\CMAA_Audit.exe" (
     )
 ) else (
     echo [ERROR] Expected executable dist\CMAA_Audit\CMAA_Audit.exe not found!
+    echo.
     pause
     exit /b 1
 )
