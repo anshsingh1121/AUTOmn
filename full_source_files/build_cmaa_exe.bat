@@ -80,13 +80,17 @@ if %ERRORLEVEL% NEQ 0 (
 
 rem 7. Deploy companion corporate test files
 if exist "changes.txt" copy /y "changes.txt" "dist\changes.txt" >nul 2>&1
-(
-    echo # CMAA Corporate ServiceNow Configuration
-    echo # Optional: Uncomment to pre-fill instance URL or defaults
-    echo # SN_INSTANCE_URL=https://your-instance.service-now.com
-    echo # SN_USERNAME=your_username
-    echo # SN_VERIFY_SSL=false
-) > "dist\.env.example"
+if exist ".env.example" (
+    copy /y ".env.example" "dist\.env.example" >nul 2>&1
+) else (
+    (
+        echo # CMAA Corporate ServiceNow Configuration
+        echo # Optional: Uncomment to pre-fill instance URL or defaults
+        echo # SN_INSTANCE_URL=https://your-instance.service-now.com
+        echo # SN_USERNAME=your_username
+        echo # SN_VERIFY_SSL=false
+    ) > "dist\.env.example"
+)
 
 rem 8. Run post-build smoke verification test
 echo.

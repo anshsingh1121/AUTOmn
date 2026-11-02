@@ -671,6 +671,7 @@ Make sure `upx=False` and `'getpass'` is in `hiddenimports`:
         'api_logger',
         'dotenv',
         'getpass',
+        'shlex',
     ],
 ```
 And inside `exe = EXE(`:
@@ -804,4 +805,30 @@ echo Output Reports : Saved to 'report\' with professional date-time nomenclatur
 echo =====================================================================
 echo.
 pause
+```
+
+---
+
+## File 6: `.env.example` (Optional Corporate Configuration)
+If you wish to pre-configure your corporate credentials or instance URL without being prompted every time, create a file named `.env` in the same folder as `CMAA_Audit.exe` (or `populate_cr_audit.py`) with this syntax:
+
+```ini
+# =====================================================================
+# Change Management Audit Automation (CMAA) - Environment Configuration
+# =====================================================================
+# Target ServiceNow Instance URL (HTTPS required)
+SN_INSTANCE_URL=https://your-company.service-now.com
+
+# ServiceNow Corporate Account Username
+SN_USERNAME=your.username
+
+# ServiceNow Corporate Password or API Token
+SN_PASSWORD=your_password_here
+
+# SSL Certificate Verification Setting:
+# - 'false' : Skip SSL certificate verification (useful for internal corporate proxies)
+# - 'true'  : Standard public SSL certificate verification (strict)
+# - Path    : Full path to your corporate custom Root CA certificate bundle (.crt or .pem file)
+#             Example: C:\Certs\CorporateRootCA.crt
+SN_VERIFY_SSL=false
 ```
