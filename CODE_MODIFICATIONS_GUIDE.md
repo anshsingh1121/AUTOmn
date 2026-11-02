@@ -1,41 +1,49 @@
-# Codebase Modifications & Packaging Guide
+# Corporate Workstation Manual Modification Guide (Copy-Paste Reference)
 
-This guide details the **minimal codebase updates** applied to achieve:
-1. **Interactive Authentication on Startup:** Prompts the user for ServiceNow Instance URL, Username, and Password (masked) as soon as the packaged executable is launched.
-2. **Professional Date-Time Frame Nomenclature:** Generates unique, professional, timestamped audit report filenames (e.g., `QAR_Audit_Report_CHG6892954_Run_20261102_221350.xlsx` or `QAR_Audit_Report_DateRange_20261001_to_20261031_Run_20261102_221350.xlsx`), preventing accidental overwriting and standardizing audit records.
-3. **Enterprise Input Safety Constraints:**
-   - **Change Requests Limit:** Strictly enforces a maximum of **100 Change Requests** per audit execution (from console or `.txt` input).
-   - **Date Range Limit:** Strictly enforces that audit date ranges **do not exceed 1 month** (maximum 31 days).
-4. **Robust Windows `--onefile` Packaging:** Standalone, rock-solid compilation via updated `.spec` and `.bat` files.
+> **Context:** This guide is specifically prepared for modifying your corporate codebase when `git pull` is restricted on your corporate system.  
+> Follow these exact steps to update your files manually using **Find & Replace** in your code editor (VS Code, Notepad++, PyCharm, etc.), then build your standalone application using `build_cmaa_exe.bat`.
 
 ---
 
-## 1. Modifications in `constants.py`
+## File 1: `constants.py`
 
-### Location:
-Near line 65 and lines 115–130 in [`constants.py`](file:///c:/Users/Ansh%20Singh/Downloads/CHANGE_MANAGEMENT_AUDIT_AUTOMATION_RECONSTRUCTED/constants.py).
-
-### Change Summary:
-- Added `MAX_CHANGE_NUMBERS = 100` and `MAX_DATE_RANGE_DAYS = 31`.
-- Enhanced `update_credentials()` to support non-empty string overrides.
-- Added `has_credentials() -> bool` helper.
-
-### Code Diff:
-
+### Step 1.1: Add Input Constraints
+* **Location:** Around line 65, right after `CHANGE_NUMBER_PATTERN`.
+* **Find this:**
 ```python
-# ==========================================
-# PART A: Input Constraints (Near line 65)
-# ==========================================
+CHANGE_NUMBER_PATTERN = re.compile(r"CHG\d+", re.IGNORECASE)
+```
+* **Replace with:**
+```python
 CHANGE_NUMBER_PATTERN = re.compile(r"CHG\d+", re.IGNORECASE)
 
 # Corporate Audit Input Constraints
 MAX_CHANGE_NUMBERS = 100      # Maximum allowed Change Requests per audit run
 MAX_DATE_RANGE_DAYS = 31      # Maximum allowed date range span (1 calendar month)
+```
 
+---
 
-# ==========================================
-# PART B: Credentials (Near line 115)
-# ==========================================
+### Step 1.2: Update `update_credentials()` & Add `has_credentials()`
+* **Location:** Around lines 115–128.
+* **Find this:**
+```python
+def update_credentials(username: str, password: str, instance_url: str | None = None, verify_ssl: bool | str | None = None):
+    """Dynamically update runtime credentials in memory."""
+    global USERNAME, PASSWORD, INSTANCE_URL, BASE_URL, ATT_FILE_URL, VERIFY_SSL
+    if username:
+        USERNAME = username
+    if password:
+        PASSWORD = password
+    if instance_url:
+        INSTANCE_URL = instance_url.rstrip("/")
+        BASE_URL = f"{INSTANCE_URL}/api/now/table/"
+        ATT_FILE_URL = f"{INSTANCE_URL}/api/now/attachment/"
+    if verify_ssl is not None:
+        VERIFY_SSL = verify_ssl
+```
+* **Replace with:**
+```python
 def update_credentials(username: str, password: str, instance_url: str | None = None, verify_ssl: bool | str | None = None):
     """Dynamically update runtime credentials in memory."""
     global USERNAME, PASSWORD, INSTANCE_URL, BASE_URL, ATT_FILE_URL, VERIFY_SSL
@@ -58,18 +66,20 @@ def has_credentials() -> bool:
 
 ---
 
-## 2. Modifications in `excel_handler.py`
+## File 2: `excel_handler.py`
 
-### Locations:
-1. Top import block (add `from datetime import datetime`).
-2. Bottom of file: replace `save_output` and add `generate_report_filename` & `get_default_report_dir`.
-
-### Change Summary:
-- Implements standardized audit report nomenclature with timestamps and scope (Single CR, Batch CRs, Date Range).
-- Guarantees report directory (`report/`) is placed directly next to the executable in frozen `--onefile` mode.
-
-### Code Diff:
-
+### Step 2.1: Add `datetime` import at top of file
+* **Location:** Lines 1–7.
+* **Find this:**
+```python
+from __future__ import annotations
+import os
+import sys
+import openpyxl
+from openpyxl.styles import PatternFill
+import constants
+```
+* **Replace with:**
 ```python
 from __future__ import annotations
 import os
@@ -78,9 +88,23 @@ from datetime import datetime
 import openpyxl
 from openpyxl.styles import PatternFill
 import constants
+```
 
-...
+---
 
+### Step 2.2: Replace `save_output` at bottom of file
+* **Location:** Very end of `excel_handler.py` (around line 137).
+* **Find this:**
+```python
+def save_output(workbook, output_path):
+    os.makedirs("report", exist_ok=True)
+    path = output_path if os.path.isabs(output_path) else os.path.join("report", output_path)
+    print(f"Saving output to: {path}")
+    workbook.save(path)
+    return path
+```
+* **Replace with:**
+```python
 def generate_report_filename(
     start_date: str | None = None,
     end_date: str | None = None,
@@ -143,19 +167,15 @@ def save_output(workbook, output_path: str | None = None) -> str:
 
 ---
 
-## 3. Modifications in `populate_cr_audit.py`
+## File 3: `populate_cr_audit.py`
 
-### Locations:
-1. Lines 18–35: Add `safe_getpass()` before `pause_for_user()`.
-2. Lines 100–125: Update `load_change_numbers()` (max 100) and `validate_date_range()` (max 31 days).
-3. Lines 130–140: Update `report_filename()`.
-4. Lines 180–210: Update `create_change_wise_report()` to use `excel_handler.generate_report_filename()`.
-5. Lines 300–320: Update `run_date_range_audit()` to use `excel_handler.generate_report_filename()`.
-6. Lines 360–480: Update `ensure_credentials()`, `interactive_prompt()`, and `main()`.
-
-### Code Diffs:
-
-#### Part A: `safe_getpass()`
+### Step 3.1: Add `safe_getpass()` before `pause_for_user()`
+* **Location:** Around line 18.
+* **Find this:**
+```python
+def pause_for_user(prompt: str = "\nPress Enter to exit..."):
+```
+* **Replace with:**
 ```python
 def safe_getpass(prompt: str = "Enter ServiceNow Password (masked): ") -> str:
     """Prompt for password securely using getpass on TTY or fallback to readline if piped."""
@@ -172,30 +192,25 @@ def safe_getpass(prompt: str = "Enter ServiceNow Password (masked): ") -> str:
             return input(prompt).strip()
         except (KeyboardInterrupt, EOFError):
             return ""
+
+
+def pause_for_user(prompt: str = "\nPress Enter to exit..."):
 ```
 
-#### Part B: Constraints in `load_change_numbers()` and `validate_date_range()`
+---
+
+### Step 3.2: Update `load_change_numbers()` (100 CR Limit)
+* **Location:** Around lines 95–108.
+* **Find this:**
 ```python
-def load_change_numbers(change_inputs):
-    """Load validated Change numbers from CLI values or text files."""
-    change_numbers, invalid_values = [], []
-    for change_input in change_inputs or []:
-        if os.path.isfile(change_input):
-            try:
-                with open(change_input, encoding="utf-8-sig") as change_file:
-                    content = change_file.read()
-            except OSError as exc:
-                raise RuntimeError(f"Failed to read '{change_input}': {exc}") from exc
-        else:
-            content = change_input
-        for raw_value in re.split(r"[\s,;]+", content):
-            value = raw_value.strip().upper()
-            if not value:
-                continue
-            if not constants.CHANGE_NUMBER_PATTERN.fullmatch(value):
-                invalid_values.append(value)
-                continue
-            change_numbers.append(value)
+    if invalid_values:
+        print("Ignored invalid Change-number values:")
+        for value in invalid_values:
+            print(f"  {value}")
+    return list(dict.fromkeys(change_numbers))
+```
+* **Replace with:**
+```python
     if invalid_values:
         print("Ignored invalid Change-number values:")
         for value in invalid_values:
@@ -210,8 +225,26 @@ def load_change_numbers(change_inputs):
             f"Please reduce the input to at most {max_allowed} changes."
         )
     return unique_changes
+```
 
+---
 
+### Step 3.3: Update `validate_date_range()` (1 Month / 31-Day Limit)
+* **Location:** Around lines 110–120.
+* **Find this:**
+```python
+def validate_date_range(start_date, end_date):
+    try:
+        start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
+        end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
+    except ValueError as exc:
+        raise ValueError("Dates must use YYYY-MM-DD format (e.g. 2026-10-01)") from exc
+    if start_datetime > end_datetime:
+        raise ValueError("--start-date must not be after --end-date")
+    return start_datetime, end_datetime
+```
+* **Replace with:**
+```python
 def validate_date_range(start_date, end_date):
     try:
         start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
@@ -232,8 +265,167 @@ def validate_date_range(start_date, end_date):
     return start_datetime, end_datetime
 ```
 
-#### Part C: `interactive_prompt()` with Live Input Validation Loops
+---
+
+### Step 3.4: Update `report_filename()`
+* **Location:** Around lines 120–126.
+* **Find this:**
 ```python
+def report_filename(month, change_wise=False):
+    year = datetime.today().strftime("%y")
+    if change_wise:
+        return f"FCB {month}-QAR Change Wise.xlsx"
+    return f"FCB {month}'{year} - QAR Report.xlsx"
+```
+* **Replace with:**
+```python
+def report_filename(month=None, change_wise=False, start_date=None, end_date=None, change_numbers=None):
+    """Generate professional corporate report filename with date-time frame nomenclature."""
+    return excel_handler.generate_report_filename(
+        start_date=start_date,
+        end_date=end_date,
+        change_numbers=change_numbers
+    )
+```
+
+---
+
+### Step 3.5: Update `create_change_wise_report()`
+* **Location:** Around lines 170–176.
+* **Find this:**
+```python
+def create_change_wise_report(args, all_crs, tester, month):
+    sc_col = sc_template_col = nc_col = ec_col = exp_col = 3
+    filename = report_filename(month, change_wise=True)
+    existing_report = os.path.join("report", filename)
+    template_path = existing_report if os.path.exists(existing_report) else resolve_template_path(args.template)
+```
+* **Replace with:**
+```python
+def create_change_wise_report(args, all_crs, tester, month):
+    sc_col = sc_template_col = nc_col = ec_col = exp_col = 3
+    change_numbers = [cr.get("number") for cr in all_crs if cr.get("number")]
+    filename = args.output or excel_handler.generate_report_filename(change_numbers=change_numbers)
+    template_path = resolve_template_path(args.template)
+```
+* **And at the bottom of `create_change_wise_report`:**
+* **Find this:**
+```python
+    saved = save_workbook(workbook, args.output or filename)
+```
+* **Replace with:**
+```python
+    saved = save_workbook(workbook, filename)
+```
+
+---
+
+### Step 3.6: Update `run_date_range_audit()`
+* **Location:** Around lines 290–300.
+* **Find this:**
+```python
+    filename = report_filename(month)
+    output_path = args.output or filename
+    existing_report = os.path.join("report", filename)
+    template_path = existing_report if os.path.exists(existing_report) else resolve_template_path(args.template)
+```
+* **Replace with:**
+```python
+    filename = args.output or excel_handler.generate_report_filename(start_date=start_date, end_date=end_date)
+    template_path = resolve_template_path(args.template)
+```
+* **And at the bottom of `run_date_range_audit`:**
+* **Find this:**
+```python
+    saved = save_workbook(workbook, output_path)
+```
+* **Replace with:**
+```python
+    saved = save_workbook(workbook, filename)
+```
+
+---
+
+### Step 3.7: Update `ensure_credentials()`, `interactive_prompt()`, and `main()`
+* **Location:** From line 335 to the end of `populate_cr_audit.py`.
+* **Find from `def ensure_credentials(` all the way to `if __name__ == "__main__":`:**
+* **Replace that entire lower section with:**
+```python
+def ensure_credentials(is_interactive: bool = True) -> bool:
+    """Ensure valid ServiceNow credentials exist; in interactive mode, prompt user at startup."""
+    if not is_interactive:
+        if constants.has_credentials():
+            return True
+        print("\n[ERROR] Missing ServiceNow credentials.")
+        print("Please configure SN_USERNAME and SN_PASSWORD in your environment or in a local .env file.")
+        return False
+
+    print("\n" + "=" * 65)
+    print("      ServiceNow Corporate Authentication")
+    print("=" * 65)
+    print(f"Target Instance URL: {constants.INSTANCE_URL}")
+    try:
+        new_url = input("Enter Instance URL (or press Enter to keep default): ").strip()
+    except (KeyboardInterrupt, EOFError):
+        return False
+    if new_url:
+        constants.update_credentials("", "", instance_url=new_url)
+
+    default_user = constants.USERNAME
+    user_prompt = f"Enter ServiceNow Username [{default_user}]: " if default_user else "Enter ServiceNow Username: "
+    try:
+        username = input(user_prompt).strip()
+    except (KeyboardInterrupt, EOFError):
+        return False
+    if not username and default_user:
+        username = default_user
+    if not username:
+        print("[ERROR] Username cannot be empty.")
+        return False
+
+    password = safe_getpass("Enter ServiceNow Password (masked): ")
+    if not password:
+        print("[ERROR] Password cannot be empty.")
+        return False
+
+    constants.update_credentials(username=username, password=password)
+    print(f"[OK] Authenticated user '{username}' for this audit session.")
+
+    try:
+        save_env = input("Save credentials to local .env for future automatic runs? [y/N]: ").strip().lower()
+        if save_env in {"y", "yes"}:
+            target_dir = os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else os.getcwd()
+            env_path = os.path.join(target_dir, ".env")
+            with open(env_path, "w", encoding="utf-8") as f:
+                f.write(f"# CMAA Enterprise Configuration\n")
+                f.write(f"SN_INSTANCE_URL={constants.INSTANCE_URL}\n")
+                f.write(f"SN_USERNAME={username}\n")
+                f.write(f"SN_PASSWORD={password}\n")
+                f.write(f"SN_VERIFY_SSL={str(constants.VERIFY_SSL).lower()}\n")
+            print(f"[OK] Saved credentials to: {env_path}")
+    except (KeyboardInterrupt, EOFError):
+        pass
+    except Exception as exc:
+        print(f"[WARNING] Could not save .env: {exc}")
+
+    return True
+
+
+def interactive_prompt():
+    """Interactive fallback when executed without CLI arguments (e.g., double-clicked executable)."""
+    while True:
+        print("\n" + "=" * 65)
+        print("      Change Management Audit Automation (CMAA) - Standalone")
+        print("=" * 65)
+        print("\nSelect an Audit Execution Mode:")
+        print("  [1] Audit specific Change Request(s) (e.g. CHG6892954 or changes.txt)")
+        print("  [2] Audit by Date Range with Sampling (e.g. 2026-10-01 to 2026-10-31)")
+        print("  [3] Exit\n")
+        try:
+            choice = input("Enter choice [1/2/3]: ").strip()
+        except (KeyboardInterrupt, EOFError):
+            return None
+
         if choice == "1":
             inp = input(f"\nEnter Change Number(s) or path to text file (max {constants.MAX_CHANGE_NUMBERS}): ").strip()
             if not inp:
@@ -280,17 +472,218 @@ def validate_date_range(start_date, end_date):
                 tester=tester,
                 output=None,
             )
+        elif choice == "3":
+            print("\nExiting application. Goodbye.")
+            return None
+        else:
+            print("\n[!] Invalid selection. Please enter 1, 2, or 3.")
+
+
+def main():
+    is_interactive = (len(sys.argv) == 1)
+
+    if is_interactive:
+        print("=" * 65)
+        print("      Change Management Audit Automation (CMAA) - Standalone")
+        print("=" * 65)
+        if not ensure_credentials(is_interactive=True):
+            pause_for_user("\nPress Enter to exit...")
+            sys.exit(0)
+        args = interactive_prompt()
+        if not args:
+            pause_for_user("\nPress Enter to exit...")
+            sys.exit(0)
+    else:
+        args = parse_arguments()
+        if not ensure_credentials(is_interactive=False):
+            sys.exit(1)
+
+    try:
+        change_numbers = load_change_numbers(args.change_nums)
+    except (RuntimeError, ValueError) as exc:
+        print(f"\n[INPUT ERROR] {exc}")
+        if is_interactive:
+            pause_for_user("\nPress Enter to exit...")
+        sys.exit(1)
+
+    try:
+        if change_numbers:
+            run_change_number_audit(args, change_numbers)
+        else:
+            if not args.start_date or not args.end_date:
+                print("\n[ERROR] Please provide either --change-nums or both --start-date and --end-date.")
+                if is_interactive:
+                    pause_for_user("\nPress Enter to exit...")
+                sys.exit(2)
+            validate_date_range(args.start_date, args.end_date)
+            run_date_range_audit(args, args.start_date, args.end_date)
+    except ValueError as val_err:
+        print(f"\n[INPUT ERROR] {val_err}")
+    except Exception as exc:
+        print(f"\n[ERROR] Execution halted: {exc}")
+    finally:
+        if is_interactive:
+            pause_for_user("\nExecution completed. Press Enter to exit...")
 ```
 
 ---
 
-## 4. Packaging Files (`.bat` and `.spec`)
+## File 4: `CMAA.spec`
+Make sure `upx=False` and `'getpass'` is in `hiddenimports`:
+```python
+    hiddenimports=[
+        'openpyxl',
+        'openpyxl.styles',
+        'openpyxl.styles.fills',
+        'openpyxl.styles.colors',
+        'openpyxl.reader.excel',
+        'openpyxl.writer.excel',
+        'et_xmlfile',
+        'requests',
+        'urllib3',
+        'certifi',
+        'rapidfuzz',
+        'thefuzz',
+        'extract_msg',
+        'constants',
+        'excel_handler',
+        'questions_data',
+        'sc_sheet_data',
+        'servicenow_api',
+        'api_logger',
+        'dotenv',
+        'getpass',
+    ],
+```
+And inside `exe = EXE(`:
+```python
+    strip=False,
+    upx=False,
+    upx_exclude=[],
+```
 
-1. **[`CMAA.spec`](file:///c:/Users/Ansh%20Singh/Downloads/CHANGE_MANAGEMENT_AUDIT_AUTOMATION_RECONSTRUCTED/CMAA.spec)**
-   - Configured with `upx=False` for zero decompression delay and corporate AV heuristic safety.
-   - Embeds `getpass` and all required modules.
-   - Embeds master template `QAR Report.xlsx`.
-2. **[`build_cmaa_exe.bat`](file:///c:/Users/Ansh%20Singh/Downloads/CHANGE_MANAGEMENT_AUDIT_AUTOMATION_RECONSTRUCTED/build_cmaa_exe.bat)**
-   - Automates syntax check, clean build, and post-build verification.
-   - Highlights enterprise input constraints (max 100 CRs, max 1 month window).
-   - Deploys sample `changes.txt` and `.env.example` into `dist\`.
+---
+
+## File 5: `build_cmaa_exe.bat`
+Your complete, working batch script to build `--onefile`:
+```bat
+@echo off
+setlocal enabledelayedexpansion
+cd /d "%~dp0"
+
+echo =====================================================================
+echo   CMAA Executable Builder (--onefile Standalone Package)
+echo   Production-Ready Corporate Build System
+echo =====================================================================
+echo.
+
+rem 1. Verify Python availability
+python --version >nul 2>&1
+if %ERRORLEVEL% NEQ 0 (
+    echo [ERROR] Python is not installed or not in system PATH.
+    echo Please install Python 3.9+ or run within your corporate virtual environment.
+    echo.
+    pause
+    exit /b 1
+)
+
+rem 2. Check/Install PyInstaller and core libraries
+echo [STEP 1/5] Checking required build dependencies...
+if exist "requirements-cmaa.txt" (
+    python -m pip install -r requirements-cmaa.txt >nul 2>&1
+) else if exist "requirements.txt" (
+    python -m pip install -r requirements.txt >nul 2>&1
+    python -m pip install pyinstaller >nul 2>&1
+) else (
+    python -m pip install pyinstaller openpyxl requests certifi urllib3 rapidfuzz python-dotenv >nul 2>&1
+)
+if %ERRORLEVEL% NEQ 0 (
+    echo [WARNING] Pip install returned non-zero - possibly offline or air-gapped network.
+    echo Proceeding with currently installed packages in Python environment...
+)
+
+rem 3. Clean prior build cache and all stale bytecode
+echo.
+echo [STEP 2/5] Cleaning previous build cache and stale bytecode...
+if exist "build\CMAA_Audit" rmdir /s /q "build\CMAA_Audit"
+if exist "dist\CMAA_Audit.exe" del /f /q "dist\CMAA_Audit.exe"
+if exist "__pycache__" rmdir /s /q "__pycache__"
+
+rem 4. Validate codebase integrity before building
+echo.
+echo [STEP 3/5] Validating codebase syntax...
+python -m py_compile populate_cr_audit.py constants.py excel_handler.py sc_sheet_data.py servicenow_api.py api_logger.py questions_data.py
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo [FATAL ERROR] Python syntax validation failed!
+    echo A syntax error was detected in your codebase files.
+    echo Please fix the errors reported above before building the executable.
+    echo.
+    pause
+    exit /b 1
+)
+echo [OK] All codebase files compiled cleanly.
+
+rem 5. Verify master template is present
+if not exist "QAR Report.xlsx" (
+    echo.
+    echo [ERROR] Master template 'QAR Report.xlsx' not found in current directory!
+    echo Please ensure 'QAR Report.xlsx' is present before packaging.
+    echo.
+    pause
+    exit /b 1
+)
+
+rem 6. Build standalone executable
+echo.
+echo [STEP 4/5] Compiling standalone --onefile executable using CMAA.spec...
+python -m PyInstaller CMAA.spec --clean --noconfirm
+
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo [FATAL ERROR] PyInstaller build failed. Review output log above.
+    echo.
+    pause
+    exit /b 1
+)
+
+rem 7. Deploy companion corporate test files
+if exist "changes.txt" copy /y "changes.txt" "dist\changes.txt" >nul 2>&1
+(
+    echo # CMAA Corporate ServiceNow Configuration
+    echo # Optional: Uncomment to pre-fill instance URL or defaults
+    echo # SN_INSTANCE_URL=https://your-instance.service-now.com
+    echo # SN_USERNAME=your_username
+    echo # SN_VERIFY_SSL=false
+) > "dist\.env.example"
+
+rem 8. Run post-build smoke verification test
+echo.
+echo [STEP 5/5] Performing post-build verification on compiled binary...
+if exist "dist\CMAA_Audit.exe" (
+    dist\CMAA_Audit.exe --help >nul 2>&1
+    if %ERRORLEVEL% EQU 0 (
+        echo [OK] Standalone binary self-test passed!
+    ) else (
+        echo [WARNING] Binary returned non-zero exit on --help. Check antivirus or permissions.
+    )
+) else (
+    echo [ERROR] Expected executable dist\CMAA_Audit.exe not found!
+    echo.
+    pause
+    exit /b 1
+)
+
+echo.
+echo =====================================================================
+echo [SUCCESS] CMAA Standalone Executable Successfully Built!
+echo.
+echo Executable File: dist\CMAA_Audit.exe
+echo Master Template: Bundled inside binary + hot-override enabled.
+echo Authentication : Interactive prompt on launch (Username + Password masked).
+echo Input Limits   : Max 100 CRs per run / Max 1-month date range window.
+echo Output Reports : Saved to 'report\' with professional date-time nomenclature.
+echo =====================================================================
+echo.
+pause
+```
