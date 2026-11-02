@@ -78,7 +78,17 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b 1
 )
 
-rem 7. Run post-build smoke verification test
+rem 7. Deploy companion corporate test files
+if exist "changes.txt" copy /y "changes.txt" "dist\changes.txt" >nul 2>&1
+(
+    echo # CMAA Corporate ServiceNow Configuration
+    echo # Optional: Uncomment to pre-fill instance URL or defaults
+    echo # SN_INSTANCE_URL=https://your-instance.service-now.com
+    echo # SN_USERNAME=your_username
+    echo # SN_VERIFY_SSL=false
+) > "dist\.env.example"
+
+rem 8. Run post-build smoke verification test
 echo.
 echo [STEP 5/5] Performing post-build verification on compiled binary...
 if exist "dist\CMAA_Audit.exe" (
@@ -101,6 +111,8 @@ echo [SUCCESS] CMAA Standalone Executable Successfully Built!
 echo.
 echo Executable File: dist\CMAA_Audit.exe
 echo Master Template: Bundled inside binary + hot-override enabled.
+echo Authentication : Interactive prompt on launch (Username + Password masked).
+echo Output Reports : Saved to 'report\' with professional date-time nomenclature.
 echo =====================================================================
 echo.
 pause

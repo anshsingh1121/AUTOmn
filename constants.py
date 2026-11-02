@@ -113,9 +113,9 @@ STANDARD_CH_APPROVAL_EXCEPTION_TEMPLATES = [
 def update_credentials(username: str, password: str, instance_url: str | None = None, verify_ssl: bool | str | None = None):
     """Dynamically update runtime credentials in memory."""
     global USERNAME, PASSWORD, INSTANCE_URL, BASE_URL, ATT_FILE_URL, VERIFY_SSL
-    if username:
+    if username is not None and username != "":
         USERNAME = username
-    if password:
+    if password is not None and password != "":
         PASSWORD = password
     if instance_url:
         INSTANCE_URL = instance_url.rstrip("/")
@@ -123,6 +123,11 @@ def update_credentials(username: str, password: str, instance_url: str | None = 
         ATT_FILE_URL = f"{INSTANCE_URL}/api/now/attachment/"
     if verify_ssl is not None:
         VERIFY_SSL = verify_ssl
+
+
+def has_credentials() -> bool:
+    """Return True if both username and password are populated in memory."""
+    return bool(USERNAME and PASSWORD)
 
 
 def _load_runtime_overrides():
