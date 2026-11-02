@@ -29,19 +29,89 @@ def safe_getpass(prompt: str = "Enter ServiceNow Password (masked): ") -> str:
             return ""
 
 
-# --- MODIFICATION 2: Update load_change_numbers (Max 100 constraint) ---
+# --- MODIFICATION 2: Add resolve_file_path, parse_interactive_change_input, and update load_change_numbers ---
+def resolve_file_path(path_str: str) -> str | None:
+    """Resolve an input file path whether absolute, relative, home-expanded, or next to exe."""
+    if not path_str or not isinstance(path_str, str):
+        return None
+    raw = path_str.strip().strip("\"'").strip()
+    if not raw:
+        return None
+    expanded = os.path.expanduser(os.path.expandvars(raw))
+
+    # 1. Direct or absolute path check (handles paths anywhere on disk)
+    if os.path.isfile(expanded):
+        return os.path.abspath(expanded)
+    if os.path.isfile(os.path.abspath(raw)):
+        return os.path.abspath(raw)
+
+    # 2. Check relative to executable directory (if running as compiled exe)
+    if getattr(sys, "frozen", False):
+        exe_dir = os.path.dirname(sys.executable)
+        candidate = os.path.join(exe_dir, raw)
+        if os.path.isfile(candidate):
+            return os.path.abspath(candidate)
+
+    # 3. Check relative to script directory
+    try:
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        candidate = os.path.join(script_dir, raw)
+        if os.path.isfile(candidate):
+            return os.path.abspath(candidate)
+    except Exception:
+        pass
+
+    return None
+
+
+def parse_interactive_change_input(inp: str) -> list[str]:
+    """Parse user input from interactive console prompt supporting raw paths with spaces, quotes, or CRs."""
+    raw = inp.strip()
+    if not raw:
+        return []
+    clean_raw = raw.strip("\"'").strip()
+    # Check if the entire raw input is an existing file path (even if unquoted with spaces)
+    if resolve_file_path(clean_raw):
+        return [clean_raw]
+
+    # Try shlex split to respect quoted tokens with spaces
+    try:
+        tokens = shlex.split(raw, posix=False)
+        return [t.strip("\"'").strip() for t in tokens if t.strip("\"'").strip()]
+    except Exception:
+        # Fallback to whitespace/comma split
+        return [t.strip("\"'").strip() for t in re.split(r"[\s,;]+", raw) if t.strip("\"'").strip()]
+
+
 def load_change_numbers(change_inputs):
-    """Load validated Change numbers from CLI values or text files."""
+    """Load validated Change numbers from CLI values or text files (anywhere on disk)."""
+    if not change_inputs:
+        return []
+
+    # Check if all inputs joined together represent a single unquoted path with spaces
+    if len(change_inputs) > 1:
+        joined_path = " ".join(change_inputs).strip().strip("\"'").strip()
+        resolved_joined = resolve_file_path(joined_path)
+        if resolved_joined:
+            change_inputs = [resolved_joined]
+
     change_numbers, invalid_values = [], []
-    for change_input in change_inputs or []:
-        if os.path.isfile(change_input):
+    for change_input in change_inputs:
+        resolved_file = resolve_file_path(change_input)
+        if resolved_file:
+            print(f"[OK] Loading Change Requests from external file: {resolved_file}")
             try:
-                with open(change_input, encoding="utf-8-sig") as change_file:
+                with open(resolved_file, encoding="utf-8-sig") as change_file:
                     content = change_file.read()
             except OSError as exc:
-                raise RuntimeError(f"Failed to read '{change_input}': {exc}") from exc
+                raise RuntimeError(f"Failed to read '{resolved_file}': {exc}") from exc
         else:
+            clean_token = change_input.strip().strip("\"'").strip()
+            # If the user specified a path that doesn't exist, provide an immediate clear error
+            if clean_token.lower().endswith((".txt", ".csv", ".tsv", ".log", ".text")) or ("\\" in clean_token or "/" in clean_token):
+                raise ValueError(f"Could not locate text file: '{clean_token}'. Please verify the path exists.")
             content = change_input
+
         for raw_value in re.split(r"[\s,;]+", content):
             value = raw_value.strip().upper()
             if not value:
@@ -50,6 +120,7 @@ def load_change_numbers(change_inputs):
                 invalid_values.append(value)
                 continue
             change_numbers.append(value)
+
     if invalid_values:
         print("Ignored invalid Change-number values:")
         for value in invalid_values:
@@ -194,7 +265,8 @@ def interactive_prompt():
                 print("No input provided. Returning to main menu.")
                 continue
             try:
-                candidate_numbers = load_change_numbers(inp.split())
+                candidate_tokens = parse_interactive_change_input(inp)
+                candidate_numbers = load_change_numbers(candidate_tokens)
                 if not candidate_numbers:
                     print("No valid Change Request numbers found in input. Returning to main menu.")
                     continue

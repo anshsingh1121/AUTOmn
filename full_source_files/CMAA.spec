@@ -42,6 +42,7 @@ a = Analysis(
         'api_logger',
         'dotenv',
         'getpass',
+        'shlex',
     ],
     hookspath=[],
     hooksconfig={},
