@@ -1,8 +1,17 @@
 # =====================================================================
 # PATCH FOR: constants.py
-# Location: Replace the update_credentials function (lines 113-126)
-# =====================================================================
+# 
+# 1. Input Constraints: Add near CHANGE_NUMBER_PATTERN (around line 65):
+# ---------------------------------------------------------------------
+CHANGE_NUMBER_PATTERN = re.compile(r"CHG\d+", re.IGNORECASE)
 
+# Corporate Audit Input Constraints
+MAX_CHANGE_NUMBERS = 100      # Maximum allowed Change Requests per audit run
+MAX_DATE_RANGE_DAYS = 31      # Maximum allowed date range span (1 calendar month)
+
+
+# 2. Credential Updates: Replace update_credentials function (lines 115-130):
+# ---------------------------------------------------------------------
 def update_credentials(username: str, password: str, instance_url: str | None = None, verify_ssl: bool | str | None = None):
     """Dynamically update runtime credentials in memory."""
     global USERNAME, PASSWORD, INSTANCE_URL, BASE_URL, ATT_FILE_URL, VERIFY_SSL

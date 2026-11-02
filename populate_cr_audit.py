@@ -104,7 +104,16 @@ def load_change_numbers(change_inputs):
         print("Ignored invalid Change-number values:")
         for value in invalid_values:
             print(f"  {value}")
-    return list(dict.fromkeys(change_numbers))
+    unique_changes = list(dict.fromkeys(change_numbers))
+
+    max_allowed = getattr(constants, "MAX_CHANGE_NUMBERS", 100)
+    if len(unique_changes) > max_allowed:
+        raise ValueError(
+            f"Input exceeds maximum allowed limit of {max_allowed} Change Requests. "
+            f"Received {len(unique_changes)} unique change numbers. "
+            f"Please reduce the input to at most {max_allowed} changes."
+        )
+    return unique_changes
 
 
 def validate_date_range(start_date, end_date):
@@ -114,7 +123,16 @@ def validate_date_range(start_date, end_date):
     except ValueError as exc:
         raise ValueError("Dates must use YYYY-MM-DD format (e.g. 2026-10-01)") from exc
     if start_datetime > end_datetime:
-        raise ValueError("--start-date must not be after --end-date")
+        raise ValueError("--start-date must not be after --end-date.")
+
+    max_days = getattr(constants, "MAX_DATE_RANGE_DAYS", 31)
+    delta_days = (end_datetime - start_datetime).days
+    if delta_days > max_days:
+        raise ValueError(
+            f"Date range cannot exceed 1 month (maximum {max_days} days). "
+            f"Provided range spans {delta_days} days ({start_date} to {end_date}). "
+            f"Please specify a date range within 1 month."
+        )
     return start_datetime, end_datetime
 
 
@@ -423,12 +441,20 @@ def interactive_prompt():
             return None
 
         if choice == "1":
-            inp = input("\nEnter Change Number(s) or path to text file: ").strip()
+            inp = input(f"\nEnter Change Number(s) or path to text file (max {constants.MAX_CHANGE_NUMBERS}): ").strip()
             if not inp:
                 print("No input provided. Returning to main menu.")
                 continue
+            try:
+                candidate_numbers = load_change_numbers(inp.split())
+                if not candidate_numbers:
+                    print("No valid Change Request numbers found in input. Returning to main menu.")
+                    continue
+            except (RuntimeError, ValueError) as err:
+                print(f"\n[INPUT ERROR] {err}\n")
+                continue
             return argparse.Namespace(
-                change_nums=inp.split(),
+                change_nums=candidate_numbers,
                 start_date=None,
                 end_date=None,
                 percentage=20,
@@ -437,10 +463,16 @@ def interactive_prompt():
                 output=None,
             )
         elif choice == "2":
+            print(f"\nEnter Date Range (maximum window: 1 month / {constants.MAX_DATE_RANGE_DAYS} days):")
             start_date = input("Enter Start Date (YYYY-MM-DD): ").strip()
             end_date = input("Enter End Date (YYYY-MM-DD): ").strip()
             if not start_date or not end_date:
                 print("Start and End dates are required. Returning to main menu.")
+                continue
+            try:
+                validate_date_range(start_date, end_date)
+            except ValueError as val_err:
+                print(f"\n[INPUT ERROR] {val_err}\n")
                 continue
             pct_input = input("Enter sample percentage [default: 20]: ").strip()
             percentage = int(pct_input) if pct_input.isdigit() else 20
@@ -482,8 +514,8 @@ def main():
 
     try:
         change_numbers = load_change_numbers(args.change_nums)
-    except RuntimeError as exc:
-        print(f"\n[ERROR] {exc}")
+    except (RuntimeError, ValueError) as exc:
+        print(f"\n[INPUT ERROR] {exc}")
         if is_interactive:
             pause_for_user("\nPress Enter to exit...")
         sys.exit(1)
@@ -499,6 +531,8 @@ def main():
                 sys.exit(2)
             validate_date_range(args.start_date, args.end_date)
             run_date_range_audit(args, args.start_date, args.end_date)
+    except ValueError as val_err:
+        print(f"\n[INPUT ERROR] {val_err}")
     except Exception as exc:
         print(f"\n[ERROR] Execution halted: {exc}")
     finally:

@@ -1,8 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
 """PyInstaller specification file for Change Management Audit Automation (CMAA).
 
-Builds a standalone, platform-independent single-file executable (--onefile)
-that bundles the Excel QAR template and all required dependencies.
+Builds a standalone, corporate single-file executable (--onefile)
+that bundles the Excel QAR template, all required dependencies,
+interactive authentication prompt, enterprise input constraints
+(max 100 Change Requests, max 1 month / 31-day date window),
+and professional timestamped report nomenclature.
 """
 import os
 import sys

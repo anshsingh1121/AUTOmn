@@ -112,6 +112,7 @@ echo.
 echo Executable File: dist\CMAA_Audit.exe
 echo Master Template: Bundled inside binary + hot-override enabled.
 echo Authentication : Interactive prompt on launch (Username + Password masked).
+echo Input Limits   : Max 100 CRs per run / Max 1-month date range window.
 echo Output Reports : Saved to 'report\' with professional date-time nomenclature.
 echo =====================================================================
 echo.

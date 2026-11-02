@@ -66,6 +66,10 @@ SCT = "Standard Change Template"
 # number of digits. Validate any organization-specific length constraint separately.
 CHANGE_NUMBER_PATTERN = re.compile(r"CHG\d+", re.IGNORECASE)
 
+# Corporate Audit Input Constraints
+MAX_CHANGE_NUMBERS = 100      # Maximum allowed Change Requests per audit run
+MAX_DATE_RANGE_DAYS = 31      # Maximum allowed date range span (1 calendar month)
+
 # ServiceNow table names visible in the supplied constants.py screenshots.
 CHANGE_REQUEST_TABLE = "change_request"
 SYS_APPROVAL_TABLE = "sysapproval_approver"
