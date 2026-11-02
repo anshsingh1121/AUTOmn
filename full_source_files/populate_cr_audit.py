@@ -346,7 +346,7 @@ def run_date_range_audit(args, start_date, end_date):
             print(f"No {change_type} CRs found. Skipping {sheet_name}.")
             continue
         process_monthly_sheet(args, workbook, sheet_name, change_type, all_crs, args.tester, month, today)
-    saved = save_workbook(workbook, output_path)
+    saved = save_workbook(workbook, filename)
     return saved is not None
 
 
