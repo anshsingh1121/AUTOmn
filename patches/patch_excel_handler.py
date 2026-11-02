@@ -49,19 +49,19 @@ def get_default_report_dir() -> str:
     return report_dir
 
 
-def save_output(workbook, output_path: str | None = None) -> str:
+def save_output(workbook, output_path: str | None = None, filename: str | None = None) -> str:
     """Save the populated workbook with professional nomenclature and safe directory resolution."""
     report_dir = get_default_report_dir()
 
-    if output_path:
-        if os.path.isabs(output_path):
-            path = output_path
+    target_name = output_path or filename
+    if target_name:
+        if os.path.isabs(target_name):
+            path = target_name
         else:
-            base_name = os.path.basename(output_path)
+            base_name = os.path.basename(target_name)
             path = os.path.join(report_dir, base_name)
     else:
-        filename = generate_report_filename()
-        path = os.path.join(report_dir, filename)
+        path = os.path.join(report_dir, generate_report_filename())
 
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
     print(f"Saving audit report to: {path}")
