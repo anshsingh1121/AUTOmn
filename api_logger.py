@@ -4,17 +4,112 @@ Intercepts all HTTP GET requests made via the requests library, logs request det
 masks sensitive credentials, and saves full, pretty-printed JSON payloads to disk.
 """
 from __future__ import annotations
+import csv
+import getpass
 import json
 import os
+import platform
 import re
+import socket
+import sys
 import time
 import urllib.parse
+import uuid
 from datetime import datetime
 from pathlib import Path
 import requests
 
+def get_base_dir() -> Path:
+    """Resolve base directory next to the executable when frozen, or current working directory."""
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent
+    return Path.cwd()
+
+def get_log_root() -> Path:
+    root = get_base_dir() / "api_logs"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
+def get_audit_dir() -> Path:
+    audit_dir = get_base_dir() / "audit_logs"
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    return audit_dir
+
+def get_system_identity() -> dict:
+    """Extract complete corporate workstation, network, and user identifiers."""
+    try:
+        os_user = os.getlogin()
+    except Exception:
+        os_user = getpass.getuser()
+
+    user_domain = os.environ.get("USERDOMAIN", "LOCAL")
+    user_dns = os.environ.get("USERDNSDOMAIN", "")
+    full_network_id = f"{user_domain}\\{os_user}" if user_domain else os_user
+
+    hostname = socket.gethostname()
+    try:
+        fqdn = socket.getfqdn()
+    except Exception:
+        fqdn = hostname
+
+    try:
+        local_ip = socket.gethostbyname(hostname)
+    except Exception:
+        local_ip = "127.0.0.1"
+
+    raw_mac = uuid.getnode()
+    mac_addr = ":".join([f"{(raw_mac >> ele) & 0xff:02x}" for ele in range(0, 12, 2)][::-1])
+
+    return {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "os_user": os_user,
+        "user_domain": user_domain,
+        "full_network_id": full_network_id,
+        "user_dns_domain": user_dns,
+        "computer_name": hostname,
+        "fqdn": fqdn,
+        "ip_address": local_ip,
+        "mac_address": mac_addr,
+        "os_platform": platform.platform(),
+    }
+
+def record_audit_trail(action: str, servicenow_user: str = "", details: str = "", status: str = "INFO", output_report: str = ""):
+    """Append structured corporate user audit record to master CSV audit log."""
+    try:
+        audit_dir = get_audit_dir()
+        csv_path = audit_dir / "USER_AUDIT_TRAIL.csv"
+        ident = get_system_identity()
+        timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        headers = [
+            "Timestamp", "Action", "Status", "Network_ID", "OS_User", "Computer_Name",
+            "IP_Address", "MAC_Address", "ServiceNow_User", "Details", "Output_Report", "Platform"
+        ]
+
+        file_exists = csv_path.exists()
+        with open(csv_path, "a", newline="", encoding="utf-8-sig") as f:
+            writer = csv.DictWriter(f, fieldnames=headers)
+            if not file_exists:
+                writer.writeheader()
+            writer.writerow({
+                "Timestamp": timestamp_str,
+                "Action": action,
+                "Status": status,
+                "Network_ID": ident["full_network_id"],
+                "OS_User": ident["os_user"],
+                "Computer_Name": ident["computer_name"],
+                "IP_Address": ident["ip_address"],
+                "MAC_Address": ident["mac_address"],
+                "ServiceNow_User": servicenow_user or "N/A",
+                "Details": details,
+                "Output_Report": output_report or "",
+                "Platform": ident["os_platform"],
+            })
+    except Exception as exc:
+        print(f"[api_logger] Warning: Could not record audit trail: {exc}")
+
 # Root directory for storing all API hit payloads and summaries
-LOG_ROOT = Path("api_logs")
+LOG_ROOT = get_log_root()
 _CURRENT_SESSION_DIR = None
 _HIT_COUNTER = 0
 _ORIGINAL_REQUESTS_GET = requests.get
@@ -25,18 +120,26 @@ def _get_session_dir() -> Path:
     global _CURRENT_SESSION_DIR
     if _CURRENT_SESSION_DIR is None:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        _CURRENT_SESSION_DIR = LOG_ROOT / f"session_{timestamp}"
+        _CURRENT_SESSION_DIR = get_log_root() / f"session_{timestamp}"
         _CURRENT_SESSION_DIR.mkdir(parents=True, exist_ok=True)
-        # Initialize the markdown summary dashboard
+        # Initialize the markdown summary dashboard with user identity metadata
         summary_file = _CURRENT_SESSION_DIR / "00_API_HITS_SUMMARY.md"
         if not summary_file.exists():
-            summary_file.write_text(
+            ident = get_system_identity()
+            summary_content = (
                 "# ServiceNow API Hits & Payloads Summary\n\n"
-                f"**Session Started:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+                "### Session User & Workstation Audit Identity\n"
+                f"- **Start Timestamp:** {ident['timestamp']}\n"
+                f"- **Corporate Network ID:** `{ident['full_network_id']}`\n"
+                f"- **Workstation / Computer:** `{ident['computer_name']}` (FQDN: `{ident['fqdn']}`)\n"
+                f"- **Local IP Address:** `{ident['ip_address']}`\n"
+                f"- **Hardware MAC Address:** `{ident['mac_address']}`\n"
+                f"- **Operating System:** `{ident['os_platform']}`\n\n"
+                "---\n\n"
                 "| Hit # | Timestamp | Table / Resource | Status | Duration | Records | Payload File |\n"
-                "|:---:|:---:|---|:---:|:---:|:---:|---|\n",
-                encoding="utf-8",
+                "|:---:|:---:|---|:---:|:---:|:---:|---|\n"
             )
+            summary_file.write_text(summary_content, encoding="utf-8")
     return _CURRENT_SESSION_DIR
 
 
@@ -272,6 +375,10 @@ def get_current_session_dir() -> Path:
 
 def get_summary_path() -> Path:
     return _get_session_dir() / "00_API_HITS_SUMMARY.md"
+
+
+def get_audit_trail_path() -> Path:
+    return get_audit_dir() / "USER_AUDIT_TRAIL.csv"
 
 
 # Automatically install logger upon import

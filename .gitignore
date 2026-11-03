@@ -3,6 +3,7 @@ output/
 archive/
 report/
 api_logs/
+audit_logs/
 .env
 
 # Python

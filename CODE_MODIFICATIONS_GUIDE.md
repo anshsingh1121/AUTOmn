@@ -169,14 +169,15 @@ def save_output(workbook, output_path: str | None = None, filename: str | None =
 
 ## File 3: `populate_cr_audit.py`
 
-### Step 3.1: Add `shlex` import and `safe_getpass()`
+### Step 3.1: Add `shlex` & `api_logger` imports and `safe_getpass()`
 * **Location:** Top of file and around line 18.
-* **Add import at top of file:**
+* **Add imports at top of file:**
 ```python
 import os
 import re
 import shlex
 import sys
+import api_logger
 ```
 * **Find this:**
 ```python
@@ -507,6 +508,13 @@ def ensure_credentials(is_interactive: bool = True) -> bool:
 
     constants.update_credentials(username=username, password=password)
     print(f"[OK] Authenticated user '{username}' for this audit session.")
+    if api_logger:
+        api_logger.record_audit_trail(
+            action="USER_AUTHENTICATED",
+            servicenow_user=username,
+            details=f"Target: {constants.INSTANCE_URL}",
+            status="SUCCESS",
+        )
 
     try:
         save_env = input("Save credentials to local .env for future automatic runs? [y/N]: ").strip().lower()
@@ -599,6 +607,12 @@ def interactive_prompt():
 
 def main():
     is_interactive = (len(sys.argv) == 1)
+    if api_logger:
+        api_logger.record_audit_trail(
+            action="APPLICATION_LAUNCH",
+            details=f"Execution Mode: {'Interactive' if is_interactive else 'CLI'}",
+            status="STARTED",
+        )
 
     if is_interactive:
         print("=" * 65)
@@ -620,6 +634,13 @@ def main():
         change_numbers = load_change_numbers(args.change_nums)
     except (RuntimeError, ValueError) as exc:
         print(f"\n[INPUT ERROR] {exc}")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="INPUT_VALIDATION_ERROR",
+                servicenow_user=getattr(constants, "USERNAME", ""),
+                details=str(exc),
+                status="FAILED",
+            )
         if is_interactive:
             pause_for_user("\nPress Enter to exit...")
         sys.exit(1)
@@ -637,12 +658,142 @@ def main():
             run_date_range_audit(args, args.start_date, args.end_date)
     except ValueError as val_err:
         print(f"\n[INPUT ERROR] {val_err}")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="INPUT_VALIDATION_ERROR",
+                servicenow_user=getattr(constants, "USERNAME", ""),
+                details=str(val_err),
+                status="FAILED",
+            )
     except Exception as exc:
         print(f"\n[ERROR] Execution halted: {exc}")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="EXECUTION_HALTED",
+                servicenow_user=getattr(constants, "USERNAME", ""),
+                details=str(exc),
+                status="FAILED",
+            )
     finally:
         if is_interactive:
             pause_for_user("\nExecution completed. Press Enter to exit...")
 ```
+
+---
+
+## File 3B: `api_logger.py` (Workstation & User Audit Logging)
+
+To record complete user identity (Windows logon, corporate domain, computer hostname, local IP, hardware MAC address, and timestamp) in `audit_logs/USER_AUDIT_TRAIL.csv`:
+* **Location:** Top of `api_logger.py` (replace from line 6 to `_get_session_dir()`).
+* **Replace header imports & setup with:**
+```python
+from __future__ import annotations
+import csv
+import getpass
+import json
+import os
+import platform
+import re
+import socket
+import sys
+import time
+import urllib.parse
+import uuid
+from datetime import datetime
+from pathlib import Path
+import requests
+
+def get_base_dir() -> Path:
+    """Resolve base directory next to the executable when frozen, or current working directory."""
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent
+    return Path.cwd()
+
+def get_log_root() -> Path:
+    root = get_base_dir() / "api_logs"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
+def get_audit_dir() -> Path:
+    audit_dir = get_base_dir() / "audit_logs"
+    audit_dir.mkdir(parents=True, exist_ok=True)
+    return audit_dir
+
+def get_system_identity() -> dict:
+    """Extract complete corporate workstation, network, and user identifiers."""
+    try:
+        os_user = os.getlogin()
+    except Exception:
+        os_user = getpass.getuser()
+
+    user_domain = os.environ.get("USERDOMAIN", "LOCAL")
+    user_dns = os.environ.get("USERDNSDOMAIN", "")
+    full_network_id = f"{user_domain}\\{os_user}" if user_domain else os_user
+
+    hostname = socket.gethostname()
+    try:
+        fqdn = socket.getfqdn()
+    except Exception:
+        fqdn = hostname
+
+    try:
+        local_ip = socket.gethostbyname(hostname)
+    except Exception:
+        local_ip = "127.0.0.1"
+
+    raw_mac = uuid.getnode()
+    mac_addr = ":".join([f"{(raw_mac >> ele) & 0xff:02x}" for ele in range(0, 12, 2)][::-1])
+
+    return {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "os_user": os_user,
+        "user_domain": user_domain,
+        "full_network_id": full_network_id,
+        "user_dns_domain": user_dns,
+        "computer_name": hostname,
+        "fqdn": fqdn,
+        "ip_address": local_ip,
+        "mac_address": mac_addr,
+        "os_platform": platform.platform(),
+    }
+
+def record_audit_trail(action: str, servicenow_user: str = "", details: str = "", status: str = "INFO", output_report: str = ""):
+    """Append structured corporate user audit record to master CSV audit log."""
+    try:
+        audit_dir = get_audit_dir()
+        csv_path = audit_dir / "USER_AUDIT_TRAIL.csv"
+        ident = get_system_identity()
+        timestamp_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        headers = [
+            "Timestamp", "Action", "Status", "Network_ID", "OS_User", "Computer_Name",
+            "IP_Address", "MAC_Address", "ServiceNow_User", "Details", "Output_Report", "Platform"
+        ]
+
+        file_exists = csv_path.exists()
+        with open(csv_path, "a", newline="", encoding="utf-8-sig") as f:
+            writer = csv.DictWriter(f, fieldnames=headers)
+            if not file_exists:
+                writer.writeheader()
+            writer.writerow({
+                "Timestamp": timestamp_str,
+                "Action": action,
+                "Status": status,
+                "Network_ID": ident["full_network_id"],
+                "OS_User": ident["os_user"],
+                "Computer_Name": ident["computer_name"],
+                "IP_Address": ident["ip_address"],
+                "MAC_Address": ident["mac_address"],
+                "ServiceNow_User": servicenow_user or "N/A",
+                "Details": details,
+                "Output_Report": output_report or "",
+                "Platform": ident["os_platform"],
+            })
+    except Exception as exc:
+        print(f"[api_logger] Warning: Could not record audit trail: {exc}")
+```
+
+*(Tip: You can also simply copy the entire `full_source_files/api_logger.py`)*
 
 ---
 

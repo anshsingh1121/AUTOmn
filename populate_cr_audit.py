@@ -11,6 +11,7 @@ from urllib3.exceptions import InsecureRequestWarning
 import constants
 import excel_handler
 import servicenow_api
+import api_logger
 
 # SSL warnings suppression (corporate CA verification can be enabled via SN_VERIFY_SSL)
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
@@ -261,11 +262,27 @@ def save_workbook(workbook, output_path):
         saved_path = excel_handler.save_output(workbook, output_path)
     except Exception as exc:
         print(f"[ERROR] Failed saving output file: {exc}")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="SAVE_FAILED",
+                servicenow_user=getattr(constants, "USERNAME", ""),
+                details=f"Save failed: {exc}",
+                status="FAILED",
+            )
         return None
     print(f"\n[SUCCESS] Audit report created successfully:")
     print(f"  --> {os.path.abspath(saved_path)}")
-    if getattr(constants, "api_logger", None) and getattr(constants.api_logger, "_HIT_COUNTER", 0) > 0:
-        print(f"API Audit Trail ({constants.api_logger._HIT_COUNTER} hits logged): {constants.api_logger.get_summary_path()}")
+    if api_logger:
+        api_logger.record_audit_trail(
+            action="AUDIT_COMPLETED",
+            servicenow_user=getattr(constants, "USERNAME", ""),
+            details="Report created successfully",
+            status="SUCCESS",
+            output_report=saved_path,
+        )
+        if getattr(constants.api_logger, "_HIT_COUNTER", 0) > 0:
+            print(f"API Audit Trail ({constants.api_logger._HIT_COUNTER} hits logged): {constants.api_logger.get_summary_path()}")
+        print(f"User Audit Trail (Workstation & Network Trace): {api_logger.get_audit_trail_path()}")
     return saved_path
 
 
@@ -440,9 +457,22 @@ def ensure_credentials(is_interactive: bool = True) -> bool:
     """Ensure valid ServiceNow credentials exist; in interactive mode, prompt user at startup."""
     if not is_interactive:
         if constants.has_credentials():
+            if api_logger:
+                api_logger.record_audit_trail(
+                    action="USER_AUTHENTICATED",
+                    servicenow_user=constants.USERNAME,
+                    details=f"Target: {constants.INSTANCE_URL} (CLI/ENV)",
+                    status="SUCCESS",
+                )
             return True
         print("\n[ERROR] Missing ServiceNow credentials.")
         print("Please configure SN_USERNAME and SN_PASSWORD in your environment or in a local .env file.")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="AUTH_FAILED",
+                details="Missing credentials in non-interactive mode",
+                status="FAILED",
+            )
         return False
 
     print("\n" + "=" * 65)
@@ -476,6 +506,13 @@ def ensure_credentials(is_interactive: bool = True) -> bool:
 
     constants.update_credentials(username=username, password=password)
     print(f"[OK] Authenticated user '{username}' for this audit session.")
+    if api_logger:
+        api_logger.record_audit_trail(
+            action="USER_AUTHENTICATED",
+            servicenow_user=username,
+            details=f"Target: {constants.INSTANCE_URL}",
+            status="SUCCESS",
+        )
 
     try:
         save_env = input("Save credentials to local .env for future automatic runs? [y/N]: ").strip().lower()
@@ -568,6 +605,12 @@ def interactive_prompt():
 
 def main():
     is_interactive = (len(sys.argv) == 1)
+    if api_logger:
+        api_logger.record_audit_trail(
+            action="APPLICATION_LAUNCH",
+            details=f"Execution Mode: {'Interactive' if is_interactive else 'CLI'}",
+            status="STARTED",
+        )
 
     if is_interactive:
         print("=" * 65)
@@ -589,6 +632,13 @@ def main():
         change_numbers = load_change_numbers(args.change_nums)
     except (RuntimeError, ValueError) as exc:
         print(f"\n[INPUT ERROR] {exc}")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="INPUT_VALIDATION_ERROR",
+                servicenow_user=getattr(constants, "USERNAME", ""),
+                details=str(exc),
+                status="FAILED",
+            )
         if is_interactive:
             pause_for_user("\nPress Enter to exit...")
         sys.exit(1)
@@ -606,8 +656,22 @@ def main():
             run_date_range_audit(args, args.start_date, args.end_date)
     except ValueError as val_err:
         print(f"\n[INPUT ERROR] {val_err}")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="INPUT_VALIDATION_ERROR",
+                servicenow_user=getattr(constants, "USERNAME", ""),
+                details=str(val_err),
+                status="FAILED",
+            )
     except Exception as exc:
         print(f"\n[ERROR] Execution halted: {exc}")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="EXECUTION_HALTED",
+                servicenow_user=getattr(constants, "USERNAME", ""),
+                details=str(exc),
+                status="FAILED",
+            )
     finally:
         if is_interactive:
             pause_for_user("\nExecution completed. Press Enter to exit...")
