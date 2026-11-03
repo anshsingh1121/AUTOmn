@@ -408,6 +408,53 @@ def report_filename(month=None, change_wise=False, start_date=None, end_date=Non
 
 ---
 
+### Step 3.4B: Update `save_workbook()` (User Audit Logging)
+* **Location:** Around line 187 (or right before `populate_all_basic_data`).
+* **Find this:**
+```python
+def save_workbook(workbook, output_path):
+    try:
+        saved_path = excel_handler.save_output(workbook, output_path)
+    except Exception as exc:
+        print(f"[ERROR] Failed saving output file: {exc}")
+        return None
+    print(f"\n[SUCCESS] Audit report created successfully:")
+    print(f"  --> {os.path.abspath(saved_path)}")
+    return saved_path
+```
+* **Replace with:**
+```python
+def save_workbook(workbook, output_path):
+    try:
+        saved_path = excel_handler.save_output(workbook, output_path)
+    except Exception as exc:
+        print(f"[ERROR] Failed saving output file: {exc}")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="SAVE_FAILED",
+                servicenow_user=getattr(constants, "USERNAME", ""),
+                details=f"Save failed: {exc}",
+                status="FAILED",
+            )
+        return None
+    print(f"\n[SUCCESS] Audit report created successfully:")
+    print(f"  --> {os.path.abspath(saved_path)}")
+    if api_logger:
+        api_logger.record_audit_trail(
+            action="AUDIT_COMPLETED",
+            servicenow_user=getattr(constants, "USERNAME", ""),
+            details="Report created successfully",
+            status="SUCCESS",
+            output_report=saved_path,
+        )
+        if getattr(constants.api_logger, "_HIT_COUNTER", 0) > 0:
+            print(f"API Audit Trail ({constants.api_logger._HIT_COUNTER} hits logged): {constants.api_logger.get_summary_path()}")
+        print(f"User Audit Trail (Workstation & Network Trace): {api_logger.get_audit_trail_path()}")
+    return saved_path
+```
+
+---
+
 ### Step 3.5: Update `create_change_wise_report()`
 * **Location:** Around lines 170–176.
 * **Find this:**
@@ -473,9 +520,22 @@ def ensure_credentials(is_interactive: bool = True) -> bool:
     """Ensure valid ServiceNow credentials exist; in interactive mode, prompt user at startup."""
     if not is_interactive:
         if constants.has_credentials():
+            if api_logger:
+                api_logger.record_audit_trail(
+                    action="USER_AUTHENTICATED",
+                    servicenow_user=constants.USERNAME,
+                    details=f"Target: {constants.INSTANCE_URL} (CLI/ENV)",
+                    status="SUCCESS",
+                )
             return True
         print("\n[ERROR] Missing ServiceNow credentials.")
         print("Please configure SN_USERNAME and SN_PASSWORD in your environment or in a local .env file.")
+        if api_logger:
+            api_logger.record_audit_trail(
+                action="AUTH_FAILED",
+                details="Missing credentials in non-interactive mode",
+                status="FAILED",
+            )
         return False
 
     print("\n" + "=" * 65)
